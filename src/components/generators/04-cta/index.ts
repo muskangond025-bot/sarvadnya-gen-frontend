@@ -1,0 +1,1 @@
+export { GeneratorCTA } from "./GeneratorCTA";

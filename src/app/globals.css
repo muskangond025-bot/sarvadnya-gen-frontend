@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   Energy Orange Design System Tokens (docs/design-system.md)
+   ========================================================================== */
+:root {
+  /* 60/30/10 Proportions */
+  --color-bg: #FAF8F5;
+  --color-structure: #1F1F1E;
+  --color-accent: #FF5500;
+
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F4EDE2;
+  --color-text-primary: #1F1F1E;
+  --color-text-secondary: #625D55;
+  --color-border: #E8E2D9;
+
+  --color-on-dark: #FAF8F5;
+  --color-on-accent: #1F1F1E;
+
+  /* UI Tokens */
+  --primary: #FF5500;
+  --primary-dark: #E04B00;
+  --primary-darker: #C74000;
+
+  --background-card: #FFFFFF;
+  --background-nav: #FFFFFF;
+  --text-muted: #625D55;
+
+  --accent-orange: #FF5500;
+  --radius: 0.625rem;
+
+  --background: #FAF8F5;
+  --foreground: #1F1F1E;
+  --card: #FFFFFF;
+  --card-foreground: #1F1F1E;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F1F1E;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F4EDE2;
+  --secondary-foreground: #1F1F1E;
+  --muted: #F4EDE2;
+  --muted-foreground: #625D55;
+  --accent: #FFF7EB;
+  --accent-foreground: #FF5500;
+  --destructive: #E53935;
+  --border: #E8E2D9;
+  --input: #E8E2D9;
+  --ring: #FF5500;
+}
+
+.dark {
+  --color-bg: #141413;
+  --color-structure: #FAF8F5;
+  --color-accent: #FF5500;
+
+  --color-surface: #1F1F1E;
+  --color-surface-muted: #2B2B2B;
+  --color-text-primary: #FAF8F5;
+  --color-text-secondary: #A8A196;
+  --color-border: #333330;
+
+  --color-on-dark: #FAF8F5;
+  --color-on-accent: #1F1F1E;
+
+  --background: #141413;
+  --foreground: #FAF8F5;
+  --card: #1F1F1E;
+  --card-foreground: #FAF8F5;
+  --popover: #1F1F1E;
+  --popover-foreground: #FAF8F5;
+  --primary: #FF5500;
+  --primary-foreground: #FFFFFF;
+  --secondary: #2B2B2B;
+  --secondary-foreground: #FAF8F5;
+  --muted: #2B2B2B;
+  --muted-foreground: #A8A196;
+  --accent: #2B2B2B;
+  --accent-foreground: #FF5500;
+  --destructive: #E53935;
+  --border: #333330;
+  --input: #333330;
+  --ring: #FF5500;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-manrope), sans-serif;
+
+  /* Brand Colors - Energy Orange & Charcoal */
+  --color-brand-orange: #FF5500;
+  --color-brand-orange-hover: #E04B00;
+  --color-brand-charcoal: #1F1F1E;
+  --color-brand-charcoal-light: #2B2B2B;
+  --color-brand-ivory: #FFF7EB;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-surface-muted: #F4EDE2;
+  --color-brand-border: #E8E2D9;
+
+  /* Compatibility Aliases */
+  --color-brand-green: #FF5500;
+  --color-brand-green-dark: #1F1F1E;
+  --color-brand-black: #1F1F1E;
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+/* ==========================================================================
+   Clean Standard Base Styles (No invalid @apply or @layer conflicts)
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+body {
+  background-color: #FAF8F5;
+  color: #1F1F1E;
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+::selection {
+  background-color: rgba(255, 85, 0, 0.2);
+  color: #1F1F1E;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-manrope), sans-serif;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Global Scrollbar Styling
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F4EDE2;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1F1F1E;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF5500;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1F1F1E #F4EDE2;
+}
+
+/* ==========================================================================
+   Keyframes & Utilities
+   ========================================================================== */
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 5s linear infinite;
+  background-size: 200% 100%;
+}

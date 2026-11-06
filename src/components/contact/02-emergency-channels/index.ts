@@ -1,0 +1,1 @@
+export { OtherWays } from "./OtherWays";
