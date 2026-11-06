@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { Header, Footer } from "@/components/shared";
-import { Chatbot, FooterClient, GlobalLoader, CustomCursor, AgentationToolbar } from "@/components/shared/client";
+import { Chatbot, FooterClient, GlobalLoader, AgentationToolbar } from "@/components/shared/client";
 import { FullscreenProvider } from "@/lib/FullscreenContext";
 import { AuthProvider } from "@/lib/AuthContext";
+import { LanguageProvider } from "@/lib/LanguageContext";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -38,17 +39,18 @@ export default function RootLayout({
         className={`${manrope.className} antialiased bg-[#FAF8F5] text-[#1F1F1E] overflow-x-hidden selection:bg-[#FF5500]/20 selection:text-[#1F1F1E]`}
       >
         <AuthProvider>
-          <GlobalLoader />
-          <CustomCursor />
-          <FullscreenProvider>
-            <Header />
-            <main className="overflow-x-hidden min-h-screen">{children}</main>
-            <Chatbot />
-            <FooterClient>
-              <Footer />
-            </FooterClient>
-            <AgentationToolbar />
-          </FullscreenProvider>
+          <LanguageProvider>
+            <GlobalLoader />
+            <FullscreenProvider>
+              <Header />
+              <main className="overflow-x-hidden min-h-screen">{children}</main>
+              <Chatbot />
+              <FooterClient>
+                <Footer />
+              </FooterClient>
+              <AgentationToolbar />
+            </FullscreenProvider>
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

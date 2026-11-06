@@ -1,9 +1,12 @@
+"use client";
+
 import React from "react";
 import { SectionHeading } from "@/components/common";
+import { useLanguage } from "@/lib/LanguageContext";
 import { TechnologyClient } from "./TechnologyClient";
 
 /**
- * Technology Component (Server Component)
+ * Technology Component (Client Component with Multi-Language Support)
  * 
  * Re-architected to "Service Area & Geographic Coverage" as defined in:
  * - docs/content.md Section 7.8
@@ -11,6 +14,8 @@ import { TechnologyClient } from "./TechnologyClient";
  * - docs/ui-rules.md Section 12
  */
 export function Technology() {
+  const { t } = useLanguage();
+
   const serviceZones = [
     {
       region: "Nashik Urban & Banquet Hub",
@@ -36,8 +41,8 @@ export function Technology() {
     <section className="relative w-full py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[#FAF8F5] overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         <SectionHeading
-          title="Generator Rental in Nashik & Across Maharashtra"
-          description="Prompt fleet mobilization, on-site cable rigging, and qualified operator attendance from our central Nashik depot."
+          title={t("tech.title")}
+          description={t("tech.desc")}
           align="center"
           className="mb-12 lg:mb-16"
         />

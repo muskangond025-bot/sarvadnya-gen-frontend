@@ -22,9 +22,7 @@ export function Community() {
       <div className="relative w-[800px] h-[400px] flex items-center justify-center">
         {/* Center Logo */}
         <div className="relative z-10 w-[100px] h-[100px] flex items-center justify-center bg-[#0d2b1d] rounded-[24px] border border-[#00ff8f]/20 shadow-[0_0_50px_-10px_rgba(0,255,143,0.3)]">
-          <div className="w-[50px]">
-            <Logo />
-          </div>
+          <Logo iconOnly variant="on-dark" />
         </div>
 
         {/* Orbit lines */}

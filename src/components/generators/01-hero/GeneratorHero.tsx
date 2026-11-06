@@ -7,7 +7,7 @@ import { Search, Zap, Calculator, MessageSquare, ChevronRight } from "lucide-rea
 
 export function GeneratorHero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-20 pb-12 overflow-hidden bg-black">
+    <section className="relative min-h-[90vh] flex items-center pt-28 lg:pt-32 pb-12 overflow-hidden bg-black">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-green/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />

@@ -8,3 +8,4 @@ export { CustomCursor } from "@/components/shared/client/CustomCursor";
 export { SuccessStoriesClient } from "@/components/shared/client/SuccessStoriesClient";
 export { FloatingGlow } from "@/components/shared/client/FloatingGlow";
 export { AgentationToolbar } from "@/components/shared/client/AgentationClient";
+export { GeneratorTruckTrack } from "@/components/shared/client/GeneratorTruckTrack";

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export interface FAQItem {
   question: string;
@@ -19,6 +20,7 @@ interface TestimonialsClientProps {
 
 export function TestimonialsClient({ faqs }: TestimonialsClientProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { t } = useLanguage();
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -30,10 +32,10 @@ export function TestimonialsClient({ faqs }: TestimonialsClientProps) {
         {/* Simple & Quick to Understand Heading */}
         <div className="text-left max-w-2xl">
           <h2 className="font-sans font-extrabold text-2xl sm:text-3xl md:text-4xl text-[#1F1F1E] tracking-tight leading-[1.18]">
-            Frequently Asked Questions
+            {t("faq.title")}
           </h2>
           <p className="text-sm sm:text-base text-[#625D55] mt-2 leading-relaxed">
-            Essential guidance regarding generator capacity, soundproofing compliance, and on-site support.
+            {t("faq.desc")}
           </p>
         </div>
 

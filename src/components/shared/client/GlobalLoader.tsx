@@ -47,15 +47,21 @@ export function GlobalLoader() {
             transition={{ duration: 0.5 }}
             className="relative mb-8"
           >
-            <div className="w-48 h-32 flex items-center justify-center">
-              <img 
-                src="/images/sarvadnya_logo.png" 
-                alt="Sarvadnya Generators" 
-                className="w-full h-full object-contain animate-pulse"
-              />
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="size-14 rounded-full bg-[#1F1F1E] border border-[#FF5500]/50 flex items-center justify-center shadow-lg">
+                <svg className="size-7 text-[#FF5500] fill-[#FF5500] animate-pulse" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <span className="font-sans font-extrabold text-xl tracking-tight text-white">
+                SARVADNYA
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.25em] text-[#FF5500] uppercase font-bold">
+                GENERATORS
+              </span>
             </div>
             {/* Pulsing Aura */}
-            <div className="absolute inset-0 bg-[#00ff8f]/20 blur-3xl rounded-full animate-pulse scale-110" />
+            <div className="absolute inset-0 bg-[#FF5500]/15 blur-3xl rounded-full animate-pulse scale-110" />
           </motion.div>
 
           {/* Progress Info */}

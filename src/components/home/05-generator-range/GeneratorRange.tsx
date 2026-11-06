@@ -3,165 +3,166 @@ import {
   GeneratorItem,
 } from "./GeneratorRangeClient";
 import { GENERATOR_IMAGES } from "@/constants";
-// Icon imports removed - using string identifiers now
 
 /**
- * Static generators data
+ * Static generators data enriched with clear real-world application matching
  */
 const GENERATORS_DATA: GeneratorItem[] = [
   {
     id: "gen-5",
     badge: "5 kVA",
     series: "Entry Series",
-    title: "5 kVA Generator",
+    title: "5 kVA Silent Generator",
     description:
-      "Suitable for homes, small shops, and basic power backup needs.",
+      "Compact soundproof power unit designed for residential backup, small retail shops, and private functions requiring clean single-phase power with minimal space footprint.",
+    application: "Homes, Boutiques & Private Functions",
+    recommendedLoads: "Lighting rigs, sound gear, refrigeration & essential circuits",
     icon: "Zap",
     image: GENERATOR_IMAGES.entry_5kva,
     specs: [
-      { label: "Power", value: "5 kVA", icon: "Zap" },
-      { label: "Phase", value: "Single", icon: "CircleDot" },
-      { label: "Fuel", value: "Petrol/Diesel", icon: "Fuel" },
-      { label: "Noise", value: "Low", icon: "Volume2" },
+      { label: "Rated Capacity", value: "5 kVA / 4 kW", icon: "Zap" },
+      { label: "Output Voltage", value: "230V Single Phase / 50 Hz", icon: "CircleDot" },
+      { label: "Fuel System", value: "Diesel / High Efficiency", icon: "Fuel" },
+      { label: "Acoustic Standard", value: "CPCB-II Silent (< 75 dBA)", icon: "Volume2" },
     ],
     features: [
-      {
-        title: "Compact & Portable",
-        description: "Easy to transport and install",
-      },
-      {
-        title: "Low Noise Operation",
-        description: "Quiet for residential areas",
-      },
-      { title: "Fuel Efficient", description: "Optimized consumption" },
-      { title: "Easy Maintenance", description: "Simple servicing" },
+      { title: "Compact & Portable", description: "Easy to transport and position in tight spaces" },
+      { title: "Low Noise Operation", description: "Acoustic canopy suitable for residential neighborhoods" },
+      { title: "Fuel Efficient", description: "Optimized hourly fuel consumption under partial load" },
+      { title: "Turnkey Setup", description: "Supplied with safe distribution board and earthing" },
     ],
   },
   {
     id: "gen-30",
     badge: "30 kVA",
     series: "Mid-Range Series",
-    title: "30 kVA Generator",
+    title: "30 kVA Silent Generator",
     description:
-      "Reliable solution for clinics, retail stores, and small industries.",
+      "Workhorse unit for healthcare clinics, retail restaurants, and medium outdoor celebrations. Provides stable 3-phase voltage with integrated automatic safety cutoffs.",
+    application: "Clinics, Restaurants & Medium Gatherings",
+    recommendedLoads: "Commercial AC units, kitchen appliances & stage lighting",
     icon: "Settings",
     image: GENERATOR_IMAGES.midRange_30kva,
     specs: [
-      { label: "Power", value: "30 kVA", icon: "Zap" },
-      { label: "Phase", value: "Three", icon: "CircleDot" },
-      { label: "Fuel", value: "Diesel", icon: "Fuel" },
-      { label: "Noise", value: "Medium", icon: "Volume2" },
+      { label: "Rated Capacity", value: "30 kVA / 24 kW", icon: "Zap" },
+      { label: "Output Voltage", value: "415V 3-Phase / 230V Single", icon: "CircleDot" },
+      { label: "Fuel System", value: "Heavy-Duty Diesel Engine", icon: "Fuel" },
+      { label: "Acoustic Standard", value: "CPCB-II Silent Enclosure", icon: "Volume2" },
     ],
     features: [
-      { title: "Auto Start", description: "Automatic power transfer" },
-      { title: "Digital Control", description: "Easy monitoring" },
-      { title: "Overload Protection", description: "Built-in safety" },
-      { title: "Extended Runtime", description: "Large fuel tank" },
+      { title: "Auto Mains Failure", description: "Automatic changeover switchgear support" },
+      { title: "Digital Controller", description: "Real-time voltage, frequency, and load telemetry" },
+      { title: "Inrush Handling", description: "Copes with inductive motor starting surges" },
+      { title: "Continuous Tank", description: "Extended runtime fuel reservoir for uninterrupted shifts" },
     ],
   },
   {
     id: "gen-65",
     badge: "65 kVA",
     series: "Commercial Series",
-    title: "65 kVA Generator",
-    description: "Ideal for offices, restaurants, and medium commercial usage.",
+    title: "65 kVA Commercial Generator",
+    description:
+      "Purpose-built for banquet halls, multi-cuisine catering facilities, and commercial commercial complexes requiring dependable continuous power during wedding season or grid shutdowns.",
+    application: "Banquet Halls, Lawns & Commercial Offices",
+    recommendedLoads: "Multiple 2-ton tower ACs, large audio walls & cold storage",
     icon: "Building2",
     image: GENERATOR_IMAGES.commercial_65kva,
     specs: [
-      { label: "Power", value: "65 kVA", icon: "Zap" },
-      { label: "Phase", value: "Three", icon: "CircleDot" },
-      { label: "Fuel", value: "Diesel", icon: "Fuel" },
-      { label: "Noise", value: "Medium", icon: "Volume2" },
+      { label: "Rated Capacity", value: "65 kVA / 52 kW", icon: "Zap" },
+      { label: "Output Voltage", value: "415V 3-Phase True Sine Wave", icon: "CircleDot" },
+      { label: "Fuel System", value: "Turbocharged Diesel Engine", icon: "Fuel" },
+      { label: "Acoustic Standard", value: "CPCB-II Acoustic Weatherproof Canopy", icon: "Volume2" },
     ],
     features: [
-      { title: "Heavy Duty Engine", description: "Continuous commercial use" },
-      { title: "Remote Monitoring", description: "Track from anywhere" },
-      { title: "Load Management", description: "Intelligent distribution" },
-      { title: "Weather Resistant", description: "Outdoor design" },
+      { title: "Heavy Commercial Duty", description: "Engineered for 12+ hour continuous high-load runs" },
+      { title: "Clean Sine Wave", description: "Zero harmonic distortion for delicate LED video walls" },
+      { title: "Load Balancing", description: "Even distribution across all three operational phases" },
+      { title: "Weatherproof Steel", description: "All-weather outdoor canopy with locked access panels" },
     ],
   },
   {
     id: "gen-125",
     badge: "125 kVA",
     series: "Industrial Series",
-    title: "125 kVA Generator",
-    description: "Designed for factories and continuous power applications.",
+    title: "125 kVA Industrial Generator",
+    description:
+      "The premier choice for grand wedding lawns, industrial process plants, and high-wattage concerts. Features high motor starting capability and rigorous voltage regulation.",
+    application: "Grand Weddings, Lawns & Industrial Plants",
+    recommendedLoads: "Heavy chillers, extensive stage lighting, cranes & production lines",
     icon: "Factory",
     image: GENERATOR_IMAGES.industrial_125kva,
     specs: [
-      { label: "Power", value: "125 kVA", icon: "Zap" },
-      { label: "Phase", value: "Three", icon: "CircleDot" },
-      { label: "Fuel", value: "Diesel", icon: "Fuel" },
-      { label: "Noise", value: "Standard", icon: "Volume2" },
+      { label: "Rated Capacity", value: "125 kVA / 100 kW", icon: "Zap" },
+      { label: "Output Voltage", value: "415V 3-Phase / 50 Hz ±0.5%", icon: "CircleDot" },
+      { label: "Fuel System", value: "Multi-Cylinder Industrial Diesel", icon: "Fuel" },
+      { label: "Acoustic Standard", value: "CPCB-II Heavy Acoustic Soundproofing", icon: "Volume2" },
     ],
     features: [
-      { title: "Industrial Grade", description: "24/7 operations" },
-      { title: "Peak Load Handling", description: "Manages power surges" },
-      { title: "Redundant Systems", description: "Backup mechanisms" },
-      { title: "On-site Support", description: "Technical assistance" },
+      { title: "100% Prime Continuous", description: "Meets ISO 8528 industrial prime power standards" },
+      { title: "Heavy Surge Capacity", description: "Handles high starting currents of industrial motors" },
+      { title: "Dual AMF Integration", description: "Seamless automatic grid-to-generator transfer" },
+      { title: "On-Site Operator", description: "Supplied with dedicated technician for live supervision" },
     ],
   },
   {
     id: "gen-250",
     badge: "250 kVA",
     series: "Heavy Industrial Series",
-    title: "250 kVA Generator",
-    description: "High-capacity generator for hospitals and large facilities.",
+    title: "250 kVA Prime Power Station",
+    description:
+      "High-output power station engineered for healthcare hospitals, major industrial shutdowns, and multi-acre outdoor festivals where power interruption is not an option.",
+    application: "Hospitals, Mega Expos & Infrastructure Projects",
+    recommendedLoads: "Central HVAC chillers, medical facilities, cranes & plant substations",
     icon: "Power",
     image: GENERATOR_IMAGES.heavyIndustrial_250kva,
     specs: [
-      { label: "Power", value: "250 kVA", icon: "Zap" },
-      { label: "Phase", value: "Three", icon: "CircleDot" },
-      { label: "Fuel", value: "Diesel", icon: "Fuel" },
-      { label: "Noise", value: "Standard", icon: "Volume2" },
+      { label: "Rated Capacity", value: "250 kVA / 200 kW", icon: "Zap" },
+      { label: "Output Voltage", value: "415V 3-Phase / 50 Hz", icon: "CircleDot" },
+      { label: "Fuel System", value: "Heavy Industrial Turbo Diesel", icon: "Fuel" },
+      { label: "Acoustic Standard", value: "Heavy-Gauge Sound-Attenuated Enclosure", icon: "Volume2" },
     ],
     features: [
-      { title: "Medical Grade", description: "Hospital critical systems" },
-      { title: "Instant Switchover", description: "Zero interruption" },
-      { title: "Parallel Operation", description: "Combine with other units" },
-      { title: "Priority Support", description: "24/7 emergency team" },
+      { title: "Critical Standby", description: "Meets strict reliability thresholds for medical and data facilities" },
+      { title: "Synchronization Ready", description: "Can parallel with second DG set for N+1 redundancy" },
+      { title: "Large Capacity Tank", description: "24-hour continuous run without requiring mid-shift refueling" },
+      { title: "Turnkey Cabling", description: "Includes heavy aluminum/copper cables and distribution boxes" },
     ],
   },
   {
     id: "gen-300",
     badge: "300 kVA",
     series: "Enterprise Series",
-    title: "300 kVA Generator",
+    title: "300 kVA Enterprise Power Station",
     description:
-      "Maximum power output for critical and large-scale operations.",
+      "Maximum continuous fleet output for large-scale manufacturing campuses, multi-day music festivals, and infrastructure developments across Maharashtra.",
+    application: "Heavy Manufacturing, Expos & Multi-Megawatt Grids",
+    recommendedLoads: "Continuous plant-wide operations, high-voltage transformers & multi-stage festivals",
     icon: "Cpu",
     image: GENERATOR_IMAGES.enterprise_300kva,
     specs: [
-      { label: "Power", value: "300 kVA", icon: "Zap" },
-      { label: "Phase", value: "Three", icon: "CircleDot" },
-      { label: "Fuel", value: "Diesel", icon: "Fuel" },
-      { label: "Noise", value: "Low (Enclosed)", icon: "Volume2" },
+      { label: "Rated Capacity", value: "300 kVA / 240 kW", icon: "Zap" },
+      { label: "Output Voltage", value: "415V 3-Phase / 50 Hz", icon: "CircleDot" },
+      { label: "Fuel System", value: "Electronic Governor Turbo Diesel", icon: "Fuel" },
+      { label: "Acoustic Standard", value: "CPCB-II Master Acoustic Canopy", icon: "Volume2" },
     ],
     features: [
-      { title: "Enterprise Ready", description: "Data centers & campuses" },
-      { title: "Smart Grid", description: "Syncs with power systems" },
-      { title: "Extended Warranty", description: "Comprehensive coverage" },
-      { title: "Account Manager", description: "Personalized service" },
+      { title: "Plant-Wide Prime", description: "Sufficient capacity to sustain complete industrial production lines" },
+      { title: "Digital Sync Bus", description: "Direct synchronization with on-site transformers or secondary DG sets" },
+      { title: "24/7 Breakdown Crew", description: "Priority emergency backup unit and dedicated field engineers" },
+      { title: "Custom Busbar Rigging", description: "Engineered cabling tailored to your main switchgear panel" },
     ],
   },
 ];
 
 /**
- * GeneratorRange Component (Server)
+ * GeneratorRange Component (Server Component)
  *
- * Generator carousel section - passes static data to client for interactions.
+ * Renders the fleet spectrum section on the warm light architectural background.
  */
 export function GeneratorRange() {
   return (
-    <section className="w-full min-h-[100dvh] flex flex-col justify-center bg-black relative overflow-hidden">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-0 w-full h-px bg-white/[0.02]" />
-        <div className="absolute top-0 left-1/4 w-px h-full bg-white/[0.02]" />
-        <div className="absolute top-0 right-1/4 w-px h-full bg-white/[0.02]" />
-      </div>
-
-      <div className="relative z-10 w-full flex flex-col justify-center">
+    <section className="w-full bg-[#FAF8F5] border-b border-[#E8E2D9] relative overflow-hidden">
+      <div className="relative z-10 w-full">
         <GeneratorRangeClient generators={GENERATORS_DATA} />
       </div>
     </section>

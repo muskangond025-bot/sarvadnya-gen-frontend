@@ -12,4 +12,5 @@ export * from "@/components/common/GeneratorCompare";
 export * from "@/components/common/Button";
 export * from "@/components/common/RentalCalendar";
 export * from "@/components/common/DateTimePicker";
+export * from "@/components/common/LanguageSwitcher";
 export { default as Logo } from "@/components/common/Logo";

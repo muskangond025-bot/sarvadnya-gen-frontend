@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Navigation, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/common";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export interface ServiceZone {
   region: string;
@@ -20,6 +21,7 @@ interface TechnologyClientProps {
 }
 
 export function TechnologyClient({ zones }: TechnologyClientProps) {
+  const { t } = useLanguage();
   return (
     <div className="w-full flex flex-col gap-8 max-w-6xl">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -65,7 +67,7 @@ export function TechnologyClient({ zones }: TechnologyClientProps) {
           </span>
         </div>
         <Button href="/contact" variant="outline" size="sm" className="shrink-0 w-full sm:w-auto">
-          Check Service Availability
+          {t("tech.availability")}
         </Button>
       </div>
     </div>

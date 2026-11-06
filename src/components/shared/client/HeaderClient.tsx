@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,52 +13,51 @@ import {
   LogOut,
   Phone,
   ArrowRight,
-  MapPin,
-  Clock,
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import { Button } from "@/components/common";
+import { Button, LanguageSwitcher } from "@/components/common";
+import { useLanguage } from "@/lib/LanguageContext";
 import Image from "next/image";
 
 /**
- * Navigation links preserving all existing routes and data.
+ * Navigation links for the full architectural curtain drawer
  */
-const NAV_ITEMS = [
+const FULL_NAV_ITEMS = [
   {
-    label: "Home",
+    key: "nav.home",
+    fallback: "Home",
     href: "/",
-    caption: "Silent Fleet & Power Solutions",
     image: "/images/generators/generator_38.png",
   },
   {
-    label: "Generator Fleet",
+    key: "nav.fleet",
+    fallback: "Generator Fleet",
     href: "/generators",
-    caption: "5 kVA to 250 kVA Acoustic Units",
     image: "/images/generators/generator_10.png",
   },
   {
-    label: "Rental Services",
+    key: "nav.services",
+    fallback: "Rental Services",
     href: "/services",
-    caption: "Weddings, Events & Industrial Plants",
     image: "/images/generators/generator_14.png",
   },
   {
-    label: "Rental Insights",
+    key: "nav.insights",
+    fallback: "Rental Insights",
     href: "/blog",
-    caption: "Technical Load Sizing & Operational Advice",
     image: "/images/generators/generator_36.png",
   },
   {
-    label: "About Sarvadnya",
+    key: "nav.about",
+    fallback: "About Sarvadnya",
     href: "/about",
-    caption: "Decades of Precision Power Engineering",
     image: "/images/generators/generator_38.png",
   },
   {
-    label: "Contact & Logistics",
+    key: "nav.contact",
+    fallback: "Contact & Logistics",
     href: "/contact",
-    caption: "Nashik Depots & Statewide Maharashtra",
     image: "/images/generators/generator_10.png",
   },
 ];
@@ -107,32 +106,37 @@ const SOCIAL_LINKS = [
 /**
  * Header Component (Client Component)
  *
- * Implements the exact architecture, 3-column layout, and animation language
- * of spykercars.com (Awwwards SOTD by The Brink Agency):
- * - Fixed Top Chrome Bar with 3-column grid (Left: Menu Switch, Center: Logo, Right: Actions)
- * - Full-screen / Curtain Drawer with staggered large-format editorial navigation
- * - Photorealistic equipment stage preview on hover
- * - Bottom industrial telemetry & direct logistics contacts
- * - Preserves all user authentication, wishlist, booking, and route data
+ * Implements the floating capsule navbar design:
+ * - Floating capsule pill shape (`rounded-full`)
+ * - Transparent/translucent glass when at top (`!isScrolled`)
+ * - Smooth transition to solid/frosted dark capsule on scroll (`isScrolled`)
+ * - Left: Circular white emblem badge (`size-9 sm:size-10 rounded-full bg-white text-[#18181B]`)
+ * - Center: Clean editorial text navigation links (Fleet, Services, About, Contact)
+ * - Right: Action cluster: Language Switcher, Phone dispatch, Cart, Profile, Drawer switch, and White Pill CTA button
+ * - Preserves all user authentication, wishlist, booking, and route data without overlap
  */
-export default function Header({ children }: { children: React.ReactNode }) {
+export default function Header({ children }: { children?: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(0);
   const { isFullscreen } = useFullscreen();
   const pathname = usePathname();
+  const { t } = useLanguage();
 
-  // Scroll detection for frosted glass backdrop transition
+  // Scroll detection for transparent-to-solid transition
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
+    // Initialize check
+    handleScroll();
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when the Spyker-style curtain drawer is open
+  // Lock body scroll when the curtain drawer is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -158,136 +162,129 @@ export default function Header({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* 
-        SPYKER TOP BAR: Fixed Chrome Header
-        Matches spykercars.com: `fixed inset-x-0 top-0 z-50` with grid-cols-[1fr_auto_1fr]
+        FLOATING CAPSULE NAVBAR
+        Floating island pill: fixed top-3.5 sm:top-5 inset-x-0
+        Transparent glass at top -> Solid dark capsule on scroll
       */}
       <header
         data-testid="site-header"
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-300 pointer-events-auto",
-          isScrolled || isMenuOpen
-            ? "bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E8E2D9] shadow-[0_4px_20px_rgba(31,31,30,0.04)]"
-            : "bg-transparent border-b border-transparent"
-        )}
+        className="fixed top-3 sm:top-4 inset-x-0 z-50 flex justify-center px-3 sm:px-6 pointer-events-none transition-all duration-300"
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-          <nav className="grid w-full grid-cols-[1fr_auto_1fr] items-center py-3.5 sm:py-4">
-            
-            {/* 
-              LEFT COLUMN: SPYKER BESPOKE MENU SWITCH BUTTON
-              Exact analog trigger button with animated lines and text label
-            */}
-            <div className="flex items-center justify-self-start gap-3">
-              <button
-                type="button"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="heritage-interactive-trigger group relative z-50 flex items-center gap-2.5 py-1.5 px-2.5 sm:px-3 rounded-full border border-[#E8E2D9] bg-white/90 hover:bg-white hover:border-[#1F1F1E] transition-all shadow-xs cursor-pointer select-none"
-                aria-expanded={isMenuOpen}
-                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-              >
-                {/* Precision Mechanical Switch Toggle Icon */}
-                <div className="relative size-4 sm:size-4.5 flex flex-col items-center justify-center gap-1">
-                  <motion.span
-                    animate={
-                      isMenuOpen
-                        ? { rotate: 45, y: 5, backgroundColor: "#FF5500" }
-                        : { rotate: 0, y: 0, backgroundColor: "#1F1F1E" }
-                    }
-                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-3.5 sm:w-4 h-[1.75px] rounded-full block transition-colors"
-                  />
-                  <motion.span
-                    animate={
-                      isMenuOpen
-                        ? { opacity: 0, scaleX: 0 }
-                        : { opacity: 1, scaleX: 1, backgroundColor: "#1F1F1E" }
-                    }
-                    transition={{ duration: 0.2 }}
-                    className="w-3.5 sm:w-4 h-[1.75px] rounded-full block transition-colors"
-                  />
-                  <motion.span
-                    animate={
-                      isMenuOpen
-                        ? { rotate: -45, y: -5, backgroundColor: "#FF5500" }
-                        : { rotate: 0, y: 0, backgroundColor: "#1F1F1E" }
-                    }
-                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-3.5 sm:w-4 h-[1.75px] rounded-full block transition-colors"
-                  />
-                </div>
+        <nav
+          aria-label="Main Navigation"
+          className={cn(
+            "pointer-events-auto w-full max-w-5xl rounded-full px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-2 sm:gap-3 transition-all duration-300 select-none",
+            isScrolled || isMenuOpen
+              ? "bg-[#18181B]/95 backdrop-blur-xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-white"
+              : "bg-[#18181B] border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.35)] text-white"
+          )}
+        >
+          {/* 
+            LEFT COLUMN: CIRCULAR WHITE LOGO BADGE
+            Matches reference image: pure white circle with high-contrast icon
+          */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Link
+              href="/"
+              className="size-9 sm:size-10 rounded-full bg-white text-[#18181B] hover:scale-105 active:scale-95 flex items-center justify-center shrink-0 shadow-md transition-all duration-200"
+              aria-label="Sarvadnya Generators Home"
+            >
+              <Zap className="w-4.5 h-4.5 text-[#FF5500] fill-[#FF5500]" />
+            </Link>
+            <Link
+              href="/"
+              className="hidden xl:flex flex-col text-left leading-none hover:opacity-90 transition-opacity"
+            >
+              <span className="font-sans font-black text-xs sm:text-sm tracking-tight text-white uppercase">
+                Sarvadnya
+              </span>
+              <span className="font-mono text-[9px] uppercase tracking-widest text-[#FF5500] font-bold">
+                Power Nashik
+              </span>
+            </Link>
+          </div>
 
-                {/* Spyker-style Uppercase Monospace Menu Text Label */}
-                <span className="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1F1F1E] group-hover:text-[#FF5500] transition-colors">
-                  {isMenuOpen ? "CLOSE" : "MENU"}
-                </span>
-              </button>
+          {/* 
+            RIGHT COLUMN: ACTION CLUSTER
+            Language switcher + Phone + Cart + Profile + Menu toggle + White Capsule CTA
+          */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Language Dropdown matching user screenshot */}
+            <LanguageSwitcher theme="dark" />
 
-              {/* Desktop Subtle Direct Link Shortcuts */}
-              <div className="hidden xl:flex items-center gap-5 ml-2 text-xs font-medium text-[#625D55]">
-                <Link
-                  href="/generators"
-                  className="hover:text-[#1F1F1E] transition-colors"
-                >
-                  Fleet (5–250 kVA)
-                </Link>
-                <Link
-                  href="/services"
-                  className="hover:text-[#1F1F1E] transition-colors"
-                >
-                  Services
-                </Link>
+            {/* Quick Telephone Dispatch Icon */}
+            <a
+              href="tel:+916262629944"
+              className="size-8 sm:size-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white hover:text-[#FF5500] flex items-center justify-center transition-all shadow-xs shrink-0"
+              title="Direct Fleet Dispatch: +91 62626 29944"
+              aria-label="Call Direct Fleet Dispatch"
+            >
+              <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
+            </a>
+
+            {/* Cart / Saved Fleet Button */}
+            <CartButton />
+
+            {/* User Authentication Profile Dropdown */}
+            <ProfileDropdown />
+
+            {/* Architectural Full-Screen Menu Drawer Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="group flex items-center gap-2 py-1.5 px-3 sm:px-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white transition-all shadow-xs shrink-0 cursor-pointer"
+              aria-expanded={isMenuOpen}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              title={isMenuOpen ? "Close Menu" : "Explore All Fleet & Insights"}
+            >
+              <div className="relative size-3.5 flex flex-col items-center justify-center gap-1">
+                <motion.span
+                  animate={
+                    isMenuOpen
+                      ? { rotate: 45, y: 4.5, backgroundColor: "#FF5500" }
+                      : { rotate: 0, y: 0, backgroundColor: "#FFFFFF" }
+                  }
+                  transition={{ duration: 0.2 }}
+                  className="w-3.5 h-[1.5px] rounded-full block"
+                />
+                <motion.span
+                  animate={
+                    isMenuOpen
+                      ? { opacity: 0, scaleX: 0 }
+                      : { opacity: 1, scaleX: 1, backgroundColor: "#FFFFFF" }
+                  }
+                  transition={{ duration: 0.15 }}
+                  className="w-3.5 h-[1.5px] rounded-full block"
+                />
+                <motion.span
+                  animate={
+                    isMenuOpen
+                      ? { rotate: -45, y: -4.5, backgroundColor: "#FF5500" }
+                      : { rotate: 0, y: 0, backgroundColor: "#FFFFFF" }
+                  }
+                  transition={{ duration: 0.2 }}
+                  className="w-3.5 h-[1.5px] rounded-full block"
+                />
               </div>
-            </div>
+              <span className="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-white group-hover:text-[#FF5500] transition-colors">
+                {isMenuOpen ? t("nav.close", "CLOSE") : t("nav.menu", "MENU")}
+              </span>
+            </button>
 
-            {/* 
-              CENTER COLUMN: EXACT SPYKER CENTERED EMBLEM / BRAND LOGO
-              Matches spykercars.com: `id="header-logo-placeholder" class="justify-self-center"`
-            */}
-            <div className="justify-self-center flex items-center justify-center relative z-50">
-              {children}
-            </div>
-
-            {/* 
-              RIGHT COLUMN: QUICK ACTION TELEMETRY & AUTH CLUSTER
-              Cart / Saved Fleet, User Profile, Direct Dispatch Contact & Quote
-            */}
-            <div className="relative z-50 flex items-center justify-self-end gap-2 sm:gap-3">
-              {/* Telephone Fast Dispatch Trigger (Hidden on tiny screens) */}
-              <a
-                href="tel:+916262629944"
-                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] hover:bg-[#FAF8F5] transition-all text-xs font-semibold text-[#1F1F1E] shadow-xs"
-                title="Direct Fleet Dispatch"
-              >
-                <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
-                <span className="font-mono tracking-tight">+91 62626 29944</span>
-              </a>
-
-              {/* Cart / Saved Fleet Inquiries Button with Monospace Counter */}
-              <CartButton />
-
-              {/* User Authentication Profile Dropdown */}
-              <ProfileDropdown />
-
-              {/* Primary Quote CTA Button */}
-              <div className="hidden sm:block">
-                <Button href="/book" variant="primary" size="sm">
-                  Request Quote
-                </Button>
-              </div>
-            </div>
-
-          </nav>
-        </div>
+            {/* Primary White Capsule CTA Button matching user reference image */}
+            <Link
+              href="/book"
+              className="hidden sm:inline-flex items-center justify-center rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95"
+            >
+              {t("nav.requestQuote", "Request Quote")}
+            </Link>
+          </div>
+        </nav>
       </header>
 
       {/* 
         SPYKER FULL-SCREEN ARCHITECTURAL CURTAIN DRAWER
-        Matches spykercars.com:
-        - `role="dialog" aria-label="Navigation menu"`
-        - Sliding curtain transition from top
-        - Left 50%: Staggered large-format editorial navigation links + social icons
-        - Right 50%: Photorealistic equipment stage with telemetry
-        - Bottom strip: Direct email, dispatch desk, and verified assurances
+        Ultra-premium dark luxury stage with zero unnecessary text bloat
       */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -297,9 +294,9 @@ export default function Header({ children }: { children: React.ReactNode }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.35, ease: "linear" }}
+              transition={{ duration: 0.3, ease: "linear" }}
               onClick={() => setIsMenuOpen(false)}
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs"
+              className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm"
               aria-hidden="true"
             />
 
@@ -312,19 +309,19 @@ export default function Header({ children }: { children: React.ReactNode }) {
               role="dialog"
               aria-modal="true"
               aria-label="Navigation menu"
-              className="fixed inset-x-0 top-0 z-40 w-screen max-h-screen md:max-h-[94vh] flex flex-col bg-white border-b border-[#B2B2B2] shadow-2xl overflow-y-auto overscroll-contain"
+              className="fixed inset-x-0 top-0 z-40 w-screen max-h-screen md:max-h-[92vh] flex flex-col bg-[#121212]/98 text-white backdrop-blur-2xl border-b border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.85)] overflow-y-auto overscroll-contain"
             >
-              {/* Drawer Content Container with Top Offset for Header */}
-              <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-24 sm:pt-28 pb-8 flex flex-col justify-between flex-1">
+              {/* Drawer Content Container with Top Offset for Floating Header */}
+              <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-24 sm:pt-28 pb-8 flex flex-col justify-between flex-1 gap-8">
                 
                 {/* Main 2-Column Split Stage */}
-                <div className="flex flex-col md:flex-row items-stretch gap-8 lg:gap-14 pb-8">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-16">
                   
-                  {/* LEFT HALF: Large-Format Editorial Navigation Links */}
+                  {/* LEFT HALF: Large-Format Editorial Navigation Links (Zero Unnecessary Text) */}
                   <div className="flex w-full md:w-1/2 flex-col justify-between">
-                    <nav>
-                      <ul className="flex flex-col gap-2.5 sm:gap-3.5">
-                        {NAV_ITEMS.map((item, index) => {
+                    <nav aria-label="Mega menu navigation">
+                      <ul className="flex flex-col gap-1 sm:gap-2">
+                        {FULL_NAV_ITEMS.map((item, index) => {
                           const isActive =
                             item.href === "/"
                               ? pathname === "/"
@@ -333,11 +330,11 @@ export default function Header({ children }: { children: React.ReactNode }) {
                           return (
                             <motion.li
                               key={item.href}
-                              initial={{ opacity: 0, x: -18 }}
+                              initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{
-                                delay: 0.12 + index * 0.045,
-                                duration: 0.4,
+                                delay: 0.08 + index * 0.04,
+                                duration: 0.35,
                                 ease: [0.16, 1, 0.3, 1],
                               }}
                               onMouseEnter={() => setHoveredIndex(index)}
@@ -345,24 +342,24 @@ export default function Header({ children }: { children: React.ReactNode }) {
                               <Link
                                 href={item.href}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="group/navlink relative flex items-baseline justify-between w-full py-1 text-left"
+                                className="group relative flex items-center justify-between w-full py-1.5 sm:py-2 text-left"
                               >
-                                <div className="flex items-baseline gap-3 sm:gap-4">
+                                <div className="flex items-baseline gap-3 sm:gap-5">
                                   {/* Monospace Index Numeral */}
-                                  <span className="font-mono text-xs sm:text-sm text-[#FF5500] font-bold">
+                                  <span className="font-mono text-xs sm:text-sm text-[#FF5500]/70 group-hover:text-[#FF5500] font-bold transition-colors">
                                     0{index + 1}
                                   </span>
 
-                                  {/* Huge Editorial Headline Typography */}
+                                  {/* Clean Editorial Title */}
                                   <span
                                     className={cn(
-                                      "font-sans font-extrabold text-2xl sm:text-3xl lg:text-[38px] leading-tight tracking-tight transition-all duration-300",
+                                      "font-sans font-extrabold text-2xl sm:text-3xl lg:text-[40px] leading-tight tracking-tight transition-all duration-300",
                                       isActive
                                         ? "text-[#FF5500] translate-x-1"
-                                        : "text-[#1F1F1E] group-hover/navlink:text-[#FF5500] group-hover/navlink:translate-x-1.5"
+                                        : "text-white/90 group-hover:text-[#FF5500] group-hover:translate-x-2"
                                     )}
                                   >
-                                    {item.label}
+                                    {t(item.key, item.fallback)}
                                   </span>
                                 </div>
 
@@ -372,7 +369,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
                                     "w-5 h-5 text-[#FF5500] transition-all duration-300 shrink-0",
                                     isActive
                                       ? "opacity-100 translate-x-0"
-                                      : "opacity-0 -translate-x-2 group-hover/navlink:opacity-100 group-hover/navlink:translate-x-0"
+                                      : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
                                   )}
                                 />
                               </Link>
@@ -382,53 +379,34 @@ export default function Header({ children }: { children: React.ReactNode }) {
                       </ul>
                     </nav>
 
-                    {/* Social Media & WhatsApp Links Row (data-navigation-social-item) */}
+                    {/* Mobile & Drawer Language Selector */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4, duration: 0.3 }}
-                      className="mt-8 pt-6 border-t border-[#E8E2D9] flex items-center gap-6"
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                      className="mt-6 pt-5 border-t border-white/10"
                     >
-                      <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#625D55]">
-                        Connect:
-                      </span>
-                      <div className="flex items-center gap-4">
-                        {SOCIAL_LINKS.map((social) => (
-                          <a
-                            key={social.label}
-                            href={social.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={social.label}
-                            className="size-8 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] flex items-center justify-center text-[#1F1F1E] hover:text-[#FF5500] hover:border-[#FF5500] hover:bg-white transition-all shadow-2xs"
-                          >
-                            {social.icon}
-                          </a>
-                        ))}
-                      </div>
+                      <LanguageSwitcher variant="drawer" theme="dark" />
                     </motion.div>
                   </div>
 
-                  {/* RIGHT HALF: Photorealistic Equipment Showcase Stage (Hidden on Mobile) */}
+                  {/* RIGHT HALF: Photorealistic Equipment Showcase Stage */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                    className="relative hidden md:flex flex-col justify-between w-1/2 aspect-square lg:aspect-3/2 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D9] p-7 overflow-hidden shadow-sm"
+                    transition={{ delay: 0.15, duration: 0.4 }}
+                    className="relative hidden md:flex flex-col justify-between w-full md:w-5/12 aspect-[4/3] rounded-3xl bg-white/[0.03] border border-white/10 p-7 overflow-hidden shadow-2xl"
                   >
                     {/* Ambient Glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#FF5500]/10 blur-3xl rounded-full pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#FF5500]/15 blur-3xl rounded-full pointer-events-none" />
 
                     {/* Top Stage Tag */}
                     <div className="relative z-10 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[#FF5500] animate-pulse" />
-                        <span className="font-mono uppercase font-bold text-[#1F1F1E] tracking-wider">
-                          Sarvadnya Silent DG Fleet
-                        </span>
-                      </div>
-                      <span className="font-mono text-[11px] text-[#625D55]">
-                        Nashik Depot Ready
+                      <span className="font-mono uppercase font-bold text-white tracking-wider text-[11px]">
+                        Sarvadnya Silent DG Fleet
+                      </span>
+                      <span className="font-mono text-[11px] text-[#FF5500] font-semibold">
+                        5 – 250 kVA
                       </span>
                     </div>
 
@@ -437,15 +415,15 @@ export default function Header({ children }: { children: React.ReactNode }) {
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={hoveredIndex}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.25 }}
-                          className="relative w-4/5 h-full filter drop-shadow-[0_15px_20px_rgba(31,31,30,0.18)]"
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.22 }}
+                          className="relative w-4/5 h-full filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.65)]"
                         >
                           <Image
-                            src={NAV_ITEMS[hoveredIndex]?.image || "/images/generators/generator_10.png"}
-                            alt={NAV_ITEMS[hoveredIndex]?.label || "Generator"}
+                            src={FULL_NAV_ITEMS[hoveredIndex]?.image || "/images/generators/generator_10.png"}
+                            alt={FULL_NAV_ITEMS[hoveredIndex]?.fallback || "Generator"}
                             fill
                             sizes="(max-width: 1024px) 35vw, 400px"
                             className="object-contain"
@@ -455,10 +433,10 @@ export default function Header({ children }: { children: React.ReactNode }) {
                       </AnimatePresence>
                     </div>
 
-                    {/* Caption / Specification Snippet */}
-                    <div className="relative z-10 pt-3 border-t border-[#E8E2D9] flex items-center justify-between text-xs text-[#625D55]">
-                      <span className="font-medium text-[#1F1F1E]">
-                        {NAV_ITEMS[hoveredIndex]?.caption}
+                    {/* Clean Equipment Status */}
+                    <div className="relative z-10 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/60">
+                      <span className="font-medium text-white/80">
+                        {t(FULL_NAV_ITEMS[hoveredIndex]?.key, FULL_NAV_ITEMS[hoveredIndex]?.fallback)}
                       </span>
                       <span className="font-mono text-[#FF5500] font-semibold">
                         CPCB-II Acoustic
@@ -468,52 +446,51 @@ export default function Header({ children }: { children: React.ReactNode }) {
 
                 </div>
 
-                {/* 
-                  BOTTOM INFORMATION STRIP
-                  Matches Spyker's bottom data rows: direct email, HQ, and verified assurances
-                */}
+                {/* BOTTOM MINIMAL ACTION STRIP (No Bloat Text) */}
                 <motion.div
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35, duration: 0.4 }}
-                  className="pt-6 border-t border-[#E8E2D9] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs"
+                  transition={{ delay: 0.35, duration: 0.35 }}
+                  className="pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs"
                 >
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[#625D55] font-mono uppercase text-[10px] tracking-wider">
-                      Direct Dispatch Hotline
-                    </span>
+                  {/* Direct Contact Links */}
+                  <div className="flex flex-wrap items-center gap-6">
                     <a
                       href="tel:+916262629944"
-                      className="font-bold text-[#1F1F1E] hover:text-[#FF5500] transition-colors"
+                      className="font-mono font-bold text-white hover:text-[#FF5500] transition-colors flex items-center gap-2"
                     >
+                      <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
                       +91 62626 29944
                     </a>
-                  </div>
-
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[#625D55] font-mono uppercase text-[10px] tracking-wider">
-                      Fleet Inquiry Desk
-                    </span>
                     <a
                       href="mailto:info@sarvadnyagenerators.com"
-                      className="font-bold text-[#1F1F1E] hover:text-[#FF5500] transition-colors truncate"
+                      className="text-white/70 hover:text-white transition-colors"
                     >
                       info@sarvadnyagenerators.com
                     </a>
                   </div>
 
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[#625D55] font-mono uppercase text-[10px] tracking-wider">
-                      Operating Depot
-                    </span>
-                    <span className="font-bold text-[#1F1F1E]">
-                      Nashik Urban & MIDC Industrial Zones
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-[#1F1F1E] font-semibold sm:justify-end">
-                    <ShieldCheck className="w-4 h-4 text-[#FF5500] shrink-0" />
-                    <span>24/7 On-Site Operator & Rigging</span>
+                  {/* Social Media & Quick Quote Action */}
+                  <div className="flex items-center gap-3">
+                    {SOCIAL_LINKS.map((social) => (
+                      <a
+                        key={social.label}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.label}
+                        className="size-8 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 hover:border-white/30 flex items-center justify-center text-white/80 hover:text-[#FF5500] transition-all shadow-xs"
+                      >
+                        {social.icon}
+                      </a>
+                    ))}
+                    <Link
+                      href="/book"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs"
+                    >
+                      {t("nav.requestQuote", "Request Quote")}
+                    </Link>
                   </div>
                 </motion.div>
 
@@ -527,29 +504,23 @@ export default function Header({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Saved Fleet & Wishlist Cart Button with Monospace Counter
+ * Saved Fleet & Wishlist Cart Button
  */
 function CartButton() {
   return (
     <Link
       href="/wishlist"
-      className="relative flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] hover:bg-[#FAF8F5] transition-all shadow-xs text-[#1F1F1E] hover:text-[#FF5500]"
+      className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition-all shadow-xs text-white hover:text-[#FF5500] shrink-0"
       aria-label="Wishlist & Inquiries"
       title="Saved Fleet Inquiries"
     >
-      <ShoppingCart className="w-4 h-4" />
-      <span
-        aria-hidden="true"
-        className="absolute -top-1 -right-1 size-4 rounded-full bg-[#FF5500] text-white font-mono text-[9px] font-bold flex items-center justify-center tabular-nums shadow-xs"
-      >
-        0
-      </span>
+      <ShoppingCart className="w-3.5 h-3.5" />
     </Link>
   );
 }
 
 /**
- * User Account & Profile Dropdown (Preserving all AuthContext states)
+ * User Account & Profile Dropdown
  */
 function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -573,14 +544,16 @@ function ProfileDropdown() {
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
-    <div className="relative">
+    <div className="relative shrink-0">
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] hover:bg-[#FAF8F5] transition-all shadow-xs overflow-hidden cursor-pointer"
+        className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition-all shadow-xs text-white hover:text-[#FF5500] overflow-hidden cursor-pointer"
         aria-label="User Account"
+        aria-expanded={isOpen}
       >
         {loading ? (
-          <div className="w-3.5 h-3.5 border-2 border-[#1F1F1E]/30 border-t-[#FF5500] rounded-full animate-spin" />
+          <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-[#FF5500] rounded-full animate-spin" />
         ) : user && avatarUrl ? (
           <img
             src={avatarUrl}
@@ -588,9 +561,9 @@ function ProfileDropdown() {
             className="w-full h-full object-cover"
           />
         ) : user ? (
-          <span className="text-[#1F1F1E] font-bold text-xs">{initial}</span>
+          <span className="text-white font-bold text-xs">{initial}</span>
         ) : (
-          <User className="w-4 h-4 text-[#1F1F1E]" />
+          <User className="w-3.5 h-3.5" />
         )}
       </button>
 
@@ -601,7 +574,7 @@ function ProfileDropdown() {
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="absolute right-0 mt-2 w-64 bg-white border border-[#E8E2D9] rounded-xl shadow-lg z-50 overflow-hidden">
+          <div className="absolute right-0 mt-2.5 w-64 bg-white border border-[#E8E2D9] rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.25)] z-50 overflow-hidden text-[#1F1F1E]">
             {user ? (
               <>
                 <div className="p-4 border-b border-[#E8E2D9]">
@@ -650,7 +623,7 @@ function ProfileDropdown() {
                 <div className="border-t border-[#E8E2D9] p-1.5">
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-[#E53935] hover:bg-red-50 transition-colors rounded-lg font-medium"
+                    className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-[#E53935] hover:bg-red-50 transition-colors rounded-lg font-medium cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Logout</span>

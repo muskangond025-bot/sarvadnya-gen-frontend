@@ -9,6 +9,7 @@ import {
   useMotionTemplate,
 } from "framer-motion";
 import { Phone, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export interface CTAData {
   eyebrow?: string;
@@ -26,6 +27,7 @@ interface CTAClientProps {
 
 export function CTAClient({ data }: CTAClientProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { t } = useLanguage();
 
   // Directly link animation to physical scroll position
   const { scrollYProgress } = useScroll({
@@ -75,12 +77,12 @@ export function CTAClient({ data }: CTAClientProps) {
         >
           {/* Simple, Punchy Headline */}
           <h2 className="font-sans font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-[42px] tracking-tight text-[#1F1F1E] leading-[1.18] text-balance">
-            {data.title}
+            {t("cta.title")}
           </h2>
 
           {/* High-Signal Concise Description */}
           <p className="text-sm sm:text-base text-[#625D55] leading-relaxed max-w-xl">
-            {data.description}
+            {t("cta.desc")}
           </p>
 
           {/* Action Buttons Row */}
@@ -89,7 +91,7 @@ export function CTAClient({ data }: CTAClientProps) {
               href="/book"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#FF5500] hover:bg-[#E04B00] text-white font-semibold text-sm sm:text-base shadow-md shadow-[#FF5500]/20 transition-all hover:translate-x-0.5 active:scale-[0.98] w-full sm:w-auto"
             >
-              <span>{data.primaryButtonText}</span>
+              <span>{t("cta.button")}</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
 
