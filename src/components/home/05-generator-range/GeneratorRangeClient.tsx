@@ -145,7 +145,7 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
 
                   {/* Series Descriptor */}
                   <span className="font-mono text-[10px] uppercase tracking-wider text-[#625D55] hidden sm:inline-block">
-                    {gen.series.replace(" Series", "")}
+                    {gen.id === "gen-5" ? t("range.entrySeries") : gen.id === "gen-30" || gen.id === "gen-65" ? t("range.midSeries") : t("range.heavySeries")}
                   </span>
 
                   {/* Active Indicator Underline */}
@@ -204,29 +204,29 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                 <div className="flex items-center gap-2 mb-3">
                   <span className="size-2 rounded-full bg-[#FF5500] animate-pulse" />
                   <span className="font-mono text-xs uppercase tracking-widest text-[#FF5500] font-bold">
-                    {currentGen.series}
+                    {currentGen.id === "gen-5" ? t("range.entrySeries") : currentGen.id === "gen-30" || currentGen.id === "gen-65" ? t("range.midSeries") : t("range.heavySeries")}
                   </span>
                   <span className="text-[#A8A29E] font-mono text-xs">•</span>
                   <span className="font-mono text-[11px] uppercase tracking-wider text-[#625D55] font-semibold">
-                    {currentGen.badge} SOUNDPROOF DIESEL FLEET
+                    {currentGen.badge} {t("range.soundproofFleet")}
                   </span>
                 </div>
 
                 {/* Main Heading */}
                 <h3 className="font-sans font-extrabold text-2xl sm:text-3xl lg:text-[38px] text-[#1F1F1E] tracking-tight leading-[1.16] mb-2">
-                  {currentGen.title}
+                  {t(`range.${currentGen.id.replace("-", "")}.title`, currentGen.title)}
                 </h3>
 
                 {/* Subtitle / Best For Highlight */}
                 {currentGen.application && (
                   <p className="font-sans font-semibold text-base sm:text-lg text-[#FF5500] mb-4">
-                    {t("range.bestFor")}{currentGen.application}
+                    {t("range.bestFor")}{t(`range.${currentGen.id.replace("-", "")}.app`, currentGen.application)}
                   </p>
                 )}
 
                 {/* Single High-Signal Narrative Paragraph */}
                 <p className="text-sm sm:text-base text-[#403C36] leading-relaxed mb-5 font-normal max-w-xl">
-                  {currentGen.description}
+                  {t(`range.${currentGen.id.replace("-", "")}.desc`, currentGen.description)}
                 </p>
 
                 {/* Recommended Power Loads (Makes sizing instantly easy to understand) */}
@@ -235,7 +235,7 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                     <Sparkles className="w-4 h-4 text-[#FF5500] shrink-0 mt-0.5" />
                     <div className="text-xs sm:text-sm text-[#1F1F1E]">
                       <span className="font-bold text-[#1F1F1E]">{t("range.powers")}</span>
-                      <span className="text-[#625D55]">{currentGen.recommendedLoads}</span>
+                      <span className="text-[#625D55]">{t(`range.${currentGen.id.replace("-", "")}.loads`, currentGen.recommendedLoads)}</span>
                     </div>
                   </div>
                 )}

@@ -191,23 +191,23 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
                 </span>
                 <span className="text-[#A8A29E] font-mono text-xs">•</span>
                 <span className="font-mono text-[11px] uppercase tracking-wider text-[#625D55] font-semibold">
-                  {activeVertical.tagline}
+                  {activeVertical.index === "01" ? t("services.v1.tagline") : activeVertical.index === "02" ? t("services.v2.tagline") : t("services.v3.tagline")}
                 </span>
               </div>
 
               {/* Display Headline */}
               <h3 className="font-sans font-extrabold text-2xl sm:text-3xl lg:text-[38px] text-[#1F1F1E] tracking-tight leading-[1.16] mb-2">
-                {activeVertical.title}
+                {activeVertical.index === "01" ? t("services.tab1") : activeVertical.index === "02" ? t("services.tab2") : t("services.tab3")}
               </h3>
 
               {/* Punchy Subtitle */}
               <p className="font-sans font-semibold text-base sm:text-lg text-[#FF5500] mb-4">
-                {activeVertical.subtitle}
+                {activeVertical.index === "01" ? t("services.v1.subtitle") : activeVertical.index === "02" ? t("services.v2.subtitle") : t("services.v3.subtitle")}
               </p>
 
               {/* Single High-Signal Narrative Paragraph */}
               <p className="text-sm sm:text-base text-[#403C36] leading-relaxed mb-6 font-normal max-w-xl">
-                {activeVertical.description}
+                {activeVertical.index === "01" ? t("services.v1.desc") : activeVertical.index === "02" ? t("services.v2.desc") : t("services.v3.desc")}
               </p>
 
               {/* Precision Specifications Matrix (Minimal Architectural Rows, Zero Card Bloat) */}
@@ -231,7 +231,7 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
                   href={activeVertical.href}
                   className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group/btn"
                 >
-                  <span>{activeVertical.ctaText}</span>
+                  <span>{activeVertical.index === "01" ? t("services.v1.cta") : activeVertical.index === "02" ? t("services.v2.cta") : t("services.v3.cta")}</span>
                   <ArrowRight className="w-4 h-4 text-[#FF5500] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
                 </Link>
 

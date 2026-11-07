@@ -18,21 +18,21 @@ export function Technology() {
 
   const serviceZones = [
     {
-      region: "Nashik Urban & Banquet Hub",
-      coverage: "Indira Nagar, Gangapur Road, Pathardi, Trambak Road, Deolali Camp",
-      highlight: "Immediate 2-to-4 Hour Dispatch for Wedding & Event Venues",
+      region: t("tech.zone1.region"),
+      coverage: t("tech.zone1.coverage"),
+      highlight: t("tech.zone1.highlight"),
       primary: true,
     },
     {
-      region: "Industrial MIDC Hubs",
-      coverage: "Ambad MIDC, Satpur MIDC, Sinnar MIDC, Vinchur Industrial Area",
-      highlight: "Heavy-Duty Prime Power with Automatic Changeover Systems",
+      region: t("tech.zone2.region"),
+      coverage: t("tech.zone2.coverage"),
+      highlight: t("tech.zone2.highlight"),
       primary: false,
     },
     {
-      region: "Statewide Maharashtra Coverage",
-      coverage: "Pune, Chakan MIDC, Mumbai MMR, Chhatrapati Sambhajinagar, Jalgaon",
-      highlight: "Long-Term Project Hire & Major Multi-Day Event Power",
+      region: t("tech.zone3.region"),
+      coverage: t("tech.zone3.coverage"),
+      highlight: t("tech.zone3.highlight"),
       primary: false,
     },
   ];

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -118,15 +118,54 @@ const SOCIAL_LINKS = [
 export default function Header({ children }: { children?: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [hoveredIndex, setHoveredIndex] = useState(0);
+  const lastScrollY = useRef(0);
   const { isFullscreen } = useFullscreen();
   const pathname = usePathname();
   const { t } = useLanguage();
 
-  // Scroll detection for transparent-to-solid transition
+  // Scroll detection for transparent-to-solid transition & auto-hide on scroll down / show on scroll up
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = Math.max(0, window.scrollY);
+      const isAtBottom =
+        window.innerHeight + currentScrollY >=
+        document.documentElement.scrollHeight - 240;
+
+      // Solid background after 20px
+      setIsScrolled(currentScrollY > 20);
+
+      // 1. If curtain drawer is open, keep header visible
+      if (isMenuOpen) {
+        setIsVisible(true);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      // 2. When reaching or scrolling inside the footer, ALWAYS keep navbar hidden
+      // so it never overlaps or cuts off the footer cards
+      if (isAtBottom && currentScrollY > 300) {
+        setIsVisible(false);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      // 3. Always visible at the top of the page (Hero section)
+      if (currentScrollY <= 80) {
+        setIsVisible(true);
+      } else {
+        // Scrolling down -> hide navbar immediately
+        if (currentScrollY > lastScrollY.current + 6) {
+          setIsVisible(false);
+        }
+        // Scrolling up -> show navbar smoothly (only when not near footer)
+        else if (currentScrollY < lastScrollY.current - 10) {
+          setIsVisible(true);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
     };
 
     // Initialize check
@@ -134,7 +173,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isMenuOpen]);
 
   // Lock body scroll when the curtain drawer is open
   useEffect(() => {
@@ -148,9 +187,10 @@ export default function Header({ children }: { children?: React.ReactNode }) {
     };
   }, [isMenuOpen]);
 
-  // Close drawer upon route change
+  // Close drawer and restore visibility upon route change
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsVisible(true);
   }, [pathname]);
 
   // Hide header on auth pages or in fullscreen mode
@@ -164,11 +204,18 @@ export default function Header({ children }: { children?: React.ReactNode }) {
       {/* 
         FLOATING CAPSULE NAVBAR
         Floating island pill: fixed top-3.5 sm:top-5 inset-x-0
-        Transparent glass at top -> Solid dark capsule on scroll
+        - Transparent glass at top -> Solid dark capsule on scroll
+        - Auto-hides on scroll down to give 100% viewport clearance for sections & footer
+        - Smoothly reveals on scroll up
       */}
       <header
         data-testid="site-header"
-        className="fixed top-3 sm:top-4 inset-x-0 z-50 flex justify-center px-3 sm:px-6 pointer-events-none transition-all duration-300"
+        className={cn(
+          "fixed top-3 sm:top-4 inset-x-0 z-50 flex justify-center px-3 sm:px-6 pointer-events-none transition-all duration-300 transform",
+          isVisible || isMenuOpen
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-24 opacity-0 pointer-events-none"
+        )}
       >
         <nav
           aria-label="Main Navigation"
@@ -403,7 +450,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                     {/* Top Stage Tag */}
                     <div className="relative z-10 flex items-center justify-between text-xs">
                       <span className="font-mono uppercase font-bold text-white tracking-wider text-[11px]">
-                        Sarvadnya Silent DG Fleet
+                        {t("range.soundproofFleet", "Sarvadnya Silent DG Fleet")}
                       </span>
                       <span className="font-mono text-[11px] text-[#FF5500] font-semibold">
                         5 – 250 kVA
@@ -439,7 +486,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                         {t(FULL_NAV_ITEMS[hoveredIndex]?.key, FULL_NAV_ITEMS[hoveredIndex]?.fallback)}
                       </span>
                       <span className="font-mono text-[#FF5500] font-semibold">
-                        CPCB-II Acoustic
+                        {t("footer.cpcbCompliance", "CPCB-II Acoustic")}
                       </span>
                     </div>
                   </motion.div>

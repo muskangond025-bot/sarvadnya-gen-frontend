@@ -1,19 +1,23 @@
+"use client";
+
 import React from "react";
 import { SectionHeading } from "@/components/common";
 import { ServicesWeOfferClient, type ServiceVertical } from "./ServicesWeOfferClient";
+import { useLanguage } from "@/lib/LanguageContext";
 
 /**
- * ServicesWeOffer Component (Server Component)
+ * ServicesWeOffer Component
  * 
  * Displays the 3 verified core rental verticals defined in docs/brain.md and docs/content.md:
  * 1. Weddings & Banquets (Silent CPCB-II Acoustic Fleet)
  * 2. Grand Events & Festivals (Dual DG Synchronized Redundancy)
  * 3. Industrial & Project Rentals (Continuous Prime Heavy Duty DG Fleet)
  * 
- * Rendered as an Awwwards-inspired single-stage pinned mask reveal showcase:
- * All cards sit in the exact same place and reveal sequentially from the center.
+ * Supports dynamic language switching between English, Hindi, and Marathi.
  */
 export function ServicesWeOffer() {
+  const { t } = useLanguage();
+
   const verticals: ServiceVertical[] = [
     {
       id: "weddings",
@@ -95,10 +99,10 @@ export function ServicesWeOffer() {
         <SectionHeading
           title={
             <span className="block lg:whitespace-nowrap">
-              Power Solutions for Events and Industry
+              {t("services.title")}
             </span>
           }
-          description="Tailored silent generator setups configured for venue acoustic requirements, continuous industrial loads, and temporary project timelines."
+          description={t("services.desc")}
           align="left"
           className="mb-8 sm:mb-10 max-w-5xl"
         />

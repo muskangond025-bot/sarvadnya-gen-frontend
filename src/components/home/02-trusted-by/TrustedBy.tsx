@@ -14,10 +14,10 @@ export function TrustedBy() {
   const { t } = useLanguage();
 
   const partners = [
-    { name: "Kirloskar", spec: "CPCB Silent DG Sets" },
-    { name: "Cummins", spec: "Heavy Industrial Prime Power" },
-    { name: "Mahindra Powerol", spec: "Fuel-Efficient Event Sets" },
-    { name: "Perkins", spec: "High-Stability Synchronized Power" },
+    { name: "Kirloskar", spec: t("trusted.kirloskarSpec") },
+    { name: "Cummins", spec: t("trusted.cumminsSpec") },
+    { name: "Mahindra Powerol", spec: t("trusted.mahindraSpec") },
+    { name: "Perkins", spec: t("trusted.perkinsSpec") },
   ];
 
   return (

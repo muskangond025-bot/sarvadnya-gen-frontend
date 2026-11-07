@@ -6,8 +6,10 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export interface BlogPost {
+  key?: string;
   category: string;
   title: string;
   description: string;
@@ -24,6 +26,7 @@ const CYCLE_DURATION = 4800;
 export function BlogClient({ posts }: BlogClientProps) {
   const [priorityIndex, setPriorityIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const { t } = useLanguage();
 
   // Physical continuous loop rotation
   useEffect(() => {
@@ -48,10 +51,10 @@ export function BlogClient({ posts }: BlogClientProps) {
         {/* Left-Aligned Clean Section Header */}
         <div className="max-w-3xl text-left">
           <h2 className="font-sans font-extrabold text-2xl sm:text-3xl md:text-4xl text-[#1F1F1E] tracking-tight leading-[1.18]">
-            Rental Insights & Electrical Advice
+            {t("blog.title")}
           </h2>
           <p className="text-sm sm:text-base text-[#625D55] mt-2 leading-relaxed">
-            Practical sizing guidance and technical advice for event coordinators, wedding planners, and plant engineers.
+            {t("blog.desc")}
           </p>
         </div>
 
@@ -112,7 +115,7 @@ export function BlogClient({ posts }: BlogClientProps) {
                         href={`/blog/${featuredPost.slug || "guide"}`}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white text-xs sm:text-sm font-semibold transition-colors duration-200 group/btn"
                       >
-                        <span>Read Complete Guide</span>
+                        <span>{t("blog.readGuide")}</span>
                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Link>
 

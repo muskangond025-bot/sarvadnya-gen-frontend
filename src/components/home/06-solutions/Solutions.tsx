@@ -21,22 +21,22 @@ export function Solutions() {
       step: "01",
       title: t("solutions.step1Title"),
       description: t("solutions.step1Desc"),
-      actionLabel: "Provide Details",
-      metric: "Stage 01 • Intake",
+      actionLabel: t("solutions.step1Action"),
+      metric: t("solutions.step1Metric"),
     },
     {
       step: "02",
       title: t("solutions.step2Title"),
       description: t("solutions.step2Desc"),
-      actionLabel: "Capacity Sizing",
-      metric: "Stage 02 • Sizing",
+      actionLabel: t("solutions.step2Action"),
+      metric: t("solutions.step2Metric"),
     },
     {
       step: "03",
       title: t("solutions.step3Title"),
       description: t("solutions.step3Desc"),
-      actionLabel: "Dispatch Confirmation",
-      metric: "Stage 03 • Dispatch",
+      actionLabel: t("solutions.step3Action"),
+      metric: t("solutions.step3Metric"),
     },
   ];
 
@@ -58,7 +58,7 @@ export function Solutions() {
 
         <div className="flex justify-start pt-2">
           <Button href="/book" variant="primary" size="lg">
-            Start Your Rental Enquiry
+            {t("solutions.startEnquiry")}
           </Button>
         </div>
       </div>
