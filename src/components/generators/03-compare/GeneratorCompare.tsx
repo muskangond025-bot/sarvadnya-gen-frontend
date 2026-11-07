@@ -29,23 +29,22 @@ export function GeneratorCompare() {
     }));
 
   return (
-    <div className="w-full py-[100px] px-[60px]">
+    <div className="w-full py-[100px] px-6 md:px-10 lg:px-[60px]">
       <div className="max-w-[1440px] mx-auto">
         {/* Static Header */}
         <SectionHeading
-          label="Compare"
           title={
             <>
               Find the right
               <br />
-              <span className="text-brand-green">generator for you</span>
+              <span className="text-[#FF5500]">generator for you</span>
             </>
           }
           align="left"
         />
 
         {/* Static Description */}
-        <p className="font-['Outfit',sans-serif] text-[#bfbfbf] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-12">
+        <p className="font-['Outfit',sans-serif] text-[#625D55] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-12">
           Compare our generators side by side. We&apos;ve simplified the specs
           so you can easily choose what fits your needs.
         </p>
@@ -56,28 +55,33 @@ export function GeneratorCompare() {
         {/* Static Quotation Section */}
         <div className="mt-[100px]">
           <SectionHeading
-            label="Get a Quote"
             title={
               <>
                 Need help
                 <br />
-                <span className="text-brand-green">choosing?</span>
+                <span className="text-[#FF5500]">choosing?</span>
               </>
             }
             align="left"
           />
-          <p className="font-['Outfit',sans-serif] text-[#bfbfbf] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-10">
+          <p className="font-['Outfit',sans-serif] text-[#625D55] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-10">
             Not sure which generator is right for you? Tell us about your
             requirements and our experts will create a personalized quotation
             for you.
           </p>
           <div className="flex flex-wrap gap-6">
-            <button className="px-[30px] py-[15px] bg-brand-green hover:bg-brand-green-dark text-black font-semibold rounded-[8px] transition-colors font-['Outfit',sans-serif] text-[18px]">
+            <a 
+              href="/contact" 
+              className="px-[30px] py-[15px] bg-[#FF5500] hover:bg-[#E04400] text-white font-semibold rounded-[8px] transition-colors font-['Outfit',sans-serif] text-[18px] shadow-sm inline-block"
+            >
               Request Custom Quote
-            </button>
-            <button className="px-[30px] py-[15px] text-brand-green hover:text-white transition-colors font-['Outfit',sans-serif] text-[18px]">
+            </a>
+            <a 
+              href="tel:+916262629944" 
+              className="px-[30px] py-[15px] bg-white border border-[#E8E2D9] text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/50 transition-colors font-['Outfit',sans-serif] text-[18px] rounded-[8px] inline-block shadow-xs"
+            >
               Talk to an Expert
-            </button>
+            </a>
           </div>
         </div>
       </div>

@@ -196,28 +196,30 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         Guaranteed 100% UNCLIPPED & FULL HEADROOM:
         - overflow-x-clip prevents page scrollbars
         - overflow-y-visible guarantees truck cabin roof, sun visor, and exhaust silencer NEVER clip!
-        - Tires rest flush on asphalt road top baseline
+        - Roadway fully engulfs lower undercarriage so zero white/beige gap is ever visible!
+        - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
-      <div className="relative w-full h-[180px] sm:h-[195px] lg:h-[210px] overflow-x-clip overflow-y-visible shrink-0">
+      <div className="relative w-full h-[210px] sm:h-[235px] lg:h-[255px] overflow-x-clip overflow-y-visible shrink-0">
         
-        {/* Asphalt Road Surface with Top Baseline Border */}
-        <div className="absolute inset-x-0 bottom-0 h-8 sm:h-9 bg-[#090B0D] border-t-2 border-[#2E333C] z-10">
-          {/* Dashed Center Road Line */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between gap-4 px-2 opacity-30">
+        {/* Asphalt Road Surface with Centerline & Shoulder */}
+        <div className="absolute inset-x-0 bottom-0 h-16 sm:h-20 lg:h-24 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
+          {/* Road Asphalt Reflection & Wet Sheen */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-white/5 pointer-events-none" />
+
+          {/* Dashed Center Road Line running along the driving lane */}
+          <div className="absolute inset-x-0 bottom-[14px] sm:bottom-[18px] lg:bottom-[22px] flex justify-between gap-4 px-2 opacity-40 pointer-events-none">
             {Array.from({ length: 32 }).map((_, i) => (
-              <span key={i} className="inline-block w-6 sm:w-10 h-1 bg-amber-400 shrink-0 rounded-full" />
+              <span key={i} className="inline-block w-6 sm:w-10 h-1 bg-amber-400 shrink-0 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.3)]" />
             ))}
           </div>
-
-          {/* Road Asphalt Reflection & Wet Sheen */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-white/5 pointer-events-none" />
         </div>
 
         {/* 
           GPU-ACCELERATED BUTTER-SMOOTH TRUCK DRIVE
           Translates from -380px to calc(100vw + 60px) in 20 seconds with pure transform3d.
           Zero layout reflows, zero stuttering, 60fps cinematic motion!
-          Tires rest EXACTLY on the baseline (bottom: 28px on mobile, 30px on tablet, 32px on desktop).
+          Tires drive directly ON the asphalt road lane where the black surface and line are (bottom: 12px to 18px).
+          Steady commercial drive (zero bounce).
         */}
         <motion.div
           key={cycleKey}
@@ -227,7 +229,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             duration: DRIVE_DURATION,
             ease: "linear",
           }}
-          className="absolute bottom-[28px] sm:bottom-[30px] lg:bottom-[32px] left-0 z-20 flex items-end will-change-transform pointer-events-none"
+          className="absolute bottom-[12px] sm:bottom-[16px] lg:bottom-[18px] left-0 z-20 flex items-end will-change-transform pointer-events-none"
           style={{
             transformStyle: "preserve-3d",
           }}
@@ -269,21 +271,17 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
               rain flap, crane-lifting rails, and curved aerodynamic cabin roof with sun visor!
             - Tata 1109 Ochre-Brown Finish (#B86A28) + Sarvadnya Energy Orange Canopy (#FF5500)
             - Authentic Devanagari "सर्वज्ञ जनरेटर" + Cummins Power Generation logo
-            - Drop-shadow grounding the tires squarely on the asphalt road!
+            - Zero floating blur smudge: Rubber tires sit squarely and flush on the asphalt road!
+            - Pristine, single unified 3D truck render with zero overlay artifacts or double wheels!
           */}
-          <div className="relative group cursor-default">
-            {/* Soft Ambient Contact Shadow Under Tires */}
-            <div 
-              className="absolute -bottom-2 inset-x-3 h-4 bg-black/80 blur-md rounded-full pointer-events-none" 
-            />
-
-            {/* Realistic 3D Mobile DG Delivery Truck Image */}
+          <div className="relative group cursor-default select-none">
+            {/* 3D Mobile DG Delivery Truck Body with Grounded Tires */}
             <img
               src="/images/generators/truck_3d_realistic.png"
               alt="Sarvadnya Tata 1109 Mobile Silent DG Delivery Truck"
               width={1276}
-              height={682}
-              className="w-[260px] sm:w-[300px] lg:w-[330px] h-auto object-contain pointer-events-none select-none drop-shadow-[0_14px_28px_rgba(0,0,0,0.95)]"
+              height={638}
+              className="w-[260px] sm:w-[300px] lg:w-[330px] h-auto object-contain pointer-events-none select-none block"
               draggable={false}
             />
           </div>

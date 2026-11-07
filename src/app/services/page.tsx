@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <main className="relative min-h-screen bg-black overflow-x-hidden">
+    <main className="relative min-h-screen bg-[#FAF8F5] overflow-x-hidden">
       {/* 1. Services Hero */}
       <ServicesHero />
 
@@ -29,11 +29,13 @@ export default function ServicesPage() {
       {/* 4. High Fidelity Success Stories */}
       <ServicesSuccessStories />
 
-      {/* 5. Frequently Asked Questions */}
+      {/* 5. Frequently Asked Questions (Homepage 2-Column Style) */}
       <FAQSection />
 
-      {/* 6. Emergency Dispatch CTA */}
-      <ServicesCTA />
+      {/* 6. Emergency Dispatch CTA with generous breathing room before footer */}
+      <div className="pb-20 sm:pb-28 lg:pb-36">
+        <ServicesCTA />
+      </div>
     </main>
   );
 }

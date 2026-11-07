@@ -335,18 +335,17 @@ export default function GeneratorGallery() {
       <section className="w-full py-[100px] px-6 md:px-10 lg:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <SectionHeading
-            label="Our Fleet"
             title={
               <>
                 Browse All
                 <br />
-                <span className="text-[#00ff8f]">Generators</span>
+                <span className="text-[#FF5500]">Generators</span>
               </>
             }
             align="left"
           />
 
-          <p className="font-['Outfit',sans-serif] text-[#bfbfbf] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-12">
+          <p className="font-['Outfit',sans-serif] text-[#625D55] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-12">
             Explore our complete range of generators. Click on any generator to
             view detailed specifications and pricing.
           </p>
@@ -354,7 +353,7 @@ export default function GeneratorGallery() {
           {/* Intelligent Multi-Tab Filters */}
           <div className="flex flex-col gap-8 mb-12">
             {/* Top Level Groups */}
-            <div className="flex flex-wrap gap-3 p-1.5 bg-white/5 rounded-2xl w-fit border border-white/10">
+            <div className="flex flex-wrap gap-2.5 p-1.5 bg-[#EFECE6] rounded-2xl w-fit border border-[#E8E2D9]">
               {FILTER_GROUPS.map((group) => (
                 <button
                   key={group.id}
@@ -365,8 +364,8 @@ export default function GeneratorGallery() {
                   className={cn(
                     "px-6 py-3 rounded-xl font-['Poppins',sans-serif] text-sm font-bold transition-all",
                     activeGroup === group.id 
-                      ? "bg-[#00ff8f] text-black shadow-[0_0_20px_rgba(0,255,143,0.3)]" 
-                      : "text-white/40 hover:text-white hover:bg-white/5"
+                      ? "bg-[#FF5500] text-white shadow-[0_4px_14px_rgba(255,85,0,0.25)]" 
+                      : "text-[#625D55] hover:text-[#111315] hover:bg-white/60"
                   )}
                 >
                   {group.label}
@@ -376,7 +375,7 @@ export default function GeneratorGallery() {
 
             {/* Sub-Filters */}
             <div className="flex flex-wrap items-center gap-3">
-              <Filter className="w-5 h-5 text-[#00ff8f] shrink-0" />
+              <Filter className="w-5 h-5 text-[#FF5500] shrink-0" />
               <div className="flex flex-wrap gap-2">
                 {(activeGroup === "power" ? POWER_FILTERS : 
                   activeGroup === "usage" ? USAGE_FILTERS : 
@@ -387,8 +386,8 @@ export default function GeneratorGallery() {
                     className={cn(
                       "px-5 py-2.5 rounded-full font-['Outfit',sans-serif] text-sm font-medium transition-all border",
                       activeSubFilter === filter.id
-                        ? "bg-[#00ff8f]/10 border-[#00ff8f] text-[#00ff8f]"
-                        : "bg-white/5 border-white/5 text-white/50 hover:border-white/20 hover:text-white"
+                        ? "bg-[#FF5500]/10 border-[#FF5500] text-[#FF5500] font-semibold"
+                        : "bg-white border-[#E8E2D9] text-[#625D55] hover:border-[#FF5500]/40 hover:text-[#111315]"
                     )}
                   >
                     {filter.label}
@@ -401,8 +400,8 @@ export default function GeneratorGallery() {
           {/* Loading State */}
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Loader2 className="w-10 h-10 text-[#00ff8f] animate-spin" />
-              <p className="text-white/50 text-[18px] font-['Outfit',sans-serif]">
+              <Loader2 className="w-10 h-10 text-[#FF5500] animate-spin" />
+              <p className="text-[#71695F] text-[18px] font-['Outfit',sans-serif]">
                 Loading generators...
               </p>
             </div>
@@ -412,12 +411,12 @@ export default function GeneratorGallery() {
           {error && !isLoading && (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <AlertCircle className="w-10 h-10 text-red-500" />
-              <p className="text-red-400 text-[18px] font-['Outfit',sans-serif]">
+              <p className="text-red-500 text-[18px] font-['Outfit',sans-serif]">
                 {error}
               </p>
               <button
                 onClick={() => refetch()}
-                className="px-6 py-3 bg-[#00ff8f] text-black font-['Outfit',sans-serif] font-semibold rounded-xl hover:bg-[#00dd7a] transition-colors"
+                className="px-6 py-3 bg-[#FF5500] text-white font-['Outfit',sans-serif] font-semibold rounded-xl hover:bg-[#E04400] transition-colors"
               >
                 Try Again
               </button>
@@ -446,7 +445,7 @@ export default function GeneratorGallery() {
 
           {!isLoading && !error && filteredGenerators.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-white/50 text-[18px] font-['Outfit',sans-serif]">
+              <p className="text-[#71695F] text-[18px] font-['Outfit',sans-serif]">
                 No generators found in this category.
               </p>
             </div>

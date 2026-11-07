@@ -13,13 +13,10 @@ export const metadata: Metadata = {
 
 export default function GeneratorsPage() {
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
-      {/* Cinematic Background Atmosphere */}
-      <FloatingGlow color="#00ff8f" size="xl" className="-top-1/4 -right-1/4 opacity-10" />
-      <FloatingGlow color="#00d1ff" size="lg" className="bottom-1/4 -left-1/4 opacity-10" delay={2} />
-      
-      {/* Subtle Grid Overlay */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:60px_60px]" />
+    <div className="relative min-h-screen bg-[#FAF8F5] overflow-hidden">
+      {/* Subtle Warm Amber-Orange Ambient Atmosphere */}
+      <FloatingGlow color="#FF5500" size="xl" className="-top-1/4 -right-1/4 opacity-[0.06]" />
+      <FloatingGlow color="#FFAA00" size="lg" className="bottom-1/4 -left-1/4 opacity-[0.05]" delay={2} />
 
       <div className="relative z-10">
         {/* 1. Generator Fleet Hero */}

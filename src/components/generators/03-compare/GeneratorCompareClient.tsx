@@ -46,7 +46,7 @@ const COMPARISON_FEATURES = [
 const scrollbarStyles = `
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #00ff8f transparent;
+    scrollbar-color: #FF5500 transparent;
   }
   
   .custom-scrollbar::-webkit-scrollbar {
@@ -54,17 +54,17 @@ const scrollbarStyles = `
   }
   
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: #F0ECE1;
     border-radius: 10px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #00ff8f;
+    background: #FF5500;
     border-radius: 10px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #00dd7a;
+    background: #E04400;
   }
 `;
 
@@ -91,7 +91,7 @@ function GeneratorDropdown({
       ) : (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 px-6 py-4 text-[18px] text-white/60 hover:text-brand-green font-['Outfit',sans-serif] transition-colors"
+          className="flex items-center gap-3 px-6 py-4 text-[18px] text-[#625D55] hover:text-[#FF5500] font-['Outfit',sans-serif] transition-colors"
         >
           <span>{placeholder}</span>
           <motion.div
@@ -118,7 +118,7 @@ function GeneratorDropdown({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="absolute bottom-full left-0 mb-2 w-[300px] max-h-[400px] overflow-y-auto bg-[#1a1a1a] border border-white/10 rounded-xl z-50 custom-scrollbar shadow-xl"
+              className="absolute bottom-full left-0 mb-2 w-[300px] max-h-[400px] overflow-y-auto bg-white border border-[#E8E2D9] rounded-xl z-50 custom-scrollbar shadow-2xl"
             >
               {availableGenerators.map((gen, index) => (
                 <motion.button
@@ -130,16 +130,16 @@ function GeneratorDropdown({
                     onSelect(gen.id);
                     setIsOpen(false);
                   }}
-                  className="w-full text-left px-6 py-4 hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+                  className="w-full text-left px-6 py-4 hover:bg-[#FAF8F5] transition-colors border-b border-[#E8E2D9] last:border-b-0"
                 >
                   <div className="flex flex-col gap-1">
-                    <span className="text-[18px] font-bold text-white font-['Poppins',sans-serif]">
+                    <span className="text-[18px] font-bold text-[#111315] font-['Poppins',sans-serif]">
                       {gen.kva}
                     </span>
-                    <span className="text-brand-green text-[14px] font-['Outfit',sans-serif]">
+                    <span className="text-[#FF5500] text-[14px] font-['Outfit',sans-serif]">
                       {gen.brand} - {gen.type}
                     </span>
-                    <span className="text-white/50 text-[14px] font-['Outfit',sans-serif]">
+                    <span className="text-[#71695F] text-[14px] font-['Outfit',sans-serif]">
                       {gen.pricePerDay}/day
                     </span>
                   </div>
@@ -172,7 +172,7 @@ function AddGeneratorColumn({
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 50 }}
-      className="border-l border-white/10"
+      className="border-l border-[#E8E2D9] bg-white"
       style={{ width: "calc(100% / 3)", flexShrink: 0 }}
     >
       <AnimatePresence mode="wait">
@@ -187,14 +187,14 @@ function AddGeneratorColumn({
           >
             <div
               onClick={() => setIsExpanded(true)}
-              className="h-full w-full border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center gap-4 hover:border-brand-green/50 hover:bg-white/5 transition-all group cursor-pointer"
+              className="h-full w-full border-2 border-dashed border-[#E8E2D9] rounded-xl flex flex-col items-center justify-center gap-4 hover:border-[#FF5500]/60 hover:bg-[#FAF8F5] transition-all group cursor-pointer"
             >
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-brand-green/20 transition-colors">
-                <span className="text-3xl text-white/50 group-hover:text-brand-green transition-colors">
+              <div className="w-16 h-16 rounded-full bg-[#FAF8F5] flex items-center justify-center group-hover:bg-[#FF5500]/15 transition-colors">
+                <span className="text-3xl text-[#8C8275] group-hover:text-[#FF5500] transition-colors">
                   +
                 </span>
               </div>
-              <span className="text-white/50 text-lg font-['Outfit',sans-serif] group-hover:text-white transition-colors">
+              <span className="text-[#71695F] text-lg font-['Outfit',sans-serif] group-hover:text-[#111315] transition-colors font-medium">
                 Add Generator
               </span>
             </div>
@@ -206,19 +206,19 @@ function AddGeneratorColumn({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full"
+            className="h-full w-full bg-white"
           >
             {/* Header with close button */}
             <div
-              className="px-6 py-4 flex items-center justify-between border-b border-white/10"
+              className="px-6 py-4 flex items-center justify-between border-b border-[#E8E2D9]"
               style={{ height: rowHeights.header }}
             >
-              <span className="text-white/70 text-lg font-['Outfit',sans-serif]">
+              <span className="text-[#111315] text-lg font-['Outfit',sans-serif] font-bold">
                 Select Generator
               </span>
               <button
                 onClick={() => setIsExpanded(false)}
-                className="p-2 text-white/40 hover:text-white transition-colors rounded-full hover:bg-white/5"
+                className="p-2 text-[#71695F] hover:text-[#111315] transition-colors rounded-full hover:bg-[#FAF8F5]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -236,16 +236,16 @@ function AddGeneratorColumn({
                     onSelect(gen.id);
                     setIsExpanded(false);
                   }}
-                  className="w-full text-left px-6 py-4 hover:bg-brand-green/10 transition-colors border-b border-white/5 last:border-b-0"
+                  className="w-full text-left px-6 py-4 hover:bg-[#FF5500]/10 transition-colors border-b border-[#E8E2D9] last:border-b-0"
                 >
                   <div className="flex flex-col gap-1">
-                    <span className="text-[18px] font-bold text-white font-['Poppins',sans-serif]">
+                    <span className="text-[18px] font-bold text-[#111315] font-['Poppins',sans-serif]">
                       {gen.kva}
                     </span>
-                    <span className="text-brand-green text-[14px] font-['Outfit',sans-serif]">
+                    <span className="text-[#FF5500] text-[14px] font-['Outfit',sans-serif]">
                       {gen.brand} - {gen.type}
                     </span>
-                    <span className="text-white/50 text-[14px] font-['Outfit',sans-serif]">
+                    <span className="text-[#71695F] text-[14px] font-['Outfit',sans-serif]">
                       {gen.pricePerDay}/day
                     </span>
                   </div>
@@ -258,6 +258,7 @@ function AddGeneratorColumn({
     </motion.div>
   );
 }
+
 // Generator Column - Shows generator info OR selection list (full column transition)
 function GeneratorColumn({
   generator,
@@ -303,7 +304,7 @@ function GeneratorColumn({
         scale: 0.9,
         transition: { duration: 0.2 },
       }}
-      className="border-r border-white/10 last:border-r-0 relative"
+      className="border-r border-[#E8E2D9] last:border-r-0 relative bg-white"
       style={{ width: "calc(100% / 3)", flexShrink: 0 }}
     >
       <AnimatePresence mode="wait">
@@ -320,7 +321,7 @@ function GeneratorColumn({
             {showRemove && (
               <button
                 onClick={onRemove}
-                className="absolute top-4 right-4 p-2 text-white/30 hover:text-red-500 transition-colors z-20 rounded-full hover:bg-white/5"
+                className="absolute top-4 right-4 p-2 text-[#8C8275] hover:text-red-500 transition-colors z-20 rounded-full hover:bg-[#FAF8F5]"
                 aria-label="Remove generator"
               >
                 <X className="w-5 h-5" />
@@ -329,29 +330,29 @@ function GeneratorColumn({
 
             {/* Generator Header */}
             <div
-              className="px-6 py-8 flex flex-col gap-3 relative"
+              className="px-6 py-8 flex flex-col gap-3 relative border-b border-[#E8E2D9]"
               style={{ height: rowHeights.header }}
             >
-              <span className="text-[28px] font-bold text-white font-['Poppins',sans-serif] pr-8">
+              <span className="text-[28px] font-bold text-[#111315] font-['Poppins',sans-serif] pr-8">
                 {generator.kva}
               </span>
-              <span className="text-brand-green text-[18px] font-['Outfit',sans-serif]">
+              <span className="text-[#FF5500] text-[18px] font-['Outfit',sans-serif] font-medium">
                 {generator.brand} - {generator.type}
               </span>
-              <span className="text-white font-['Outfit',sans-serif] text-[20px]">
-                <span className="text-brand-green font-bold">
+              <span className="text-[#111315] font-['Outfit',sans-serif] text-[20px]">
+                <span className="text-[#FF5500] font-bold">
                   {generator.pricePerDay}
                 </span>
-                <span className="text-white/50">/day</span>
+                <span className="text-[#71695F]">/day</span>
               </span>
 
               {/* Change Button */}
               <button
                 onClick={() => setIsChanging(true)}
-                className="mt-auto w-full px-4 py-2 text-[16px] text-white bg-white/5 border border-white/10 rounded-lg font-['Outfit',sans-serif] cursor-pointer flex items-center justify-between hover:bg-white/10 transition-colors"
+                className="mt-auto w-full px-4 py-2 text-[15px] text-[#111315] bg-[#FAF8F5] border border-[#E8E2D9] rounded-lg font-['Outfit',sans-serif] font-medium cursor-pointer flex items-center justify-between hover:bg-[#EFECE6] transition-colors"
               >
                 <span>Change Generator</span>
-                <ChevronDown className="w-4 h-4 text-white/50" />
+                <ChevronDown className="w-4 h-4 text-[#71695F]" />
               </button>
             </div>
 
@@ -366,19 +367,19 @@ function GeneratorColumn({
               return (
                 <div
                   key={`${generator.id}-${feature.key}`}
-                  className="px-6 py-6 border-t border-white/5 flex items-center"
+                  className="px-6 py-6 border-b border-[#E8E2D9] flex items-center"
                   style={{ height: rowHeights.row }}
                 >
                   <div
                     className={`${
-                      isDifferent ? "text-brand-green" : "text-white/80"
+                      isDifferent ? "text-[#FF5500] font-bold" : "text-[#111315]"
                     } transition-colors duration-300`}
                   >
                     {typeof value === "boolean" ? (
                       value ? (
-                        <Check className="w-6 h-6 text-brand-green" />
+                        <Check className="w-6 h-6 text-[#FF5500]" />
                       ) : (
-                        <X className="w-6 h-6 text-white/30" />
+                        <X className="w-6 h-6 text-[#9A9388]" />
                       )
                     ) : (
                       <span className="font-['Outfit',sans-serif] text-[18px]">
@@ -397,24 +398,24 @@ function GeneratorColumn({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full"
+            className="h-full bg-white"
           >
             {/* Header with close button */}
             <div
-              className="px-6 py-4 flex items-center justify-between border-b border-white/10"
+              className="px-6 py-4 flex items-center justify-between border-b border-[#E8E2D9]"
               style={{ height: rowHeights.header }}
             >
-              <div className="flex flex-col gap-2">
-                <span className="text-white/70 text-lg font-['Outfit',sans-serif]">
+              <div className="flex flex-col gap-1">
+                <span className="text-[#111315] text-lg font-['Outfit',sans-serif] font-bold">
                   Select Generator
                 </span>
-                <span className="text-white/40 text-sm font-['Outfit',sans-serif]">
-                  Choose a generator to replace the current one
+                <span className="text-[#71695F] text-xs font-['Outfit',sans-serif]">
+                  Choose replacement
                 </span>
               </div>
               <button
                 onClick={() => setIsChanging(false)}
-                className="p-2 text-white/40 hover:text-white transition-colors rounded-full hover:bg-white/5"
+                className="p-2 text-[#71695F] hover:text-[#111315] transition-colors rounded-full hover:bg-[#FAF8F5]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -437,25 +438,25 @@ function GeneratorColumn({
                     }
                     setIsChanging(false);
                   }}
-                  className={`w-full text-left px-6 py-4 hover:bg-brand-green/10 transition-colors border-b border-white/5 last:border-b-0 ${
-                    gen.id === generator.id ? "bg-brand-green/10" : ""
+                  className={`w-full text-left px-6 py-4 hover:bg-[#FF5500]/10 transition-colors border-b border-[#E8E2D9] last:border-b-0 ${
+                    gen.id === generator.id ? "bg-[#FF5500]/10" : ""
                   }`}
                 >
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[18px] font-bold text-white font-['Poppins',sans-serif]">
+                      <span className="text-[18px] font-bold text-[#111315] font-['Poppins',sans-serif]">
                         {gen.kva}
                       </span>
                       {gen.id === generator.id && (
-                        <span className="text-xs text-brand-green bg-brand-green/20 px-2 py-0.5 rounded">
+                        <span className="text-xs text-[#FF5500] bg-[#FF5500]/15 px-2 py-0.5 rounded font-semibold">
                           Current
                         </span>
                       )}
                     </div>
-                    <span className="text-brand-green text-[14px] font-['Outfit',sans-serif]">
+                    <span className="text-[#FF5500] text-[14px] font-['Outfit',sans-serif]">
                       {gen.brand} - {gen.type}
                     </span>
-                    <span className="text-white/50 text-[14px] font-['Outfit',sans-serif]">
+                    <span className="text-[#71695F] text-[14px] font-['Outfit',sans-serif]">
                       {gen.pricePerDay}/day
                     </span>
                   </div>
@@ -526,7 +527,7 @@ export function GeneratorCompareClient({
 
       {/* Controls */}
       <div className="flex flex-wrap items-center justify-between gap-6 mb-10">
-        <label className="flex items-center gap-3 cursor-pointer">
+        <label className="flex items-center gap-3 cursor-pointer select-none">
           <input
             type="checkbox"
             checked={highlightDifferences}
@@ -536,8 +537,8 @@ export function GeneratorCompareClient({
           <motion.div
             animate={{
               backgroundColor: highlightDifferences
-                ? "#00ff8f"
-                : "rgba(255,255,255,0.2)",
+                ? "#FF5500"
+                : "#E8E2D9",
             }}
             className="w-12 h-6 rounded-full"
           >
@@ -546,17 +547,17 @@ export function GeneratorCompareClient({
                 x: highlightDifferences ? 24 : 2,
               }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              className="w-5 h-5 rounded-full bg-white mt-0.5"
+              className="w-5 h-5 rounded-full bg-white mt-0.5 shadow-xs"
             />
           </motion.div>
-          <span className="text-white text-[18px] font-['Outfit',sans-serif]">
+          <span className="text-[#111315] text-[18px] font-['Outfit',sans-serif] font-medium">
             Highlight Differences
           </span>
         </label>
 
         <button
           onClick={clearAll}
-          className="flex items-center gap-2 text-brand-green hover:text-white transition-colors font-['Outfit',sans-serif] text-[18px]"
+          className="flex items-center gap-2 text-[#FF5500] hover:text-[#111315] transition-colors font-['Outfit',sans-serif] text-[18px] font-medium"
         >
           <X className="w-5 h-5" />
           Clear All
@@ -564,12 +565,12 @@ export function GeneratorCompareClient({
       </div>
 
       {/* Comparison Area */}
-      <div className="border border-white/20 rounded-xl bg-black overflow-hidden flex">
+      <div className="border border-[#E8E2D9] rounded-2xl bg-white overflow-hidden shadow-xs flex">
         {/* Features Column (Fixed/Sticky) */}
-        <div className="flex-none bg-black z-10 w-64 border-r border-white/10">
+        <div className="flex-none bg-[#FAF8F5] z-10 w-64 border-r border-[#E8E2D9]">
           {/* Header Placeholder */}
           <div
-            className="px-6 py-8 text-white/50 font-['Outfit',sans-serif] font-medium text-[18px] flex items-start"
+            className="px-6 py-8 text-[#71695F] font-['Outfit',sans-serif] font-bold text-[18px] flex items-start border-b border-[#E8E2D9]"
             style={{ height: ROW_HEIGHTS.header }}
           >
             Features
@@ -578,12 +579,12 @@ export function GeneratorCompareClient({
           {COMPARISON_FEATURES.map((feature) => (
             <div
               key={feature.key}
-              className="px-6 py-6 flex items-center border-t border-white/5"
+              className="px-6 py-6 flex items-center border-b border-[#E8E2D9]"
               style={{ height: ROW_HEIGHTS.row }}
             >
-              <div className="flex items-center gap-4 text-white/70">
-                <feature.icon className="w-5 h-5 text-brand-green" />
-                <span className="font-['Outfit',sans-serif] text-[18px]">
+              <div className="flex items-center gap-3.5 text-[#111315]">
+                <feature.icon className="w-5 h-5 text-[#FF5500] shrink-0" />
+                <span className="font-['Outfit',sans-serif] text-[17px] font-medium">
                   {feature.label}
                 </span>
               </div>
@@ -592,8 +593,8 @@ export function GeneratorCompareClient({
         </div>
 
         {/* Generators Area - Flex for smooth animations */}
-        <div className="flex-1">
-          <div className="flex h-full">
+        <div className="flex-1 overflow-x-auto custom-scrollbar">
+          <div className="flex h-full min-w-full">
             <AnimatePresence mode="sync" initial={false}>
               {selectedGenerators.map((gen, idx) => (
                 <GeneratorColumn
@@ -627,7 +628,7 @@ export function GeneratorCompareClient({
       </div>
 
       {/* Scroll indicator */}
-      <div className="flex items-center gap-2 mt-4 text-white/40 text-[14px] font-['Outfit',sans-serif]">
+      <div className="flex items-center gap-2 mt-4 text-[#8C8275] text-[14px] font-['Outfit',sans-serif]">
         <span>←</span>
         <span>Scroll to see all comparisons</span>
         <span>→</span>

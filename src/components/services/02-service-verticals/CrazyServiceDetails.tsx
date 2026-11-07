@@ -1,128 +1,115 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle2, Zap, Shield, ArrowRight, Settings, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Cog, Package, Truck, Wrench, ArrowRight } from "lucide-react";
 
-interface ServiceDetail {
+interface ServiceItem {
   id: string;
   title: string;
   description: string;
-  features: string[];
-  icon: any;
-  color: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+  actionText?: string;
 }
 
-const SERVICES: ServiceDetail[] = [
+const SERVICES: ServiceItem[] = [
   {
-    id: "rental",
+    id: "industrial",
     title: "Industrial Rentals",
-    description: "High-capacity DG sets from 65kVA to 250kVA for manufacturing plants, construction sites, and corporate parks.",
-    features: ["Load Testing", "On-site Installation", "24/7 Monitoring", "Fuel Management"],
-    icon: Zap,
-    color: "#00ff8f"
+    description: "High-capacity silent DG sets from 65kVA to 250kVA engineered for continuous manufacturing, infrastructure, and heavy engineering.",
+    icon: Cog,
+    href: "/generators",
+    actionText: "Learn More",
   },
   {
-    id: "event",
-    title: "Event Power",
-    description: "Silent generators for weddings, concerts, and festivals. Zero-noise technology to ensure a seamless experience.",
-    features: ["Silent Operation", "Decorative Setup", "Power Distribution", "On-site Tech"],
-    icon: Shield,
-    color: "#00d1ff"
-  },
-  {
-    id: "maintenance",
-    title: "AMC & Service",
-    description: "Comprehensive Annual Maintenance Contracts (AMC) to keep your existing power infrastructure in top condition.",
-    features: ["Preventive Care", "Emergency Repair", "Genuine Spares", "Performance Audit"],
-    icon: Settings,
-    color: "#ff0080"
+    id: "events",
+    title: "Event Silent Power",
+    description: "Acoustic-shielded silent generators for luxury weddings, grand concerts, and VIP festivals with certified zero noise disruption.",
+    icon: Package,
+    href: "/contact",
+    actionText: "Learn More",
   },
   {
     id: "emergency",
-    title: "Emergency Response",
-    description: "Nashik's fastest emergency deployment. We respond to power failures within 60 minutes.",
-    features: ["60-Min Response", "Mobile DG Sets", "Expert Diagnostics", "Immediate Relief"],
-    icon: Clock,
-    color: "#ffcc00"
-  }
+    title: "Emergency Dispatch",
+    description: "Nashik's fastest 60-minute emergency deployment. Mobile DG units mobilized immediately to prevent unexpected power failure.",
+    icon: Truck,
+    href: "tel:+916262629944",
+    actionText: "Learn More",
+  },
+  {
+    id: "maintenance",
+    title: "AMC & Maintenance",
+    description: "Comprehensive Annual Maintenance Contracts, automated fuel logistics, and 24/7 dedicated certified engineers on site.",
+    icon: Wrench,
+    href: "/contact",
+    actionText: "Learn More",
+  },
 ];
 
 /**
  * CrazyServiceDetails Component
  * 
- * A high-fidelity, interactive service showcase.
- * Features:
- * - Dynamic card expansion
- * - Industrial data overlays
- * - Multi-colored glow effects
+ * Exact Bootstrap Brain Service-8 Pattern:
+ * - Standalone solid icons directly on background (no card boxes)
+ * - Centered bold titles
+ * - Centered narrative descriptions
+ * - Centered "Learn More ->" action links
  */
 export function CrazyServiceDetails() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {SERVICES.map((service, i) => (
-        <motion.div
-          key={service.id}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: i * 0.1 }}
-          className="group relative h-[450px] rounded-[40px] border border-white/5 bg-[#080808] overflow-hidden"
-        >
-          {/* Background Glow */}
-          <div 
-            className="absolute -top-20 -right-20 size-64 blur-[100px] opacity-0 group-hover:opacity-20 transition-opacity duration-700"
-            style={{ backgroundColor: service.color }}
-          />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+      {SERVICES.map((service, i) => {
+        const IconComponent = service.icon;
+        const isPhone = service.href.startsWith("tel:");
 
-          <div className="absolute inset-0 p-10 flex flex-col justify-between z-10">
-            {/* Header */}
-            <div className="flex justify-between items-start">
-              <div 
-                className="size-16 rounded-2xl flex items-center justify-center border border-white/10 relative overflow-hidden group-hover:scale-110 transition-transform duration-500"
-                style={{ backgroundColor: `${service.color}10` }}
+        return (
+          <motion.div
+            key={service.id}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
+            className="flex flex-col items-center text-center group"
+          >
+            {/* Standalone Solid Icon (Matching BootstrapBrain Service-8) */}
+            <div className="mb-6 flex items-center justify-center text-[#FF5500] transform group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
+              <IconComponent className="size-14 sm:size-16 stroke-[1.8]" />
+            </div>
+
+            {/* Bold Title */}
+            <h3 className="text-2xl sm:text-[26px] font-bold text-[#111315] font-['Poppins',sans-serif] tracking-tight mb-4 group-hover:text-[#FF5500] transition-colors duration-300">
+              {service.title}
+            </h3>
+
+            {/* Description Text */}
+            <p className="text-[#625D55] font-['Outfit',sans-serif] text-base sm:text-lg leading-relaxed mb-6 max-w-xs mx-auto">
+              {service.description}
+            </p>
+
+            {/* Learn More Action Link */}
+            {isPhone ? (
+              <a
+                href={service.href}
+                className="inline-flex items-center gap-2 text-[#FF5500] hover:text-[#E04400] font-bold text-base transition-colors group/link mt-auto"
               >
-                <service.icon className="size-8 transition-colors duration-500" style={{ color: service.color }} />
-                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <span className="text-white/20 font-mono text-sm tracking-widest uppercase">Phase_0{i + 1}</span>
-            </div>
-
-            {/* Content */}
-            <div className="flex flex-col gap-6">
-              <h3 className="text-4xl font-bold text-white font-['Poppins',sans-serif] tracking-tight group-hover:text-transparent group-hover:bg-clip-text transition-all duration-500" style={{ backgroundImage: `linear-gradient(to right, white, ${service.color})` }}>
-                {service.title}
-              </h3>
-              <p className="text-[#bfbfbf] font-['Outfit',sans-serif] text-lg leading-relaxed max-w-sm">
-                {service.description}
-              </p>
-              
-              {/* Features Chip */}
-              <div className="flex flex-wrap gap-2">
-                {service.features.map(f => (
-                  <span key={f} className="px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] text-white/60 font-bold uppercase tracking-wider">
-                    {f}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between mt-4">
-              <button className="flex items-center gap-2 text-white/40 group-hover:text-white transition-colors duration-300">
-                <span className="text-sm font-bold uppercase tracking-widest font-['Outfit',sans-serif]">Learn More</span>
-                <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform duration-300" />
-              </button>
-            </div>
-          </div>
-
-          {/* Decorative Corner Element */}
-          <div className="absolute bottom-0 right-0 p-8">
-            <Zap className="size-32 text-white/[0.02] group-hover:text-white/[0.05] transition-colors duration-700" />
-          </div>
-        </motion.div>
-      ))}
+                <span>{service.actionText}</span>
+                <ArrowRight className="size-4 group-hover/link:translate-x-1.5 transition-transform duration-300" />
+              </a>
+            ) : (
+              <Link
+                href={service.href}
+                className="inline-flex items-center gap-2 text-[#FF5500] hover:text-[#E04400] font-bold text-base transition-colors group/link mt-auto"
+              >
+                <span>{service.actionText}</span>
+                <ArrowRight className="size-4 group-hover/link:translate-x-1.5 transition-transform duration-300" />
+              </Link>
+            )}
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

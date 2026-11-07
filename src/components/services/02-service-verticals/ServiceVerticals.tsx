@@ -1,24 +1,44 @@
 import React from "react";
-import { SectionHeading } from "@/components/common";
 import { CrazyServiceDetails } from "./CrazyServiceDetails";
-import { FloatingGlow } from "@/components/shared/client";
 
+/**
+ * ServiceVerticals Component
+ * 
+ * Redesigned to match Bootstrap Brain Service-8:
+ * - High-resolution engineering photograph in background
+ * - Bright translucent wash overlay
+ * - Clean open space layout (zero card boxes)
+ * - Distinctive data-related icons, bold titles, and Learn More links
+ */
 export function ServiceVerticals() {
   return (
-    <section className="py-32 px-6 md:px-10 lg:px-[60px] relative overflow-hidden">
-      <FloatingGlow color="#00ff8f" size="lg" className="top-1/2 left-0 opacity-10" delay={0} />
+    <section className="relative py-24 sm:py-32 px-6 md:px-10 lg:px-[60px] overflow-hidden bg-[#FAF8F5]">
+      {/* Full-Bleed Photographic Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{
+          backgroundImage: "url('/images/services/service_engineer_bg.jpg')",
+        }}
+      />
+
+      {/* Bright Translucent Wash Overlay (Matching Service-8 light wash) */}
+      <div className="absolute inset-0 bg-white/85 sm:bg-[#FAF8F5]/85 backdrop-blur-[1px] pointer-events-none" />
+
+      {/* Subtle Warm Amber Core Lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-[#FF5500]/[0.04] blur-[140px] rounded-full pointer-events-none" />
+
       <div className="max-w-[1440px] mx-auto relative z-10">
-        <div className="mb-24">
-          <SectionHeading 
-            label="CORE CAPABILITIES"
-            title={
-              <>
-                Specialized Power <br />
-                <span className="text-[#00ff8f]">Service Verticals</span>
-              </>
-            }
-          />
+        {/* Section Heading */}
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-24">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight">
+            Specialized Power <span className="text-[#FF5500]">Service Verticals</span>
+          </h2>
+          <p className="text-[#625D55] font-['Outfit',sans-serif] text-base sm:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
+            Turnkey silent generator rentals and mission-critical power solutions engineered for zero downtime across Nashik and Maharashtra.
+          </p>
         </div>
+
+        {/* Services Showcase (No Cards, Free Space, BootstrapBrain Service-8 Style) */}
         <CrazyServiceDetails />
       </div>
     </section>
