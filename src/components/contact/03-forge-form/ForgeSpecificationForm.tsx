@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, ShieldCheck, Zap, Clock, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 import { RollingText } from "../common/RollingText";
 
 /**
@@ -44,15 +44,6 @@ export function ForgeSpecificationForm() {
         {/* LEFT COLUMN: Editorial Heading & Context (5 cols) */}
         <div className="lg:col-span-5 flex flex-col justify-between h-full lg:sticky lg:top-36">
           <div>
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500] font-semibold block mb-4"
-            >
-              Tailored Power Quotation
-            </motion.span>
-
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -68,26 +59,10 @@ export function ForgeSpecificationForm() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-base sm:text-lg text-[#625D55] leading-relaxed font-sans mb-10 max-w-lg"
+              className="text-base sm:text-lg text-[#625D55] leading-relaxed font-sans max-w-lg"
             >
               Share your project parameters, load requirements, and site location. Our senior electrical engineers will prepare an exact, CPCB-IV+ compliant turnkey power proposal within 1–2 business hours.
             </motion.p>
-          </div>
-
-          {/* Trust Guarantees */}
-          <div className="pt-8 border-t border-[#E8E2D9] flex flex-col gap-4 text-xs font-mono text-[#71695F]">
-            <div className="flex items-center gap-3">
-              <Zap className="size-4 text-[#FF5500] shrink-0" />
-              <span>5 kVA — 250 kVA Immediate Fleet Allocation</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="size-4 text-[#FF5500] shrink-0" />
-              <span>&lt; 60 Min Emergency Dispatch In Nashik Urban Area</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="size-4 text-[#FF5500] shrink-0" />
-              <span>CPCB-IV+ Silent Acoustic Standards Certified</span>
-            </div>
           </div>
         </div>
 

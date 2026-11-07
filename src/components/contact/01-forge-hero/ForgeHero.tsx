@@ -42,20 +42,6 @@ export function ForgeHero() {
 
       {/* Main Foreground Editorial Content */}
       <div className="relative z-10 max-w-6xl w-full">
-        
-        {/* Subtle Eyebrow Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center gap-3 mb-6 sm:mb-8"
-        >
-          <span className="size-2 rounded-full bg-[#FF5500] animate-pulse" />
-          <span className="font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-[#FF5500] font-semibold">
-            Direct Fleet Dispatch Desk • Nashik
-          </span>
-        </motion.div>
-
         {/* Display Title with Word-by-Word Masked Reveal Animation */}
         <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.08] mb-10 sm:mb-12 flex flex-wrap gap-x-4 sm:gap-x-5 gap-y-1 sm:gap-y-2">
           {headlineWords.map((word, index) => (
