@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="relative min-h-screen bg-[#0A0B0E] text-[#F2F1ED] overflow-x-hidden">
-      {/* 1. Hero: Every deployment starts with a conversation */}
+    <main className="relative min-h-screen bg-[#FAF8F5] text-[#111315] overflow-x-hidden">
+      {/* 1. Hero: Every deployment starts with a conversation (Bright Luxury Theme) */}
       <ForgeHero />
 
       {/* 2. Direct Channels: Phone • Email • Concierge & Logistics • Visit Us */}

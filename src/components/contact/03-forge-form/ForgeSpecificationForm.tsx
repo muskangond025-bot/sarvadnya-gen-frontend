@@ -2,16 +2,17 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, ShieldCheck, Zap, Clock, ArrowRight } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Zap, Clock, ArrowRight } from "lucide-react";
+import { RollingText } from "../common/RollingText";
 
 /**
- * ForgeSpecificationForm Component
+ * ForgeSpecificationForm Component (Bright Luxury Theme)
  * 
  * Exact Forge Automotive Section 2 ("Define Your Specification") architecture:
- * - 2-Column luxury split layout
- * - Minimalist dark fieldsets with smooth focus highlights
+ * - 2-Column luxury split layout on crisp architectural canvas
+ * - Sleek bright fieldsets with smooth focus transitions
+ * - Signature Forge Rolling character submit button
  * - Preserves all contact and quote inquiry fields
- * - Interactive feedback on submission
  */
 export function ForgeSpecificationForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -21,7 +22,6 @@ export function ForgeSpecificationForm() {
     email: "",
     phone: "",
     location: "",
-    depot: "nashik-central",
     capacity: "82.5-125kVA",
     application: "industrial",
     message: "",
@@ -34,10 +34,10 @@ export function ForgeSpecificationForm() {
   };
 
   return (
-    <section id="form" className="relative w-full bg-[#0E1013] text-[#F2F1ED] py-24 sm:py-32 px-6 sm:px-10 lg:px-20 z-20">
+    <section id="form" className="relative w-full bg-white text-[#111315] py-24 sm:py-32 px-6 sm:px-10 lg:px-20 z-20 border-b border-[#E8E2D9]">
       
-      {/* Ambient Copper/Amber Glow */}
-      <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-[#FF5500]/[0.035] blur-[160px] pointer-events-none" />
+      {/* Ambient Warm Glow */}
+      <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-[#FF5500]/[0.03] blur-[150px] pointer-events-none" />
 
       <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
         
@@ -58,7 +58,7 @@ export function ForgeSpecificationForm() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="font-serif text-3xl sm:text-5xl lg:text-6xl text-[#F2F1ED] font-normal leading-[1.1] tracking-tight mb-6"
+              className="font-serif text-3xl sm:text-5xl lg:text-6xl text-[#111315] font-normal leading-[1.1] tracking-tight mb-6"
             >
               Define Your Specification
             </motion.h2>
@@ -68,14 +68,14 @@ export function ForgeSpecificationForm() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-base sm:text-lg text-[#8C8275] leading-relaxed font-sans mb-10 max-w-lg"
+              className="text-base sm:text-lg text-[#625D55] leading-relaxed font-sans mb-10 max-w-lg"
             >
               Share your project parameters, load requirements, and site location. Our senior electrical engineers will prepare an exact, CPCB-IV+ compliant turnkey power proposal within 1–2 business hours.
             </motion.p>
           </div>
 
           {/* Trust Guarantees */}
-          <div className="pt-8 border-t border-white/10 flex flex-col gap-4 text-xs font-mono text-[#8C8275]">
+          <div className="pt-8 border-t border-[#E8E2D9] flex flex-col gap-4 text-xs font-mono text-[#71695F]">
             <div className="flex items-center gap-3">
               <Zap className="size-4 text-[#FF5500] shrink-0" />
               <span>5 kVA — 250 kVA Immediate Fleet Allocation</span>
@@ -97,31 +97,31 @@ export function ForgeSpecificationForm() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="p-10 sm:p-14 rounded-3xl bg-white/[0.03] border border-white/15 text-center flex flex-col items-center justify-center gap-6"
+              className="p-10 sm:p-14 rounded-3xl bg-[#FAF8F5] border border-[#E8E2D9] text-center flex flex-col items-center justify-center gap-6 shadow-sm"
             >
               <div className="size-16 rounded-full bg-[#FF5500]/10 border border-[#FF5500]/30 flex items-center justify-center text-[#FF5500]">
                 <CheckCircle2 className="size-8" />
               </div>
-              <h3 className="font-serif text-3xl text-white font-normal">
+              <h3 className="font-serif text-3xl text-[#111315] font-normal">
                 Enquiry Received
               </h3>
-              <p className="text-[#8C8275] text-base max-w-md mx-auto leading-relaxed">
+              <p className="text-[#625D55] text-base max-w-md mx-auto leading-relaxed">
                 Thank you for defining your power specification. Tanmay Avhad and our engineering dispatch desk are reviewing your details and will contact you via {formData.preferredContact}.
               </p>
               <button
                 type="button"
                 onClick={() => setIsSubmitted(false)}
-                className="mt-4 px-6 py-2.5 rounded-full border border-white/20 text-xs font-mono uppercase tracking-widest text-white/80 hover:text-white hover:border-[#FF5500] transition-colors"
+                className="mt-4 px-7 py-3 rounded-full border border-[#111315]/20 bg-white text-xs font-mono uppercase tracking-widest text-[#111315] hover:border-[#FF5500] hover:text-[#FF5500] transition-colors shadow-2xs cursor-pointer"
               >
                 Submit another enquiry
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-8 w-full">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 w-full p-8 sm:p-12 rounded-3xl bg-[#FAF8F5] border border-[#E8E2D9] shadow-sm">
               
               {/* Full Name Field */}
               <div className="flex flex-col gap-2">
-                <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                   Full Name <span className="text-[#FF5500]">*</span>
                 </label>
                 <input
@@ -130,22 +130,22 @@ export function ForgeSpecificationForm() {
                   placeholder="e.g. Rahul Sharma / Industrial Plant Head"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white placeholder-white/20 outline-none transition-all duration-200"
+                  className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] placeholder-black/30 outline-none transition-all duration-200 shadow-2xs"
                 />
               </div>
 
-              {/* Preferred Contact Method & Contact Details Grid */}
+              {/* Preferred Contact Method & Phone Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 
                 {/* Method */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                  <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                     Preferred Contact Method
                   </label>
                   <select
                     value={formData.preferredContact}
                     onChange={(e) => setFormData({ ...formData, preferredContact: e.target.value })}
-                    className="w-full bg-[#16181C] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white outline-none transition-all duration-200"
+                    className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] outline-none transition-all duration-200 shadow-2xs"
                   >
                     <option value="phone">Direct Phone Call</option>
                     <option value="whatsapp">WhatsApp Message</option>
@@ -155,7 +155,7 @@ export function ForgeSpecificationForm() {
 
                 {/* Phone Number */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                  <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                     Phone Number <span className="text-[#FF5500]">*</span>
                   </label>
                   <input
@@ -164,7 +164,7 @@ export function ForgeSpecificationForm() {
                     placeholder="+91 98000 00000"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white placeholder-white/20 outline-none transition-all duration-200"
+                    className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] placeholder-black/30 outline-none transition-all duration-200 shadow-2xs"
                   />
                 </div>
 
@@ -175,7 +175,7 @@ export function ForgeSpecificationForm() {
                 
                 {/* Email Address */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                  <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                     Email Address <span className="text-[#FF5500]">*</span>
                   </label>
                   <input
@@ -184,13 +184,13 @@ export function ForgeSpecificationForm() {
                     placeholder="name@company.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white placeholder-white/20 outline-none transition-all duration-200"
+                    className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] placeholder-black/30 outline-none transition-all duration-200 shadow-2xs"
                   />
                 </div>
 
                 {/* Site Location */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                  <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                     Site Location / Pincode
                   </label>
                   <input
@@ -198,7 +198,7 @@ export function ForgeSpecificationForm() {
                     placeholder="e.g. Ambad MIDC, Nashik 422010"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white placeholder-white/20 outline-none transition-all duration-200"
+                    className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] placeholder-black/30 outline-none transition-all duration-200 shadow-2xs"
                   />
                 </div>
 
@@ -209,13 +209,13 @@ export function ForgeSpecificationForm() {
                 
                 {/* Generator Capacity */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                  <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                     Required Capacity (kVA)
                   </label>
                   <select
                     value={formData.capacity}
                     onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
-                    className="w-full bg-[#16181C] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white outline-none transition-all duration-200"
+                    className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] outline-none transition-all duration-200 shadow-2xs"
                   >
                     <option value="5-25kVA">5 – 25 kVA (Commercial & Retail)</option>
                     <option value="30-62.5kVA">30 – 62.5 kVA (Events & Medium Load)</option>
@@ -227,13 +227,13 @@ export function ForgeSpecificationForm() {
 
                 {/* Application */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                  <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                     Application / Industry
                   </label>
                   <select
                     value={formData.application}
                     onChange={(e) => setFormData({ ...formData, application: e.target.value })}
-                    className="w-full bg-[#16181C] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white outline-none transition-all duration-200"
+                    className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] outline-none transition-all duration-200 shadow-2xs"
                   >
                     <option value="industrial">Industrial Manufacturing / Plant</option>
                     <option value="wedding">Grand Wedding / VIP Celebration</option>
@@ -247,7 +247,7 @@ export function ForgeSpecificationForm() {
 
               {/* Message / Project Details */}
               <div className="flex flex-col gap-2">
-                <label className="font-mono text-xs uppercase tracking-wider text-[#8C8275]">
+                <label className="font-mono text-xs uppercase tracking-wider text-[#71695F] font-semibold">
                   Project Notes & Specific Requirements (Optional)
                 </label>
                 <textarea
@@ -255,18 +255,18 @@ export function ForgeSpecificationForm() {
                   placeholder="Tell us about your expected peak load, daily operating hours, diesel logistics preference, or site constraints..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.07] border border-white/10 focus:border-[#FF5500] rounded-xl px-5 py-4 text-base text-white placeholder-white/20 outline-none transition-all duration-200 resize-none"
+                  className="w-full bg-white border border-[#E8E2D9] focus:border-[#FF5500] focus:ring-2 focus:ring-[#FF5500]/15 rounded-xl px-5 py-3.5 text-base text-[#111315] placeholder-black/30 outline-none transition-all duration-200 resize-none shadow-2xs"
                 />
               </div>
 
-              {/* Submit Button Matching Forge Style */}
+              {/* Submit Button Matching Forge Style with Rolling Character Animation */}
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-4 px-10 py-5 rounded-full bg-[#FF5500] hover:bg-[#E04B00] text-white font-mono text-xs sm:text-sm uppercase tracking-[0.22em] font-bold shadow-xl shadow-[#FF5500]/20 transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] cursor-pointer group"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 px-10 py-5 rounded-full bg-[#111315] hover:bg-[#FF5500] text-white font-mono text-xs sm:text-sm uppercase tracking-[0.22em] font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] cursor-pointer"
                 >
-                  <span>Submit Enquiry</span>
-                  <ArrowRight className="size-4 group-hover:translate-x-1.5 transition-transform duration-300" />
+                  <RollingText text="Submit Enquiry" charClassName="group-hover:text-white" />
+                  <ArrowRight className="size-4 text-[#FF5500] group-hover:text-white group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
               </div>
 
@@ -279,4 +279,3 @@ export function ForgeSpecificationForm() {
     </section>
   );
 }
-
