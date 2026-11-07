@@ -16,7 +16,6 @@ import {
   Phone,
   ArrowRight,
   CheckCircle2,
-  Sparkles,
 } from "lucide-react";
 import { SectionHeading, type IconName, type ProductDetailsData } from "@/components/common";
 import { cn } from "@/lib/utils";
@@ -200,18 +199,6 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                 transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col"
               >
-                {/* Monospace Telemetry / Category */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="size-2 rounded-full bg-[#FF5500] animate-pulse" />
-                  <span className="font-mono text-xs uppercase tracking-widest text-[#FF5500] font-bold">
-                    {currentGen.id === "gen-5" ? t("range.entrySeries") : currentGen.id === "gen-30" || currentGen.id === "gen-65" ? t("range.midSeries") : t("range.heavySeries")}
-                  </span>
-                  <span className="text-[#A8A29E] font-mono text-xs">•</span>
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-[#625D55] font-semibold">
-                    {currentGen.badge} {t("range.soundproofFleet")}
-                  </span>
-                </div>
-
                 {/* Main Heading */}
                 <h3 className="font-sans font-extrabold text-2xl sm:text-3xl lg:text-[38px] text-[#1F1F1E] tracking-tight leading-[1.16] mb-2">
                   {t(`range.${currentGen.id.replace("-", "")}.title`, currentGen.title)}
@@ -229,14 +216,15 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                   {t(`range.${currentGen.id.replace("-", "")}.desc`, currentGen.description)}
                 </p>
 
-                {/* Recommended Power Loads (Makes sizing instantly easy to understand) */}
+                {/* Precision Load Engineering Metric (Minimalist Architectural Row, No Box / No Card) */}
                 {currentGen.recommendedLoads && (
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E8E2D9] mb-6 flex items-start gap-2.5">
-                    <Sparkles className="w-4 h-4 text-[#FF5500] shrink-0 mt-0.5" />
-                    <div className="text-xs sm:text-sm text-[#1F1F1E]">
-                      <span className="font-bold text-[#1F1F1E]">{t("range.powers")}</span>
-                      <span className="text-[#625D55]">{t(`range.${currentGen.id.replace("-", "")}.loads`, currentGen.recommendedLoads)}</span>
-                    </div>
+                  <div className="flex items-baseline gap-2.5 py-3 border-b border-[#E8E2D9] mb-6 text-xs sm:text-sm">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#FF5500] shrink-0">
+                      {t("range.powers")}
+                    </span>
+                    <span className="text-[#1F1F1E] font-medium leading-relaxed">
+                      {t(`range.${currentGen.id.replace("-", "")}.loads`, currentGen.recommendedLoads)}
+                    </span>
                   </div>
                 )}
 

@@ -159,12 +159,6 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
             );
           })}
         </div>
-
-        {/* Realtime Operational Status Note */}
-        <div className="hidden md:flex items-center gap-2 text-xs font-mono text-[#625D55]">
-          <span className="size-2 rounded-full bg-[#FF5500] animate-pulse" />
-          <span>{t("services.dispatchFleet")}</span>
-        </div>
       </div>
 
       {/* 
@@ -184,17 +178,6 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
               transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col"
             >
-              {/* Capacity Telemetry Pill & Tagline */}
-              <div className="flex items-center gap-2 mb-3">
-                <span className="font-mono text-xs uppercase tracking-widest text-[#FF5500] font-bold">
-                  {activeVertical.capacity}
-                </span>
-                <span className="text-[#A8A29E] font-mono text-xs">•</span>
-                <span className="font-mono text-[11px] uppercase tracking-wider text-[#625D55] font-semibold">
-                  {activeVertical.index === "01" ? t("services.v1.tagline") : activeVertical.index === "02" ? t("services.v2.tagline") : t("services.v3.tagline")}
-                </span>
-              </div>
-
               {/* Display Headline */}
               <h3 className="font-sans font-extrabold text-2xl sm:text-3xl lg:text-[38px] text-[#1F1F1E] tracking-tight leading-[1.16] mb-2">
                 {activeVertical.index === "01" ? t("services.tab1") : activeVertical.index === "02" ? t("services.tab2") : t("services.tab3")}
