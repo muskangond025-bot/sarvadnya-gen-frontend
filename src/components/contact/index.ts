@@ -1,10 +1,4 @@
-// Contact Us Components - Sequential Section-by-Section Barrel Export
-
-// 01. Direct Support Sidebar & Booking Inquiry Form
-export * from "./01-main-form";
-
-// 02. 24/7 Hotline & Emergency Channels
-export * from "./02-emergency-channels";
-
-// 03. Interactive Facility & Service Map
-export * from "./03-map";
+export { ForgeHero } from "./01-forge-hero/ForgeHero";
+export { ForgeContactChannels } from "./02-forge-channels/ForgeContactChannels";
+export { ForgeSpecificationForm } from "./03-forge-form/ForgeSpecificationForm";
+export { ForgeProcessCards } from "./04-forge-process/ForgeProcessCards";
