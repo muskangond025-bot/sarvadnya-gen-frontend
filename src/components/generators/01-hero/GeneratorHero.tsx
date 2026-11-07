@@ -22,37 +22,37 @@ export function GeneratorHero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-[#111315] leading-tight mb-6 font-['Poppins',sans-serif]">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-[#111315] leading-tight mb-6 font-['Poppins',sans-serif]">
               Industrial Generator <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5500] to-[#E04400]">
                 Rentals Across Maharashtra
               </span>
             </h1>
             
-            <p className="text-xl text-[#625D55] mb-10 max-w-xl font-['Outfit',sans-serif] leading-relaxed">
+            <p className="text-base sm:text-xl text-[#625D55] mb-8 sm:mb-10 max-w-xl font-['Outfit',sans-serif] leading-relaxed">
               Silent DG Sets from <span className="text-[#111315] font-semibold">5kVA to 250kVA</span> for Events, Construction, Hospitals & Emergency Backup. Reliable power when you need it most.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-10 sm:mb-12 w-full sm:w-auto">
               <button 
                 onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-[#FF5500] text-white font-bold rounded-xl hover:bg-[#E04400] transition-all transform hover:scale-105 flex items-center gap-2 group shadow-lg shadow-[#FF5500]/20"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 bg-[#FF5500] text-white font-bold rounded-xl hover:bg-[#E04400] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 group shadow-lg shadow-[#FF5500]/20 w-full sm:w-auto text-center cursor-pointer"
               >
-                Browse Generators
+                <span>Browse Generators</span>
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <Link 
                 href="/contact" 
-                className="px-8 py-4 bg-white text-[#111315] font-bold rounded-xl border border-[#E8E2D9] hover:bg-[#FAF8F5] hover:border-[#FF5500]/40 transition-all flex items-center gap-2 shadow-xs"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-[#111315] font-bold rounded-xl border border-[#E8E2D9] hover:bg-[#FAF8F5] hover:border-[#FF5500]/40 transition-all flex items-center justify-center gap-2 shadow-xs w-full sm:w-auto text-center"
               >
                 Get Instant Quote
               </Link>
               <a 
                 href="tel:+916262629944" 
-                className="px-8 py-4 bg-red-50 text-red-600 font-bold rounded-xl border border-red-200 hover:bg-red-100 transition-all flex items-center gap-2"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 bg-red-50 text-red-600 font-bold rounded-xl border border-red-200 hover:bg-red-100 transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-center"
               >
                 <Zap className="w-5 h-5 fill-current" />
-                Emergency Rental
+                <span>Emergency Rental</span>
               </a>
             </div>
 
@@ -83,7 +83,7 @@ export function GeneratorHero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white border border-[#E8E2D9] rounded-3xl p-8 shadow-xl"
+            className="bg-white border border-[#E8E2D9] rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl"
           >
             <h3 className="text-2xl font-bold text-[#111315] mb-6 font-['Poppins',sans-serif]">Find Your Perfect Match</h3>
             

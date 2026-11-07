@@ -31,7 +31,7 @@ export function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="w-full bg-[#FAF8F5] text-[#1F1F1E] relative overflow-hidden border-t border-[#E8E2D9] select-none flex flex-col justify-between">
+    <footer className="w-full bg-[#FAF8F5] text-[#1F1F1E] relative overflow-hidden border-t border-[#E8E2D9] select-none flex flex-col">
       
       {/* 
         INTEGRATED BRIGHT STAGE: Bulbs + Open Free-Space Typography + Generator Truck Track
@@ -39,10 +39,10 @@ export function Footer() {
       */}
       <GeneratorTruckTrack>
         {/* Floating Content Stage (Directly in open free space, ZERO CARDS, tight cohesive spacing) */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 sm:pt-7 pb-2 sm:pb-3 w-full z-30">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-1 w-full z-30">
           
           {/* Subtle Watermarked Background Marque */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-black text-5xl sm:text-7xl lg:text-[110px] text-black/[0.035] select-none pointer-events-none whitespace-nowrap tracking-tighter">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-black text-4xl sm:text-7xl lg:text-[110px] text-black/[0.035] select-none pointer-events-none whitespace-nowrap tracking-tighter">
             SARVADNYA POWER
           </div>
 
@@ -84,7 +84,7 @@ export function Footer() {
             </div>
 
             {/* Column 2: Core Rental Capacities (3 cols) */}
-            <div className="lg:col-span-3 flex flex-col justify-between h-full py-1 lg:border-l lg:border-black/10 lg:pl-8">
+            <div className="lg:col-span-3 flex flex-col justify-between h-full py-1 pt-4 md:pt-1 border-t border-black/10 md:border-t-0 lg:border-l lg:border-black/10 lg:pl-8">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Zap className="w-3.5 h-3.5 text-[#FF5500]" />
@@ -109,7 +109,7 @@ export function Footer() {
             </div>
 
             {/* Column 3: Nashik Depots & Quick Navigation (4 cols) */}
-            <div className="lg:col-span-4 flex flex-col justify-between h-full py-1 lg:border-l lg:border-black/10 lg:pl-8">
+            <div className="lg:col-span-4 flex flex-col justify-between h-full py-1 pt-4 md:pt-1 border-t border-black/10 md:border-t-0 lg:border-l lg:border-black/10 lg:pl-8">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-3.5 h-3.5 text-[#FF5500]" />
@@ -136,7 +136,7 @@ export function Footer() {
                   <Mail className="w-3.5 h-3.5 text-[#FF5500]" />
                   <span>info@sarvadnyagenerators.com</span>
                 </a>
-                <div className="flex items-center gap-3 text-xs text-[#7A756D] pt-1">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-[#7A756D] pt-1">
                   <Link href="/about" className="hover:text-[#1F1F1E] transition-colors">{t("footer.about")}</Link>
                   <Link href="/blog" className="hover:text-[#1F1F1E] transition-colors">{t("footer.sizingGuides")}</Link>
                   <Link href="/contact" className="hover:text-[#1F1F1E] transition-colors">{t("footer.contact")}</Link>
@@ -154,7 +154,7 @@ export function Footer() {
       <div className="w-full bg-[#EFEAE1] border-t border-black/10 py-2.5 sm:py-3 px-4 sm:px-6 lg:px-8 shrink-0">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] sm:text-xs text-[#7A756D]">
           <p>&copy; {new Date().getFullYear()} {t("footer.rightsReserved")}</p>
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
             <Link href="/privacy" className="hover:text-[#1F1F1E] transition-colors">{t("footer.privacyPolicy")}</Link>
             <Link href="/terms" className="hover:text-[#1F1F1E] transition-colors">{t("footer.termsOfRental")}</Link>
             <span className="text-[#FF5500] font-mono font-medium">{t("footer.coverageTag")}</span>

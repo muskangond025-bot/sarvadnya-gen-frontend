@@ -32,10 +32,8 @@ export default function ServicesPage() {
       {/* 5. Frequently Asked Questions (Homepage 2-Column Style) */}
       <FAQSection />
 
-      {/* 6. Emergency Dispatch CTA with generous breathing room before footer */}
-      <div className="pb-20 sm:pb-28 lg:pb-36">
-        <ServicesCTA />
-      </div>
+      {/* 6. Emergency Dispatch CTA */}
+      <ServicesCTA />
     </main>
   );
 }

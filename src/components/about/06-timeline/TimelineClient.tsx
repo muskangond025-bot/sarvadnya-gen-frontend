@@ -88,7 +88,7 @@ export function TimelineClient({ items }: TimelineClientProps) {
         />
 
         <div
-          className="relative w-full max-w-6xl flex-1 mt-8 px-8 overflow-hidden"
+          className="relative w-full max-w-6xl flex-1 mt-8 px-4 sm:px-8 overflow-hidden"
           style={{
             maskImage:
               "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
@@ -96,21 +96,21 @@ export function TimelineClient({ items }: TimelineClientProps) {
               "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
           }}
         >
-          <div className="absolute left-4 md:left-1/2 top-0 h-full w-1 bg-white/10 transform md:-translate-x-1/2" />
+          <div className="absolute left-3 sm:left-4 md:left-1/2 top-0 h-full w-1 bg-white/10 transform md:-translate-x-1/2" />
           <div
             ref={lineRef}
-            className="absolute left-4 md:left-1/2 top-0 w-1 bg-[#00ff8f] transform md:-translate-x-1/2"
+            className="absolute left-3 sm:left-4 md:left-1/2 top-0 w-1 bg-[#00ff8f] transform md:-translate-x-1/2"
             style={{ height: "0%" }}
           />
           <div
             ref={dotRef}
-            className="absolute left-4 md:left-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#00ff8f] z-30 transform md:-translate-x-1/2 -translate-y-1/2 shadow-[0_0_50px_rgba(0,255,143,1)]"
+            className="absolute left-3 sm:left-4 md:left-1/2 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-[#00ff8f] z-30 transform md:-translate-x-1/2 -translate-y-1/2 shadow-[0_0_50px_rgba(0,255,143,1)]"
             style={{ top: "5%" }}
           />
 
           <div
             ref={timelineContentRef}
-            className="relative flex flex-col gap-16 md:gap-20 py-16"
+            className="relative flex flex-col gap-12 sm:gap-16 md:gap-20 py-12 sm:py-16"
           >
             {items.map((item, index) => {
               const isLeft = index % 2 === 0;
@@ -118,13 +118,13 @@ export function TimelineClient({ items }: TimelineClientProps) {
                 <div
                   key={item.id}
                   className={cn(
-                    "timeline-item flex w-full items-start md:items-center gap-8 md:gap-0",
+                    "timeline-item flex w-full items-start md:items-center gap-6 sm:gap-8 md:gap-0",
                     isLeft ? "md:flex-row" : "md:flex-row-reverse"
                   )}
                 >
                   <div
                     className={cn(
-                      "w-full md:w-[42%] p-6 md:p-8 rounded-2xl border border-white/10 ml-8 md:ml-0",
+                      "w-full md:w-[42%] p-5 sm:p-8 rounded-2xl border border-white/10 ml-6 sm:ml-8 md:ml-0",
                       isLeft ? "md:text-right" : "md:text-left",
                       item.featured
                         ? "bg-linear-to-br from-[#003d21] to-[#0a0a0a]"

@@ -9,17 +9,17 @@ import { Logo } from "@/components/common";
  */
 export function Community() {
   return (
-    <section className="w-full py-[100px] flex flex-col items-center justify-center relative overflow-hidden bg-linear-to-b from-black to-[#052014]">
+    <section className="w-full py-16 sm:py-[100px] px-4 flex flex-col items-center justify-center relative overflow-hidden bg-linear-to-b from-black to-[#052014]">
       {/* Title */}
-      <h2 className="text-white text-[48px] font-medium text-center mb-[20px] font-['Poppins',sans-serif]">
+      <h2 className="text-white text-3xl sm:text-[48px] font-medium text-center mb-4 sm:mb-[20px] font-['Poppins',sans-serif]">
         The Sarvadnya <span className="text-[#00ff8f]">Promise</span>
       </h2>
-      <p className="text-[#bfbfbf] text-center max-w-[800px] mb-[80px] font-['Outfit',sans-serif] text-lg px-6">
+      <p className="text-[#bfbfbf] text-center max-w-[800px] mb-10 sm:mb-[80px] font-['Outfit',sans-serif] text-base sm:text-lg px-2 sm:px-6 leading-relaxed">
         We deliver uninterrupted power with fast response times, well-maintained equipment, and dedicated 24/7 technical support.
       </p>
 
       {/* Orbit System */}
-      <div className="relative w-[800px] h-[400px] flex items-center justify-center">
+      <div className="relative w-full max-w-[800px] h-[280px] sm:h-[400px] flex items-center justify-center overflow-hidden sm:overflow-visible scale-90 sm:scale-100">
         {/* Center Logo */}
         <div className="relative z-10 w-[100px] h-[100px] flex items-center justify-center bg-[#0d2b1d] rounded-[24px] border border-[#00ff8f]/20 shadow-[0_0_50px_-10px_rgba(0,255,143,0.3)]">
           <Logo iconOnly variant="on-dark" />

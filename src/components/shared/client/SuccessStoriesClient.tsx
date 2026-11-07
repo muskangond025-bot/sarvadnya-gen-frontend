@@ -112,57 +112,57 @@ export function SuccessStoriesClient() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           
           {/* Stat 1: 60% Downtime Reduction */}
-          <div className="flex items-start gap-5 pr-4 md:border-r md:border-[#E8E2D9]">
+          <div className="flex items-start gap-4 sm:gap-5 pr-4 md:border-r md:border-[#E8E2D9]">
             <div className="text-[#FF5500] shrink-0 mt-1">
-              <TrendingUp className="size-12 sm:size-14 stroke-[1.8]" />
+              <TrendingUp className="size-10 sm:size-14 stroke-[1.8]" />
             </div>
             <div className="flex flex-col">
-              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
+              <div className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
                 <CounterNumber value={60} duration={1.6} />
                 <span className="text-[#FF5500]">%</span>
               </div>
               <div className="text-base sm:text-lg font-bold text-[#111315] font-['Poppins',sans-serif] mt-1">
                 Downtime Reduction
               </div>
-              <div className="text-sm text-[#71695F] font-['Outfit',sans-serif] mt-0.5 leading-normal">
+              <div className="text-xs sm:text-sm text-[#71695F] font-['Outfit',sans-serif] mt-0.5 leading-normal">
                 Average improvement in first 6 months
               </div>
             </div>
           </div>
 
           {/* Stat 2: 2.5k+ Units Served */}
-          <div className="flex items-start gap-5 pr-4 md:border-r md:border-[#E8E2D9]">
+          <div className="flex items-start gap-4 sm:gap-5 pr-4 md:border-r md:border-[#E8E2D9]">
             <div className="text-[#FF5500] shrink-0 mt-1">
-              <Users className="size-12 sm:size-14 stroke-[1.8]" />
+              <Users className="size-10 sm:size-14 stroke-[1.8]" />
             </div>
             <div className="flex flex-col">
-              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
+              <div className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
                 <CounterNumber value={2.5} decimals={1} duration={1.8} />
                 <span className="text-[#FF5500]">k+</span>
               </div>
               <div className="text-base sm:text-lg font-bold text-[#111315] font-['Poppins',sans-serif] mt-1">
                 Industrial Units Served
               </div>
-              <div className="text-sm text-[#71695F] font-['Outfit',sans-serif] mt-0.5 leading-normal">
+              <div className="text-xs sm:text-sm text-[#71695F] font-['Outfit',sans-serif] mt-0.5 leading-normal">
                 Powering businesses across Maharashtra
               </div>
             </div>
           </div>
 
           {/* Stat 3: 4.9/5 Rating */}
-          <div className="flex items-start gap-5">
+          <div className="flex items-start gap-4 sm:gap-5">
             <div className="text-[#FF5500] shrink-0 mt-1">
-              <Star className="size-12 sm:size-14 stroke-[1.8]" />
+              <Star className="size-10 sm:size-14 stroke-[1.8]" />
             </div>
             <div className="flex flex-col">
-              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
+              <div className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
                 <CounterNumber value={4.9} decimals={1} duration={1.5} />
                 <span className="text-[#FF5500]">/5</span>
               </div>
               <div className="text-base sm:text-lg font-bold text-[#111315] font-['Poppins',sans-serif] mt-1">
                 Client Rating
               </div>
-              <div className="text-sm text-[#71695F] font-['Outfit',sans-serif] mt-0.5 leading-normal">
+              <div className="text-xs sm:text-sm text-[#71695F] font-['Outfit',sans-serif] mt-0.5 leading-normal">
                 Based on 500+ verified customer reviews
               </div>
             </div>

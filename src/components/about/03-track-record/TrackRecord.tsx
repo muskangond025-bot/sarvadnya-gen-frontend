@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/common";
  */
 export function TrackRecord() {
   return (
-    <section className="w-full min-h-[100dvh] flex flex-col justify-center items-center py-12 lg:py-16 px-4 sm:px-6 lg:px-8 gap-8 lg:gap-10 relative overflow-hidden">
+    <section className="w-full flex flex-col justify-center items-center py-16 sm:py-24 px-4 sm:px-6 lg:px-8 gap-8 lg:gap-10 relative overflow-hidden">
       <div className="text-center">
         <SectionHeading
           label="OUR IMPACT"

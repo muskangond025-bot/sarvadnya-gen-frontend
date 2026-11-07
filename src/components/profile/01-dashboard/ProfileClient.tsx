@@ -97,20 +97,20 @@ export function ProfileClient() {
   };
 
   return (
-    <div className="min-h-screen bg-black pt-32 pb-20 px-4 md:px-8">
+    <div className="min-h-screen bg-black pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold text-white font-['Poppins',sans-serif]">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white font-['Poppins',sans-serif]">
             My <span className="text-brand-green">Profile</span>
           </h1>
-          <p className="text-white/60 text-xl mt-4">
+          <p className="text-white/60 text-base sm:text-xl mt-2 sm:mt-4">
             Manage your bookings, sites, and rental history
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex overflow-x-auto gap-2 mb-8 pb-4 border-b border-white/10">
+        <div className="flex overflow-x-auto gap-2 mb-8 pb-4 border-b border-white/10 no-scrollbar">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             return (

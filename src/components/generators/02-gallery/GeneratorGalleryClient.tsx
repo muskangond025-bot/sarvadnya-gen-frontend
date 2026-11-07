@@ -332,7 +332,7 @@ export default function GeneratorGallery() {
 
   return (
     <LayoutGroup>
-      <section className="w-full py-[100px] px-6 md:px-10 lg:px-[60px]">
+      <section className="w-full py-14 sm:py-20 px-4 sm:px-6 md:px-10 lg:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <SectionHeading
             title={
@@ -345,15 +345,15 @@ export default function GeneratorGallery() {
             align="left"
           />
 
-          <p className="font-['Outfit',sans-serif] text-[#625D55] text-[18px] leading-[1.6] max-w-[540px] mt-6 mb-12">
+          <p className="font-['Outfit',sans-serif] text-[#625D55] text-base sm:text-[18px] leading-[1.6] max-w-[540px] mt-4 sm:mt-6 mb-8 sm:mb-12">
             Explore our complete range of generators. Click on any generator to
             view detailed specifications and pricing.
           </p>
 
           {/* Intelligent Multi-Tab Filters */}
-          <div className="flex flex-col gap-8 mb-12">
+          <div className="flex flex-col gap-6 sm:gap-8 mb-10 sm:mb-12">
             {/* Top Level Groups */}
-            <div className="flex flex-wrap gap-2.5 p-1.5 bg-[#EFECE6] rounded-2xl w-fit border border-[#E8E2D9]">
+            <div className="flex flex-wrap gap-2 p-1.5 bg-[#EFECE6] rounded-2xl w-full sm:w-fit border border-[#E8E2D9]">
               {FILTER_GROUPS.map((group) => (
                 <button
                   key={group.id}
@@ -362,7 +362,7 @@ export default function GeneratorGallery() {
                     setActiveSubFilter("all");
                   }}
                   className={cn(
-                    "px-6 py-3 rounded-xl font-['Poppins',sans-serif] text-sm font-bold transition-all",
+                    "flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-['Poppins',sans-serif] text-xs sm:text-sm font-bold transition-all text-center",
                     activeGroup === group.id 
                       ? "bg-[#FF5500] text-white shadow-[0_4px_14px_rgba(255,85,0,0.25)]" 
                       : "text-[#625D55] hover:text-[#111315] hover:bg-white/60"
@@ -375,7 +375,7 @@ export default function GeneratorGallery() {
 
             {/* Sub-Filters */}
             <div className="flex flex-wrap items-center gap-3">
-              <Filter className="w-5 h-5 text-[#FF5500] shrink-0" />
+              <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF5500] shrink-0" />
               <div className="flex flex-wrap gap-2">
                 {(activeGroup === "power" ? POWER_FILTERS : 
                   activeGroup === "usage" ? USAGE_FILTERS : 

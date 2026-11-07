@@ -28,7 +28,7 @@ export function HeroClient() {
         }}
         className="relative z-10 w-full h-full flex items-center justify-center"
       >
-        <div className="relative w-full h-[360px] sm:h-[440px] lg:h-[480px] filter drop-shadow-[0_28px_48px_rgba(31,31,30,0.20)]">
+        <div className="relative w-full h-[240px] sm:h-[360px] lg:h-[460px] filter drop-shadow-[0_28px_48px_rgba(31,31,30,0.20)]">
           <Image
             src="/images/generators/generator_10.png"
             alt="Sarvadnya Silent Industrial Generator"

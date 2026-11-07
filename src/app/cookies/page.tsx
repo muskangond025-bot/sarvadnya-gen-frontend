@@ -15,21 +15,21 @@ export default function CookiesPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-black pt-32 pb-24 px-6 md:px-10 lg:px-[60px]">
+    <main className="min-h-screen bg-black pt-28 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 md:px-10 lg:px-[60px]">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row gap-16">
+        <div className="flex flex-col lg:flex-row gap-10 sm:gap-16">
           
           {/* Main Content Area */}
           <div className="flex-1 max-w-4xl">
             {/* Header Section */}
-            <header className="mb-20">
+            <header className="mb-12 sm:mb-20">
               <div className="flex items-center gap-3 mb-6">
                 <div className="size-2 rounded-full bg-[#00ff8f] shadow-[0_0_10px_#00ff8f]" />
                 <span className="text-[#00ff8f] font-['Outfit',sans-serif] text-sm font-bold uppercase tracking-[0.2em]">
                   Data Preferences
                 </span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold text-white font-['Poppins',sans-serif] leading-tight mb-8">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white font-['Poppins',sans-serif] leading-tight mb-6 sm:mb-8">
                 Cookie <span className="text-[#00ff8f]">Policy</span>
               </h1>
               <p className="text-white/40 text-lg font-['Outfit',sans-serif]">

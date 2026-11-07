@@ -58,8 +58,20 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
   const [isPaused, setIsPaused] = useState(false);
   const { t } = useLanguage();
   const visualRef = useRef<HTMLDivElement | null>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const activeVertical = verticals[activeIndex] || verticals[0];
+
+  // Auto-scroll active tab into view on mobile
+  useEffect(() => {
+    if (tabRefs.current[activeIndex]) {
+      tabRefs.current[activeIndex]?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [activeIndex]);
 
   // 3D Interactive Mouse Tracking on the Visual Theater
   const mouseX = useMotionValue(0);
@@ -103,61 +115,78 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
       {/* 
         MASTER NAVIGATION TIMELINE (OPEN HORIZONTAL TRACK, NO CARD)
       */}
-      <div className="w-full flex items-center justify-between border-b border-[#E8E2D9] pb-4 mb-8 sm:mb-12 overflow-x-auto no-scrollbar">
-        <div className="flex items-center gap-3 sm:gap-6 min-w-max">
-          {verticals.map((vertical, index) => {
-            const isActive = activeIndex === index;
-            return (
-              <button
-                key={vertical.id}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Select ${vertical.title}`}
-                className={cn(
-                  "group relative py-2 px-3 sm:px-4 rounded-xl flex items-center gap-2.5 transition-all duration-300 cursor-pointer select-none text-left",
-                  isActive
-                    ? "text-[#1F1F1E] bg-[#FAF8F5]"
-                    : "text-[#625D55] hover:text-[#1F1F1E] hover:bg-white/60"
-                )}
-              >
-                {/* Numeric Monospace Index */}
-                <span
+      <div className="relative w-full mb-8 sm:mb-12">
+        {/* Mobile Swipe Cue & Counter */}
+        <div className="flex sm:hidden items-center justify-between px-1 mb-2 text-[11px] font-mono text-[#7A756D]">
+          <span className="text-[#FF5500] font-bold tracking-wider">
+            0{activeIndex + 1} / 0{verticals.length}
+          </span>
+          <span className="flex items-center gap-1 text-[#FF5500] font-semibold">
+            Swipe to explore <ArrowRight className="w-3 h-3 animate-pulse" />
+          </span>
+        </div>
+
+        {/* Left & Right Edge Gradient Fade Masks for Mobile Peeking Affordance */}
+        <div className="pointer-events-none absolute left-0 top-6 bottom-4 w-6 bg-gradient-to-r from-[#FAF8F5] to-transparent z-10 sm:hidden" />
+        <div className="pointer-events-none absolute right-0 top-6 bottom-4 w-8 bg-gradient-to-l from-[#FAF8F5] to-transparent z-10 sm:hidden" />
+
+        <div className="w-full flex items-center justify-between border-b border-[#E8E2D9] pb-4 overflow-x-auto no-scrollbar scroll-smooth">
+          <div className="flex items-center gap-3 sm:gap-6 min-w-max px-1">
+            {verticals.map((vertical, index) => {
+              const isActive = activeIndex === index;
+              return (
+                <button
+                  key={vertical.id}
+                  ref={(el) => { tabRefs.current[index] = el; }}
+                  onClick={() => setActiveIndex(index)}
+                  aria-label={`Select ${vertical.title}`}
                   className={cn(
-                    "font-mono text-xs sm:text-sm font-bold transition-colors",
-                    isActive ? "text-[#FF5500]" : "text-[#A8A29E] group-hover:text-[#625D55]"
+                    "group relative py-2 px-3 sm:px-4 rounded-xl flex items-center gap-2.5 transition-all duration-300 cursor-pointer select-none text-left shrink-0",
+                    isActive
+                      ? "text-[#1F1F1E] bg-[#FAF8F5]"
+                      : "text-[#625D55] hover:text-[#1F1F1E] hover:bg-white/60"
                   )}
                 >
-                  {vertical.index}
-                </span>
+                  {/* Numeric Monospace Index */}
+                  <span
+                    className={cn(
+                      "font-mono text-xs sm:text-sm font-bold transition-colors",
+                      isActive ? "text-[#FF5500]" : "text-[#A8A29E] group-hover:text-[#625D55]"
+                    )}
+                  >
+                    {vertical.index}
+                  </span>
 
-                {/* Vertical Label */}
-                <span className="font-sans font-bold text-sm sm:text-base tracking-tight">
-                  {vertical.index === "01" ? t("services.tab1") : vertical.index === "02" ? t("services.tab2") : t("services.tab3")}
-                </span>
+                  {/* Vertical Label */}
+                  <span className="font-sans font-bold text-sm sm:text-base tracking-tight">
+                    {vertical.index === "01" ? t("services.tab1") : vertical.index === "02" ? t("services.tab2") : t("services.tab3")}
+                  </span>
 
-                {/* Active Indicator Underline */}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeVerticalTab"
-                    className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#FF5500] rounded-full"
-                    transition={{ type: "spring", stiffness: 350, damping: 32 }}
-                  />
-                )}
-
-                {/* Linear Cycle Progress Bar (Active tab only) */}
-                {isActive && !isPaused && (
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E8E2D9] rounded-full overflow-hidden">
+                  {/* Active Indicator Underline */}
+                  {isActive && (
                     <motion.div
-                      key={`progress-${activeIndex}`}
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: CYCLE_DURATION / 1000, ease: "linear" }}
-                      className="h-full bg-[#FF5500]"
+                      layoutId="activeVerticalTab"
+                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#FF5500] rounded-full"
+                      transition={{ type: "spring", stiffness: 350, damping: 32 }}
                     />
-                  </div>
-                )}
-              </button>
-            );
-          })}
+                  )}
+
+                  {/* Linear Cycle Progress Bar (Active tab only) */}
+                  {isActive && !isPaused && (
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E8E2D9] rounded-full overflow-hidden">
+                      <motion.div
+                        key={`progress-${activeIndex}`}
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: CYCLE_DURATION / 1000, ease: "linear" }}
+                        className="h-full bg-[#FF5500]"
+                      />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -209,10 +238,10 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
               </div>
 
               {/* Direct Conversion Action */}
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <Link
                   href={activeVertical.href}
-                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group/btn"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group/btn w-full sm:w-auto text-center"
                 >
                   <span>{activeVertical.index === "01" ? t("services.v1.cta") : activeVertical.index === "02" ? t("services.v2.cta") : t("services.v3.cta")}</span>
                   <ArrowRight className="w-4 h-4 text-[#FF5500] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
@@ -220,7 +249,7 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
 
                 <Link
                   href="/services"
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#625D55] hover:text-[#1F1F1E] transition-colors py-2"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-[#625D55] hover:text-[#1F1F1E] transition-colors py-2"
                 >
                   <span>{t("services.guide")}</span>
                   <span className="text-[#FF5500]">→</span>
@@ -237,14 +266,14 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
           ref={visualRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="lg:col-span-6 relative w-full h-[320px] sm:h-[400px] lg:h-[480px] flex items-center justify-center select-none"
+          className="lg:col-span-6 relative w-full h-[260px] sm:h-[400px] lg:h-[480px] flex items-center justify-center select-none"
           style={{ perspective: 1200 }}
         >
           {/* Ambient Warm Volumetric Aura */}
-          <div className="absolute w-[440px] sm:w-[540px] h-[300px] sm:h-[380px] bg-[#FF5500]/[0.08] blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute w-[300px] sm:w-[540px] h-[220px] sm:h-[380px] bg-[#FF5500]/[0.08] blur-[80px] sm:blur-[100px] rounded-full pointer-events-none" />
 
           {/* Environmental Backdrop Aperture (Contextual Photo Fades In Gracefully) */}
-          <div className="absolute inset-4 sm:inset-6 rounded-3xl overflow-hidden opacity-35 mix-blend-multiply pointer-events-none">
+          <div className="absolute inset-2 sm:inset-6 rounded-3xl overflow-hidden opacity-35 mix-blend-multiply pointer-events-none">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeVertical.id}
@@ -274,7 +303,7 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 0.22, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="font-sans font-black text-6xl sm:text-8xl lg:text-9xl text-[#1F1F1E] tracking-tighter select-none"
+              className="font-sans font-black text-5xl sm:text-8xl lg:text-9xl text-[#1F1F1E] tracking-tighter select-none"
             >
               {activeVertical.capacity.split(" ")[0]}
             </motion.span>
@@ -297,7 +326,7 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
               duration: 4.8,
               ease: "easeInOut",
             }}
-            className="relative z-20 w-4/5 sm:w-3/4 h-[220px] sm:h-[300px] lg:h-[360px] flex items-center justify-center"
+            className="relative z-20 w-[90%] sm:w-3/4 h-[190px] sm:h-[300px] lg:h-[360px] flex items-center justify-center"
           >
             <AnimatePresence mode="wait">
               <motion.div

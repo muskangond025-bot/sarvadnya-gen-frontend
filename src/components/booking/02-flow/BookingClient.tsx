@@ -277,7 +277,7 @@ export function BookingClient({ generators }: BookingClientProps) {
   }, [selectedDates]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 pb-32">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-16 sm:pb-24">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
         {/* Left Column - Calendar & Power */}
         <div className="lg:col-span-2 space-y-16">

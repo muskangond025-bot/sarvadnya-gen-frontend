@@ -63,7 +63,7 @@ export function ProcessWorkflowClient({ stages }: { stages: WorkflowStage[] }) {
               </div>
 
               {/* Stage Card */}
-              <div className="flex flex-col justify-between flex-grow p-7 sm:p-8 rounded-3xl border border-[#E8E2D9] bg-white group-hover:border-[#FF5500]/40 group-hover:shadow-xl transition-all duration-300 shadow-xs relative overflow-hidden">
+              <div className="flex flex-col justify-between flex-grow p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-[#E8E2D9] bg-white group-hover:border-[#FF5500]/40 group-hover:shadow-xl transition-all duration-300 shadow-xs relative overflow-hidden">
                 {/* Subtle Amber Top Accent Beam on Hover */}
                 <div className="absolute top-0 left-6 right-6 h-1 bg-gradient-to-r from-transparent via-[#FF5500] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 

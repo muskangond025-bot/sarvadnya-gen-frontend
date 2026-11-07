@@ -156,7 +156,7 @@ export function Chatbot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-4">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] flex flex-col items-end gap-3 sm:gap-4">
       
       {/* Chat Window */}
       <AnimatePresence>
@@ -165,7 +165,7 @@ export function Chatbot() {
             initial={{ opacity: 0, y: 20, scale: 0.95, transformOrigin: "bottom right" }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="w-[calc(100vw-3rem)] sm:w-[400px] h-[500px] bg-[#161616] border border-white/10 rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden backdrop-blur-xl"
+            className="w-[calc(100vw-2rem)] sm:w-[400px] max-h-[80vh] h-[480px] bg-[#161616] border border-white/10 rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden backdrop-blur-xl"
           >
             {/* Header */}
             <div className="p-6 bg-linear-to-r from-[#00ff8f]/20 to-transparent border-b border-white/10 flex items-center justify-between">

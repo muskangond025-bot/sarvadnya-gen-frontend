@@ -57,7 +57,7 @@ export function Solutions() {
         <SolutionsClient steps={steps} />
 
         <div className="flex justify-start pt-2">
-          <Button href="/book" variant="primary" size="lg">
+          <Button href="/book" variant="primary" size="lg" className="w-full sm:w-auto text-center">
             {t("solutions.startEnquiry")}
           </Button>
         </div>

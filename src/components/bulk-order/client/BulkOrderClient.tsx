@@ -1254,7 +1254,7 @@ export function BulkOrderClient() {
   };
 
   return (
-    <div className="min-h-screen bg-black pt-32 pb-20 px-4 md:px-8">
+    <div className="min-h-screen bg-black pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 md:px-8">
       <div className="max-w-5xl mx-auto">
         {/* Hero */}
         <motion.div
@@ -1262,7 +1262,7 @@ export function BulkOrderClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-white font-['Poppins',sans-serif] mb-4">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white font-['Poppins',sans-serif] mb-4">
             Bulk
             <br />
             <span className="text-[#00ff8f]">Order</span>

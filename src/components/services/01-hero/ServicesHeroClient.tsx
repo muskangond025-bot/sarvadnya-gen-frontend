@@ -20,7 +20,7 @@ import { FloatingGlow } from "@/components/shared/client";
  */
 export function ServicesHeroClient() {
   return (
-    <section className="relative min-h-[85vh] flex items-center px-6 md:px-10 lg:px-[60px] overflow-hidden bg-transparent pt-28 lg:pt-32 pb-16 lg:pb-24">
+    <section className="relative min-h-[85vh] flex items-center px-4 sm:px-6 md:px-10 lg:px-[60px] overflow-hidden bg-transparent pt-28 lg:pt-32 pb-16 lg:pb-24">
       {/* Subtle Warm Amber-Orange Ambient Lighting */}
       <FloatingGlow color="#FF5500" size="xl" className="-top-1/4 -left-1/4 opacity-[0.05]" />
       <FloatingGlow color="#FFAA00" size="lg" className="top-1/3 -right-1/4 opacity-[0.05]" delay={2} />
@@ -36,7 +36,7 @@ export function ServicesHeroClient() {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-[#111315] tracking-tight leading-[1.08] mb-6 font-['Poppins',sans-serif]"
+              className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-[#111315] tracking-tight leading-[1.08] mb-6 font-['Poppins',sans-serif]"
             >
               Uninterrupted Power, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5500] via-[#FFAA00] to-[#E04400]">
@@ -49,7 +49,7 @@ export function ServicesHeroClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="text-lg sm:text-xl text-[#625D55] leading-relaxed max-w-2xl font-['Outfit',sans-serif] mb-10"
+              className="text-base sm:text-xl text-[#625D55] leading-relaxed max-w-2xl font-['Outfit',sans-serif] mb-8 sm:mb-10"
             >
               From continuous industrial manufacturing and critical healthcare facilities to grand weddings and high-profile festivals, Sarvadnya delivers 24/7 turnkey silent generator rentals, fuel logistics, and rapid 60-minute emergency dispatch across Nashik and Maharashtra.
             </motion.p>
@@ -59,20 +59,20 @@ export function ServicesHeroClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25 }}
-              className="flex flex-wrap items-center gap-4 mb-12"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 mb-10 sm:mb-12 w-full sm:w-auto"
             >
               <a
                 href="tel:+916262629944"
-                className="px-8 py-4 bg-[#FF5500] text-white font-bold rounded-xl hover:bg-[#E04400] transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-3 shadow-lg shadow-[#FF5500]/25 group text-base"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 bg-[#FF5500] text-white font-bold rounded-xl hover:bg-[#E04400] transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-[#FF5500]/25 group text-sm sm:text-base w-full sm:w-auto text-center"
               >
-                <PhoneCall className="w-5 h-5" />
+                <PhoneCall className="w-4.5 h-4.5 sm:w-5 sm:h-5 shrink-0" />
                 <span>Direct Dispatch: +91 62626 29944</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" />
               </a>
 
               <Link
                 href="/generators"
-                className="px-8 py-4 bg-white text-[#111315] font-bold rounded-xl border border-[#E8E2D9] hover:bg-[#FAF8F5] hover:border-[#FF5500]/50 transition-all flex items-center gap-2 shadow-xs text-base"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-[#111315] font-bold rounded-xl border border-[#E8E2D9] hover:bg-[#FAF8F5] hover:border-[#FF5500]/50 transition-all flex items-center justify-center gap-2 shadow-xs text-sm sm:text-base w-full sm:w-auto text-center"
               >
                 Explore Fleet (5–250 kVA)
               </Link>
@@ -83,31 +83,31 @@ export function ServicesHeroClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.35 }}
-              className="grid grid-cols-3 gap-6 sm:gap-8 pt-8 border-t border-[#E8E2D9] w-full max-w-xl"
+              className="grid grid-cols-3 gap-3 sm:gap-8 pt-6 sm:pt-8 border-t border-[#E8E2D9] w-full max-w-xl"
             >
               <div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#111315]">
-                  &lt; 60<span className="text-[#FF5500] text-lg font-bold">m</span>
+                <div className="font-mono text-xl sm:text-3xl font-extrabold text-[#111315]">
+                  &lt; 60<span className="text-[#FF5500] text-sm sm:text-lg font-bold">m</span>
                 </div>
-                <div className="text-xs text-[#71695F] font-medium font-['Outfit',sans-serif] mt-0.5">
+                <div className="text-[11px] sm:text-xs text-[#71695F] font-medium font-['Outfit',sans-serif] mt-0.5">
                   Emergency Response
                 </div>
               </div>
 
               <div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#111315]">
-                  250<span className="text-[#FF5500] text-lg font-bold">kVA</span>
+                <div className="font-mono text-xl sm:text-3xl font-extrabold text-[#111315]">
+                  250<span className="text-[#FF5500] text-sm sm:text-lg font-bold">kVA</span>
                 </div>
-                <div className="text-xs text-[#71695F] font-medium font-['Outfit',sans-serif] mt-0.5">
+                <div className="text-[11px] sm:text-xs text-[#71695F] font-medium font-['Outfit',sans-serif] mt-0.5">
                   Max Silent Fleet Unit
                 </div>
               </div>
 
               <div>
-                <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#111315]">
-                  99.98<span className="text-[#FF5500] text-lg font-bold">%</span>
+                <div className="font-mono text-xl sm:text-3xl font-extrabold text-[#111315]">
+                  99.98<span className="text-[#FF5500] text-sm sm:text-lg font-bold">%</span>
                 </div>
-                <div className="text-xs text-[#71695F] font-medium font-['Outfit',sans-serif] mt-0.5">
+                <div className="text-[11px] sm:text-xs text-[#71695F] font-medium font-['Outfit',sans-serif] mt-0.5">
                   Uptime Guarantee
                 </div>
               </div>

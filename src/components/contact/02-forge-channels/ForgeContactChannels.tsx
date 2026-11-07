@@ -26,7 +26,7 @@ export function ForgeContactChannels() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="p-8 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[320px]"
+            className="p-6 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[auto] sm:min-h-[320px]"
           >
             <div>
               <div className="flex items-center justify-between mb-5">
@@ -41,7 +41,7 @@ export function ForgeContactChannels() {
               <div className="flex flex-col gap-2 my-2">
                 <a
                   href="tel:+916262629944"
-                  className="font-serif text-2xl sm:text-[26px] text-[#111315] font-normal tracking-tight transition-colors inline-flex items-center gap-1.5"
+                  className="font-serif text-xl sm:text-[26px] text-[#111315] font-normal tracking-tight transition-colors inline-flex items-center gap-1.5"
                 >
                   <RollingText text="+91 62626 29944" />
                   <ArrowUpRight className="size-4 text-[#FF5500] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
@@ -50,7 +50,7 @@ export function ForgeContactChannels() {
 
                 <a
                   href="tel:+919823197881"
-                  className="font-serif text-xl sm:text-2xl text-[#524E48] font-normal tracking-tight transition-colors pt-2.5 inline-flex items-center gap-1.5"
+                  className="font-serif text-lg sm:text-2xl text-[#524E48] font-normal tracking-tight transition-colors pt-2.5 inline-flex items-center gap-1.5"
                 >
                   <RollingText text="+91 98231 97881" />
                   <ArrowUpRight className="size-3.5 text-[#FF5500] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
@@ -71,7 +71,7 @@ export function ForgeContactChannels() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="p-8 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[320px]"
+            className="p-6 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[auto] sm:min-h-[320px]"
           >
             <div>
               <div className="flex items-center justify-between mb-5">
@@ -86,7 +86,7 @@ export function ForgeContactChannels() {
               <div className="flex flex-col gap-2 my-2">
                 <a
                   href="mailto:info@sarvadnyagenerators.com"
-                  className="font-serif text-2xl sm:text-[26px] text-[#111315] font-normal tracking-tight transition-colors inline-flex items-center gap-1.5"
+                  className="font-serif text-xl sm:text-[26px] text-[#111315] font-normal tracking-tight transition-colors inline-flex items-center gap-1.5"
                 >
                   <RollingText text="Send Us A Message" />
                   <ArrowUpRight className="size-4 text-[#FF5500] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
@@ -111,7 +111,7 @@ export function ForgeContactChannels() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-            className="p-8 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[320px]"
+            className="p-6 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[auto] sm:min-h-[320px]"
           >
             <div>
               <div className="flex items-center justify-between mb-5">
@@ -124,7 +124,7 @@ export function ForgeContactChannels() {
               </div>
 
               <div className="flex flex-col gap-2 my-2">
-                <h3 className="font-serif text-2xl sm:text-[26px] text-[#111315] font-normal tracking-tight">
+                <h3 className="font-serif text-xl sm:text-[26px] text-[#111315] font-normal tracking-tight">
                   <RollingText text="Statewide Mobilization" />
                 </h3>
                 <p className="text-xs text-[#625D55] leading-relaxed mt-1 font-sans">
@@ -156,7 +156,7 @@ export function ForgeContactChannels() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            className="p-8 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[320px]"
+            className="p-6 sm:p-10 lg:p-12 flex flex-col justify-between group hover:bg-white transition-colors duration-300 min-h-[auto] sm:min-h-[320px]"
           >
             <div>
               <div className="flex items-center justify-between mb-5">

@@ -17,7 +17,7 @@ export function WishlistGrid({ items, onRemove, onClearAll }: WishlistGridProps)
   }
 
   return (
-    <section className="px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto pb-24">
+    <section className="px-4 sm:px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto pb-16 sm:pb-24">
       <div className="flex justify-between items-center mb-8">
         <p className="text-sm text-white/60 font-['Outfit',sans-serif]">
           Showing <span className="text-white font-semibold">{items.length}</span> shortlisted generator models

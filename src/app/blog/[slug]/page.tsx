@@ -31,25 +31,25 @@ export default function BlogDetailPage({ params }: BlogDetailPageProps) {
   return (
     <main className="min-h-screen bg-black pt-28 pb-20">
       <ScrollProgress />
-      <div className="max-w-[1440px] mx-auto px-6 md:px-10 lg:px-[60px]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[60px]">
         {/* Article Header & Hero */}
         <BlogHeader slug={params.slug} />
 
-        <div className="flex flex-col lg:flex-row gap-16 mt-16">
+        <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 mt-10 sm:mt-16">
           {/* Main Content Area */}
           <article className="flex-1 min-w-0">
-            <div className="prose prose-invert prose-emerald max-w-none font-['Outfit',sans-serif] text-[#bfbfbf] text-lg leading-relaxed">
-              <p className="text-xl text-white font-medium mb-8">
+            <div className="prose prose-invert prose-emerald max-w-none font-['Outfit',sans-serif] text-[#bfbfbf] text-base sm:text-lg leading-relaxed">
+              <p className="text-lg sm:text-xl text-white font-medium mb-6 sm:mb-8">
                 In this comprehensive guide, we explore the critical factors that determine the success of power management for large-scale events and industrial operations in Nashik.
               </p>
               
-              <h2 className="text-3xl font-bold text-white font-['Poppins',sans-serif] mt-12 mb-6">Introduction to Power Reliability</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white font-['Poppins',sans-serif] mt-8 sm:mt-12 mb-4 sm:mb-6">Introduction to Power Reliability</h2>
               <p>
                 When planning a grand wedding or managing a 24/7 manufacturing facility, power isn't just a utility—it's the backbone of your operation. A single minute of downtime can result in massive financial losses or the disruption of a once-in-a-lifetime celebration.
               </p>
 
-              <div className="my-12 p-8 bg-white/5 border-l-4 border-[#00ff8f] rounded-r-2xl">
-                <p className="italic text-white text-xl">
+              <div className="my-8 sm:my-12 p-5 sm:p-8 bg-white/5 border-l-4 border-[#00ff8f] rounded-r-2xl">
+                <p className="italic text-white text-base sm:text-xl">
                   "Reliability in power generation is not an option; it's a necessity for modern industrial growth."
                 </p>
                 <cite className="block mt-4 text-[#00ff8f] font-bold">— Tanmay Avhad, CEO</cite>

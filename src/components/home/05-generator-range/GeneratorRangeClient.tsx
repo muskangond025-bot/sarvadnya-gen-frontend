@@ -48,8 +48,20 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
   const [isPaused, setIsPaused] = useState(false);
   const { t } = useLanguage();
   const visualRef = useRef<HTMLDivElement | null>(null);
+  const capacityRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const currentGen = generators[currentIndex] || generators[0];
+
+  // Auto-scroll active capacity into view on mobile
+  useEffect(() => {
+    if (capacityRefs.current[currentIndex]) {
+      capacityRefs.current[currentIndex]?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [currentIndex]);
 
   const handlePrev = useCallback(() => {
     setCurrentIndex((prev) => (prev === 0 ? generators.length - 1 : prev - 1));
@@ -107,80 +119,98 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
         {/* 
           1. INTERACTIVE CAPACITY SPECTRUM RAIL (TOP MASTER TRACK - NO CARD)
         */}
-        <div className="w-full flex items-center justify-between gap-3 border-b border-[#E8E2D9] pb-4">
-          {/* Previous Button */}
-          <button
-            onClick={handlePrev}
-            aria-label="Previous Capacity"
-            className="size-9 sm:size-10 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] flex items-center justify-center text-[#1F1F1E] hover:text-[#FF5500] transition-colors shrink-0 shadow-xs"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          {/* Spectrum Rail Nodes */}
-          <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar py-1 px-2">
-            {generators.map((gen, idx) => {
-              const isActive = idx === currentIndex;
-              return (
-                <button
-                  key={gen.id}
-                  onClick={() => setCurrentIndex(idx)}
-                  className={cn(
-                    "relative py-2 px-3 sm:px-4 rounded-xl flex flex-col items-center gap-0.5 cursor-pointer select-none transition-all duration-300 min-w-[76px] sm:min-w-[110px]",
-                    isActive
-                      ? "text-[#1F1F1E] bg-[#FAF8F5]"
-                      : "text-[#625D55] hover:text-[#1F1F1E] hover:bg-white/60"
-                  )}
-                >
-                  {/* Rating Numeral */}
-                  <span
-                    className={cn(
-                      "font-sans font-extrabold text-sm sm:text-base tracking-tight transition-colors",
-                      isActive ? "text-[#FF5500]" : "text-[#1F1F1E]"
-                    )}
-                  >
-                    {gen.badge}
-                  </span>
-
-                  {/* Series Descriptor */}
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-[#625D55] hidden sm:inline-block">
-                    {gen.id === "gen-5" ? t("range.entrySeries") : gen.id === "gen-30" || gen.id === "gen-65" ? t("range.midSeries") : t("range.heavySeries")}
-                  </span>
-
-                  {/* Active Indicator Underline */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeCapacityNode"
-                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#FF5500] rounded-full"
-                      transition={{ type: "spring", stiffness: 350, damping: 32 }}
-                    />
-                  )}
-
-                  {/* Progress Timer Line (Active item only) */}
-                  {isActive && !isPaused && (
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E8E2D9] rounded-full overflow-hidden">
-                      <motion.div
-                        key={`capacity-progress-${currentIndex}`}
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: AUTO_SCROLL_INTERVAL / 1000, ease: "linear" }}
-                        className="h-full bg-[#FF5500]"
-                      />
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+        <div className="relative w-full">
+          {/* Mobile Capacity Counter & Hint */}
+          <div className="flex sm:hidden items-center justify-between px-1 mb-2 text-[11px] font-mono text-[#7A756D]">
+            <span className="text-[#FF5500] font-bold tracking-wider">
+              0{currentIndex + 1} / 0{generators.length}
+            </span>
+            <span className="flex items-center gap-1 text-[#FF5500] font-semibold">
+              Select Capacity <ArrowRight className="w-3 h-3 animate-pulse" />
+            </span>
           </div>
 
-          {/* Next Button */}
-          <button
-            onClick={handleNext}
-            aria-label="Next Capacity"
-            className="size-9 sm:size-10 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] flex items-center justify-center text-[#1F1F1E] hover:text-[#FF5500] transition-colors shrink-0 shadow-xs"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          <div className="w-full flex items-center justify-between gap-2 sm:gap-3 border-b border-[#E8E2D9] pb-4">
+            {/* Previous Button */}
+            <button
+              onClick={handlePrev}
+              aria-label="Previous Capacity"
+              className="size-8 sm:size-10 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] flex items-center justify-center text-[#1F1F1E] hover:text-[#FF5500] transition-colors shrink-0 shadow-xs"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Spectrum Rail Container with Peeking Edge Masks */}
+            <div className="relative flex-1 overflow-hidden">
+              <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#FAF8F5] to-transparent z-10 sm:hidden" />
+              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#FAF8F5] to-transparent z-10 sm:hidden" />
+
+              <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1">
+                {generators.map((gen, idx) => {
+                  const isActive = idx === currentIndex;
+                  return (
+                    <button
+                      key={gen.id}
+                      ref={(el) => { capacityRefs.current[idx] = el; }}
+                      onClick={() => setCurrentIndex(idx)}
+                      className={cn(
+                        "relative py-2 px-3 sm:px-4 rounded-xl flex flex-col items-center gap-0.5 cursor-pointer select-none transition-all duration-300 min-w-[72px] sm:min-w-[110px] shrink-0",
+                        isActive
+                          ? "text-[#1F1F1E] bg-[#FAF8F5]"
+                          : "text-[#625D55] hover:text-[#1F1F1E] hover:bg-white/60"
+                      )}
+                    >
+                      {/* Rating Numeral */}
+                      <span
+                        className={cn(
+                          "font-sans font-extrabold text-sm sm:text-base tracking-tight transition-colors",
+                          isActive ? "text-[#FF5500]" : "text-[#1F1F1E]"
+                        )}
+                      >
+                        {gen.badge}
+                      </span>
+
+                      {/* Series Descriptor */}
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-[#625D55] hidden sm:inline-block">
+                        {gen.id === "gen-5" ? t("range.entrySeries") : gen.id === "gen-30" || gen.id === "gen-65" ? t("range.midSeries") : t("range.heavySeries")}
+                      </span>
+
+                      {/* Active Indicator Underline */}
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeCapacityNode"
+                          className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#FF5500] rounded-full"
+                          transition={{ type: "spring", stiffness: 350, damping: 32 }}
+                        />
+                      )}
+
+                      {/* Progress Timer Line (Active item only) */}
+                      {isActive && !isPaused && (
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E8E2D9] rounded-full overflow-hidden">
+                          <motion.div
+                            key={`capacity-progress-${currentIndex}`}
+                            initial={{ width: "0%" }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: AUTO_SCROLL_INTERVAL / 1000, ease: "linear" }}
+                            className="h-full bg-[#FF5500]"
+                          />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNext}
+              aria-label="Next Capacity"
+              className="size-8 sm:size-10 rounded-full border border-[#E8E2D9] bg-white hover:border-[#1F1F1E] flex items-center justify-center text-[#1F1F1E] hover:text-[#FF5500] transition-colors shrink-0 shadow-xs"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* 
@@ -244,10 +274,10 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                 </div>
 
                 {/* Conversion Action Row */}
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full">
                   <Link
                     href={`/book?kVA=${encodeURIComponent(currentGen.badge)}`}
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group/btn"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group/btn w-full sm:w-auto text-center"
                   >
                     <span>{t("range.enquire")} {currentGen.badge} {t("range.fleetSuffix")}</span>
                     <ArrowRight className="w-4 h-4 text-[#FF5500] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
@@ -255,7 +285,7 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
 
                   <a
                     href="tel:+916262629944"
-                    className="inline-flex items-center gap-2 px-4 py-3.5 rounded-xl bg-white border border-[#E8E2D9] text-[#1F1F1E] hover:border-[#1F1F1E] hover:bg-[#FAF8F5] text-xs sm:text-sm font-semibold transition-all shadow-xs"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-white border border-[#E8E2D9] text-[#1F1F1E] hover:border-[#1F1F1E] hover:bg-[#FAF8F5] text-xs sm:text-sm font-semibold transition-all shadow-xs w-full sm:w-auto"
                   >
                     <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
                     <span className="font-mono">+91 62626 29944</span>
@@ -270,11 +300,11 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
             ref={visualRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="lg:col-span-6 relative w-full h-[320px] sm:h-[400px] lg:h-[480px] flex items-center justify-center select-none"
+            className="lg:col-span-6 relative w-full h-[260px] sm:h-[400px] lg:h-[480px] flex items-center justify-center select-none"
             style={{ perspective: 1200 }}
           >
             {/* Ambient Warm Volumetric Aura */}
-            <div className="absolute w-[440px] sm:w-[520px] h-[300px] sm:h-[380px] bg-[#FF5500]/[0.08] blur-[110px] rounded-full pointer-events-none" />
+            <div className="absolute w-[300px] sm:w-[520px] h-[220px] sm:h-[380px] bg-[#FF5500]/[0.08] blur-[80px] sm:blur-[110px] rounded-full pointer-events-none" />
 
             {/* Giant Architectural Watermark in Background */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
@@ -283,7 +313,7 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                 initial={{ opacity: 0, scale: 0.88 }}
                 animate={{ opacity: 0.18, scale: 1 }}
                 transition={{ duration: 0.75, ease: "easeOut" }}
-                className="font-sans font-black text-7xl sm:text-9xl lg:text-[140px] text-[#1F1F1E] tracking-tighter select-none"
+                className="font-sans font-black text-6xl sm:text-9xl lg:text-[140px] text-[#1F1F1E] tracking-tighter select-none"
               >
                 {currentGen.badge}
               </motion.span>
@@ -306,7 +336,7 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
                 duration: 4.6,
                 ease: "easeInOut",
               }}
-              className="relative z-20 w-4/5 sm:w-3/4 h-[220px] sm:h-[300px] lg:h-[360px] flex items-center justify-center"
+              className="relative z-20 w-[90%] sm:w-3/4 h-[190px] sm:h-[300px] lg:h-[360px] flex items-center justify-center"
             >
               <AnimatePresence mode="wait">
                 <motion.div

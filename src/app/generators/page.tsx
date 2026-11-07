@@ -26,9 +26,7 @@ export default function GeneratorsPage() {
         <GeneratorGallery />
 
         {/* 3. Compare Section */}
-        <div className="pb-32">
-          <GeneratorCompare />
-        </div>
+        <GeneratorCompare />
       </div>
     </div>
   );

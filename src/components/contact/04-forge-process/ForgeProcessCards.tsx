@@ -48,7 +48,7 @@ const PROCESS_STEPS: ProcessStep[] = [
  */
 export function ForgeProcessCards() {
   return (
-    <section className="relative w-full bg-[#FAF8F5] text-[#111315] py-28 sm:py-36 px-6 sm:px-10 lg:px-20 overflow-hidden select-none z-20">
+    <section className="relative w-full bg-[#FAF8F5] text-[#111315] py-16 sm:py-28 px-4 sm:px-10 lg:px-20 overflow-hidden select-none z-20">
       
       {/* Background Architectural Texture with Soft Ambient Wash */}
       <div 
@@ -66,7 +66,7 @@ export function ForgeProcessCards() {
       <div className="max-w-[1500px] mx-auto relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-16 sm:mb-24">
+        <div className="max-w-3xl mb-12 sm:mb-20">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -100,7 +100,7 @@ export function ForgeProcessCards() {
                 delay: index * 0.15,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="group relative flex flex-col justify-between p-8 sm:p-10 rounded-2xl bg-white hover:bg-white border border-[#E8E2D9] hover:border-[#FF5500]/50 transition-all duration-500 shadow-sm hover:shadow-2xl min-h-[380px] sm:min-h-[420px] overflow-hidden"
+              className="group relative flex flex-col justify-between p-6 sm:p-10 rounded-2xl bg-white hover:bg-white border border-[#E8E2D9] hover:border-[#FF5500]/50 transition-all duration-500 shadow-sm hover:shadow-2xl min-h-[auto] sm:min-h-[380px] overflow-hidden"
             >
               {/* Top Accent Orange Beam on Hover */}
               <div className="absolute top-0 inset-x-8 h-1 bg-gradient-to-r from-transparent via-[#FF5500] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

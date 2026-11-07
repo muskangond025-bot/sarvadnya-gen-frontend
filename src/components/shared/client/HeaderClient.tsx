@@ -219,7 +219,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
         <nav
           aria-label="Main Navigation"
           className={cn(
-            "pointer-events-auto w-full max-w-5xl rounded-full px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-2 sm:gap-3 transition-all duration-300 select-none",
+            "pointer-events-auto w-full max-w-5xl rounded-full px-2 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-1.5 sm:gap-3 transition-all duration-300 select-none",
             isScrolled || isMenuOpen
               ? "bg-[#18181B]/95 backdrop-blur-xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-white"
               : "bg-[#18181B] border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.35)] text-white"
@@ -229,13 +229,13 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             LEFT COLUMN: CIRCULAR WHITE LOGO BADGE
             Matches reference image: pure white circle with high-contrast icon
           */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <Link
               href="/"
-              className="size-9 sm:size-10 rounded-full bg-white text-[#18181B] hover:scale-105 active:scale-95 flex items-center justify-center shrink-0 shadow-md transition-all duration-200"
+              className="size-8.5 sm:size-10 rounded-full bg-white text-[#18181B] hover:scale-105 active:scale-95 flex items-center justify-center shrink-0 shadow-md transition-all duration-200"
               aria-label="Sarvadnya Generators Home"
             >
-              <Zap className="w-4.5 h-4.5 text-[#FF5500] fill-[#FF5500]" />
+              <Zap className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#FF5500] fill-[#FF5500]" />
             </Link>
             <Link
               href="/"
@@ -254,14 +254,14 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             RIGHT COLUMN: ACTION CLUSTER
             Language switcher + Phone + Cart + Profile + Menu toggle + White Capsule CTA
           */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
             {/* Language Dropdown matching user screenshot */}
             <LanguageSwitcher theme="dark" />
 
             {/* Quick Telephone Dispatch Icon */}
             <a
               href="tel:+916262629944"
-              className="size-8 sm:size-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white hover:text-[#FF5500] flex items-center justify-center transition-all shadow-xs shrink-0"
+              className="size-7.5 sm:size-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white hover:text-[#FF5500] flex items-center justify-center transition-all shadow-xs shrink-0"
               title="Direct Fleet Dispatch: +91 62626 29944"
               aria-label="Call Direct Fleet Dispatch"
             >
@@ -278,7 +278,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="group flex items-center gap-2 py-1.5 px-3 sm:px-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white transition-all shadow-xs shrink-0 cursor-pointer"
+              className="group flex items-center gap-1.5 sm:gap-2 py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white transition-all shadow-xs shrink-0 cursor-pointer"
               aria-expanded={isMenuOpen}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               title={isMenuOpen ? "Close Menu" : "Explore All Fleet & Insights"}
@@ -312,7 +312,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                   className="w-3.5 h-[1.5px] rounded-full block"
                 />
               </div>
-              <span className="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-white group-hover:text-[#FF5500] transition-colors">
+              <span className="font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white group-hover:text-[#FF5500] transition-colors">
                 {isMenuOpen ? t("nav.close", "CLOSE") : t("nav.menu", "MENU")}
               </span>
             </button>
@@ -396,7 +396,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                                   {/* Clean Editorial Title */}
                                   <span
                                     className={cn(
-                                      "font-sans font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight transition-all duration-300",
+                                      "font-sans font-extrabold text-2xl sm:text-4xl lg:text-5xl leading-tight tracking-tight transition-all duration-300",
                                       isActive
                                         ? "text-[#FF5500] translate-x-1"
                                         : "text-white/90 group-hover:text-[#FF5500] group-hover:translate-x-2"
@@ -439,7 +439,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.35, duration: 0.35 }}
-                  className="pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs"
+                  className="pt-5 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs"
                 >
                   {/* Direct Contact Links */}
                   <div className="flex flex-wrap items-center gap-6">

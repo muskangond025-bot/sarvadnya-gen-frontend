@@ -10,16 +10,16 @@ interface WishlistHeroProps {
 
 export function WishlistHero({ itemCount }: WishlistHeroProps) {
   return (
-    <section className="relative pt-32 pb-16 px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto overflow-hidden">
+    <section className="relative pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto overflow-hidden">
       <FloatingGlow color="#00ff8f" size="xl" className="-top-1/4 -right-1/4 opacity-10" />
       
-      <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/10 pb-12">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 border-b border-white/10 pb-8 sm:pb-12">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00ff8f]/10 border border-[#00ff8f]/20 text-[#00ff8f] text-xs font-semibold uppercase tracking-wider mb-4">
             <Sparkles className="size-3.5" />
             <span>Saved Equipment</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white font-['Poppins',sans-serif] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white font-['Poppins',sans-serif] tracking-tight">
             Generator <span className="text-transparent bg-clip-text bg-linear-to-r from-white via-[#00ff8f] to-white bg-[length:200%_auto] animate-shimmer">Wishlist</span>
           </h1>
           <p className="mt-3 text-base md:text-lg text-[#bfbfbf] font-['Outfit',sans-serif] max-w-xl">

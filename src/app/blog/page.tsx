@@ -19,12 +19,12 @@ export default function BlogPage() {
       <FloatingGlow color="#00ff8f" size="xl" className="-top-1/4 -right-1/4 opacity-10" />
       <FloatingGlow color="#00d1ff" size="lg" className="top-1/2 -left-1/4 opacity-10" delay={2} />
       
-      <div className="max-w-[1440px] mx-auto px-6 md:px-10 lg:px-[60px] relative z-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[60px] relative z-10">
         {/* 1. Blog Hero - Featured Post */}
         <BlogHero />
 
         {/* 2. Categories and Search */}
-        <div className="my-16">
+        <div className="my-10 sm:my-16">
           <BlogCategories />
         </div>
 
@@ -32,7 +32,7 @@ export default function BlogPage() {
         <BlogGrid />
 
         {/* 4. Newsletter Section */}
-        <div className="mt-32">
+        <div className="mt-16 sm:mt-24">
           <BlogNewsletter />
         </div>
       </div>

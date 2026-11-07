@@ -89,24 +89,24 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none border-b border-black/10 flex flex-col justify-between"
+      className="relative w-full overflow-hidden select-none border-b border-black/10 flex flex-col"
       style={{
         background: "linear-gradient(180deg, #FAF8F5 0%, #F4EFE6 100%)",
       }}
       aria-label="Interactive Generator Delivery Stage"
     >
       {/* Ambient Warm Golden Aurora Glow */}
-      <div className="absolute top-0 left-1/4 w-[450px] h-36 bg-[#FF5500]/[0.06] blur-3xl pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[450px] h-36 bg-amber-500/[0.06] blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[450px] h-32 bg-[#FF5500]/[0.05] blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[450px] h-32 bg-amber-500/[0.05] blur-3xl pointer-events-none" />
 
       {/* 
         1. OVERHEAD ELECTRICAL CATENARY WIRE & BULBS (Chain Reaction Lighting)
-        Compact height: h-10 sm:h-12
+        Compact height: h-8 sm:h-10
       */}
-      <div className="relative w-full h-10 sm:h-12 flex items-center justify-between px-2 sm:px-6 z-20 shrink-0">
+      <div className="relative w-full h-8 sm:h-10 flex items-center justify-between px-2 sm:px-6 z-20 shrink-0">
         {/* Electrical Cable Wire */}
         <svg
-          className="absolute inset-x-0 top-2 w-full h-5 pointer-events-none opacity-40"
+          className="absolute inset-x-0 top-1.5 w-full h-4 pointer-events-none opacity-40"
           preserveAspectRatio="none"
           viewBox="0 0 1200 20"
         >
@@ -139,7 +139,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 {/* Glass Bulb Body */}
                 <div
                   className={cn(
-                    "relative size-3 sm:size-4 rounded-full border transition-all duration-500 flex items-center justify-center",
+                    "relative size-2.5 sm:size-3.5 rounded-full border transition-all duration-500 flex items-center justify-center",
                     isLit
                       ? "bg-amber-100 border-amber-400 shadow-[0_0_16px_#FF9900,0_0_36px_rgba(255,153,0,0.7)] scale-110"
                       : "bg-black/5 border-black/20 shadow-none scale-100"
@@ -148,7 +148,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                   {/* Tungsten Filament Wire */}
                   <div
                     className={cn(
-                      "w-1 h-1 rounded-xs transition-all duration-300",
+                      "w-0.5 sm:w-1 h-0.5 sm:h-1 rounded-xs transition-all duration-300",
                       isLit
                         ? "bg-amber-500 shadow-[0_0_6px_#FF9900] animate-pulse"
                         : "bg-black/25"
@@ -169,7 +169,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 {/* Radial Amber Floor Wash when lit */}
                 <div
                   className={cn(
-                    "absolute top-4 w-12 sm:w-20 h-20 rounded-full pointer-events-none transition-opacity duration-700 blur-xl",
+                    "absolute top-3 w-10 sm:w-16 h-16 rounded-full pointer-events-none transition-opacity duration-700 blur-xl",
                     isLit
                       ? "bg-[#FF9900]/25 opacity-100"
                       : "bg-transparent opacity-0"
@@ -182,8 +182,8 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       </div>
 
       {/* 
-        2. FOREGROUND FLOATING ARCHITECTURAL FOOTER CARDS
-        (Text and cards layer cleanly on top of the stage)
+        2. FOREGROUND FLOATING ARCHITECTURAL FOOTER CONTENT
+        (Text and links layer cleanly on top of the stage)
       */}
       {children && (
         <div className="relative z-30 w-full">
@@ -194,22 +194,22 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       {/* 
         3. ASPHALT ROADWAY & VEHICLE STAGE
         Guaranteed 100% UNCLIPPED & FULL HEADROOM:
-        - overflow-x-clip prevents page scrollbars
+        - overflow-x-clip prevents horizontal scrollbars
         - overflow-y-visible guarantees truck cabin roof, sun visor, and exhaust silencer NEVER clip!
-        - Roadway sits right below the content with tight cohesive spacing (zero dead gap)!
+        - Roadway sits tightly and directly beneath the content with ZERO dead gap!
         - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
-      <div className="relative w-full h-[190px] sm:h-[210px] lg:h-[225px] overflow-x-clip overflow-y-visible shrink-0 mt-2 sm:mt-4">
+      <div className="relative w-full h-[88px] sm:h-[100px] lg:h-[114px] overflow-x-clip overflow-y-visible shrink-0 mt-0">
         
         {/* Asphalt Road Surface with Centerline & Shoulder */}
-        <div className="absolute inset-x-0 bottom-0 h-16 sm:h-20 lg:h-24 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
+        <div className="absolute inset-x-0 bottom-0 h-10 sm:h-12 lg:h-14 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
           {/* Road Asphalt Reflection & Wet Sheen */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-white/5 pointer-events-none" />
 
           {/* Dashed Center Road Line running along the driving lane */}
-          <div className="absolute inset-x-0 bottom-[14px] sm:bottom-[18px] lg:bottom-[22px] flex justify-between gap-4 px-2 opacity-40 pointer-events-none">
+          <div className="absolute inset-x-0 bottom-[8px] sm:bottom-[10px] lg:bottom-[11px] flex justify-between gap-3 sm:gap-4 px-2 opacity-40 pointer-events-none">
             {Array.from({ length: 32 }).map((_, i) => (
-              <span key={i} className="inline-block w-6 sm:w-10 h-1 bg-amber-400 shrink-0 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.3)]" />
+              <span key={i} className="inline-block w-5 sm:w-8 lg:w-10 h-0.5 sm:h-1 bg-amber-400 shrink-0 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.3)]" />
             ))}
           </div>
         </div>
@@ -218,8 +218,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
           GPU-ACCELERATED BUTTER-SMOOTH TRUCK DRIVE
           Translates from -380px to calc(100vw + 60px) in 20 seconds with pure transform3d.
           Zero layout reflows, zero stuttering, 60fps cinematic motion!
-          Tires drive directly ON the asphalt road lane where the black surface and line are (bottom: 12px to 18px).
-          Steady commercial drive (zero bounce).
+          Tires drive directly ON the asphalt road lane.
         */}
         <motion.div
           key={cycleKey}
@@ -229,7 +228,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             duration: DRIVE_DURATION,
             ease: "linear",
           }}
-          className="absolute bottom-[12px] sm:bottom-[16px] lg:bottom-[18px] left-0 z-20 flex items-end will-change-transform pointer-events-none"
+          className="absolute bottom-[4px] sm:bottom-[6px] lg:bottom-[7px] left-0 z-20 flex items-end will-change-transform pointer-events-none"
           style={{
             transformStyle: "preserve-3d",
           }}
@@ -243,10 +242,10 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: headlightsOn ? 1 : 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute left-[97%] bottom-[20%] sm:bottom-[22%] pointer-events-none z-30"
+            className="absolute left-[97%] bottom-[18%] sm:bottom-[20%] pointer-events-none z-30"
             style={{
-              width: "400px",
-              height: "105px",
+              width: "350px",
+              height: "90px",
               transform: "translateY(15%)",
             }}
           >
@@ -262,7 +261,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             />
 
             {/* Intense Bumper Headlight Flare Spot */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 size-4.5 rounded-full bg-white shadow-[0_0_24px_#FFFFFF,0_0_50px_#FFB800] blur-[0.8px]" />
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 size-4 rounded-full bg-white shadow-[0_0_24px_#FFFFFF,0_0_50px_#FFB800] blur-[0.8px]" />
           </motion.div>
 
           {/* 
@@ -281,7 +280,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
               alt="Sarvadnya Tata 1109 Mobile Silent DG Delivery Truck"
               width={1276}
               height={638}
-              className="w-[260px] sm:w-[300px] lg:w-[330px] h-auto object-contain pointer-events-none select-none block"
+              className="w-[200px] sm:w-[245px] lg:w-[280px] h-auto object-contain pointer-events-none select-none block"
               draggable={false}
             />
           </div>

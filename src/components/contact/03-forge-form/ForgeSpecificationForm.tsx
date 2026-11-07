@@ -34,7 +34,7 @@ export function ForgeSpecificationForm() {
   };
 
   return (
-    <section id="form" className="relative w-full bg-white text-[#111315] py-24 sm:py-32 px-6 sm:px-10 lg:px-20 z-20 border-b border-[#E8E2D9]">
+    <section id="form" className="relative w-full bg-white text-[#111315] py-16 sm:py-28 px-4 sm:px-10 lg:px-20 z-20 border-b border-[#E8E2D9]">
       
       {/* Ambient Warm Glow */}
       <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-[#FF5500]/[0.03] blur-[150px] pointer-events-none" />
@@ -92,7 +92,7 @@ export function ForgeSpecificationForm() {
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 w-full p-8 sm:p-12 rounded-3xl bg-[#FAF8F5] border border-[#E8E2D9] shadow-sm">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 w-full p-5 sm:p-12 rounded-2xl sm:rounded-3xl bg-[#FAF8F5] border border-[#E8E2D9] shadow-sm">
               
               {/* Full Name Field */}
               <div className="flex flex-col gap-2">

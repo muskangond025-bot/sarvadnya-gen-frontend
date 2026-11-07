@@ -9,24 +9,24 @@ import { SectionHeading } from "@/components/common";
  */
 export function FoundingStory() {
   return (
-    <section className="w-full py-24 px-6 md:px-10 lg:px-[60px] bg-black">
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section className="w-full py-16 sm:py-24 px-4 sm:px-6 md:px-10 lg:px-[60px] bg-black">
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center">
         {/* Text Content */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6 sm:gap-8">
           <SectionHeading 
             label="OUR STORY"
             title={<>A Journey of <span className="text-[#00ff8f]">Reliability</span></>}
             align="left"
           />
           
-          <div className="flex flex-col gap-6 text-[#bfbfbf] font-['Outfit',sans-serif] text-lg leading-relaxed">
+          <div className="flex flex-col gap-5 sm:gap-6 text-[#bfbfbf] font-['Outfit',sans-serif] text-base sm:text-lg leading-relaxed">
             <p>
               Sarvadnya Generators was founded in 2009 with a clear mission: to provide dependable and affordable power backup solutions for businesses, events, construction sites, and industrial operations across Nashik and nearby regions.
             </p>
             <p>
               What started with a small fleet of just one diesel generator has now grown into a trusted generator rental company. We are known for our reliability, quick service, and customer-focused support, ensuring that our clients never face power interruptions.
             </p>
-            <div className="p-8 rounded-[24px] bg-[#00ff8f]/5 border border-[#00ff8f]/20 mt-4">
+            <div className="p-6 sm:p-8 rounded-2xl sm:rounded-[24px] bg-[#00ff8f]/5 border border-[#00ff8f]/20 mt-2 sm:mt-4">
               <p className="text-white font-medium italic">
                 "Our commitment to reliability, transparent pricing, and 24/7 assistance makes us a trusted choice for temporary and long-term power requirements."
               </p>
@@ -35,7 +35,7 @@ export function FoundingStory() {
         </div>
 
         {/* Image Content */}
-        <div className="relative h-[500px] rounded-[32px] overflow-hidden group">
+        <div className="relative h-[320px] sm:h-[500px] rounded-2xl sm:rounded-[32px] overflow-hidden group">
           <Image 
             src="/images/about/story-main.png" 
             alt="Sarvadnya Generators History" 
@@ -46,9 +46,9 @@ export function FoundingStory() {
           <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-60" />
           
           {/* Floating Badge */}
-          <div className="absolute bottom-10 left-10 p-6 rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 z-10">
-            <div className="text-[#00ff8f] text-4xl font-bold font-['Poppins',sans-serif] mb-1">2009</div>
-            <div className="text-white text-sm uppercase tracking-widest font-['Outfit',sans-serif]">The Beginning</div>
+          <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 p-4 sm:p-6 rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 z-10">
+            <div className="text-[#00ff8f] text-3xl sm:text-4xl font-bold font-['Poppins',sans-serif] mb-1">2009</div>
+            <div className="text-white text-xs sm:text-sm uppercase tracking-widest font-['Outfit',sans-serif]">The Beginning</div>
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ import { CrazyServiceDetails } from "./CrazyServiceDetails";
  */
 export function ServiceVerticals() {
   return (
-    <section className="relative py-24 sm:py-32 px-6 md:px-10 lg:px-[60px] overflow-hidden bg-[#FAF8F5]">
+    <section className="relative py-16 sm:py-28 px-4 sm:px-6 md:px-10 lg:px-[60px] overflow-hidden bg-[#FAF8F5]">
       {/* Full-Bleed Generator Engine Background (Matching User Uploaded Machine) */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-40 sm:opacity-50"

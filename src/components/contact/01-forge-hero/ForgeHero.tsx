@@ -26,7 +26,7 @@ export function ForgeHero() {
   const headlineWords = ["Every", "deployment", "starts", "with", "a", "conversation"];
 
   return (
-    <section className="relative min-h-[85vh] sm:min-h-[92vh] flex flex-col justify-end bg-[#FAF8F5] text-[#111315] overflow-hidden select-none pb-16 sm:pb-24 px-6 sm:px-10 lg:px-20 pt-36 border-b border-[#E8E2D9]">
+    <section className="relative min-h-[85vh] sm:min-h-[92vh] flex flex-col justify-end bg-[#FAF8F5] text-[#111315] overflow-hidden select-none pb-16 sm:pb-24 px-4 sm:px-10 lg:px-20 pt-32 sm:pt-36 border-b border-[#E8E2D9]">
       
       {/* High-Resolution Engineering Background Image with Bright Architectural Wash */}
       <div 
@@ -43,7 +43,7 @@ export function ForgeHero() {
       {/* Main Foreground Editorial Content */}
       <div className="relative z-10 max-w-6xl w-full">
         {/* Display Title with Word-by-Word Masked Reveal Animation */}
-        <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.08] mb-10 sm:mb-12 flex flex-wrap gap-x-4 sm:gap-x-5 gap-y-1 sm:gap-y-2">
+        <h1 className="font-serif text-3xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.08] mb-10 sm:mb-12 flex flex-wrap gap-x-3 sm:gap-x-5 gap-y-1 sm:gap-y-2">
           {headlineWords.map((word, index) => (
             <span key={index} className="inline-block overflow-hidden py-1">
               <motion.span
@@ -71,11 +71,12 @@ export function ForgeHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full sm:w-auto"
         >
           <a
             href="#form"
             onClick={scrollToForm}
-            className="group inline-flex items-center gap-4 px-8 sm:px-9 py-4 rounded-full border border-[#111315]/20 bg-white hover:bg-[#111315] hover:border-[#111315] text-[#111315] hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl active:scale-95"
+            className="group inline-flex items-center justify-center gap-4 px-6 sm:px-9 py-4 rounded-full border border-[#111315]/20 bg-white hover:bg-[#111315] hover:border-[#111315] text-[#111315] hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl active:scale-95 w-full sm:w-auto text-center"
           >
             <RollingText
               text="Start the conversation"

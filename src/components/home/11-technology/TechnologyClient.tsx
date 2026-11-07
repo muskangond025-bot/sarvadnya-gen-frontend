@@ -70,7 +70,7 @@ export function TechnologyClient({ zones }: TechnologyClientProps) {
         <div className="absolute w-72 sm:w-96 h-72 sm:h-96 bg-[#FF5500]/15 blur-[100px] rounded-full pointer-events-none" />
 
         {/* 3D Pin & Floating Stage */}
-        <div className="relative w-full max-w-[340px] sm:max-w-[400px] h-[340px] sm:h-[400px] flex flex-col items-center justify-center">
+        <div className="relative w-full max-w-[280px] sm:max-w-[400px] h-[280px] sm:h-[400px] flex flex-col items-center justify-center">
           
           {/* Ground Radar Pulse Wave 1 */}
           <motion.div
@@ -212,7 +212,7 @@ export function TechnologyClient({ zones }: TechnologyClientProps) {
         <div className="pt-6 mt-2">
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-bold text-xs sm:text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group"
+            className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-[#1F1F1E] hover:bg-[#FF5500] text-white font-bold text-xs sm:text-sm transition-all duration-300 shadow-md shadow-[#1F1F1E]/10 hover:shadow-lg hover:shadow-[#FF5500]/25 group w-full sm:w-auto text-center"
           >
             <span>{t("tech.availability")}</span>
             <ArrowRight className="w-4 h-4 text-[#FF5500] group-hover:text-white group-hover:translate-x-1 transition-all" />

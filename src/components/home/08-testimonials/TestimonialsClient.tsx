@@ -61,7 +61,7 @@ export function TestimonialsClient({ faqs }: TestimonialsClientProps) {
             <div className="absolute inset-0 max-w-[460px] h-[460px] bg-[#FF5500]/[0.05] blur-3xl rounded-full pointer-events-none" />
 
             {/* 3D Man Full-Body Standing Behind White Question Mark */}
-            <div className="relative w-full max-w-[460px] lg:max-w-[480px] flex items-center justify-center">
+            <div className="relative w-full max-w-[280px] sm:max-w-[420px] lg:max-w-[480px] flex items-center justify-center">
               <img
                 src="/images/faq/tech_consultant_question_mark.png"
                 alt="Professional Indian Technical Consultant Full-Body with 3D White Question Mark"

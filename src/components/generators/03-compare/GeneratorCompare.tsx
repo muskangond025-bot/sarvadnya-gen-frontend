@@ -29,7 +29,7 @@ export function GeneratorCompare() {
     }));
 
   return (
-    <div className="w-full py-[100px] px-6 md:px-10 lg:px-[60px]">
+    <div className="w-full py-16 sm:py-24 px-4 sm:px-6 md:px-10 lg:px-[60px]">
       <div className="max-w-[1440px] mx-auto">
         {/* Static Header */}
         <SectionHeading
@@ -69,16 +69,16 @@ export function GeneratorCompare() {
             requirements and our experts will create a personalized quotation
             for you.
           </p>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-col sm:flex-row gap-3.5 sm:gap-6 w-full sm:w-auto">
             <a 
               href="/contact" 
-              className="px-[30px] py-[15px] bg-[#FF5500] hover:bg-[#E04400] text-white font-semibold rounded-[8px] transition-colors font-['Outfit',sans-serif] text-[18px] shadow-sm inline-block"
+              className="px-6 sm:px-[30px] py-3.5 sm:py-[15px] bg-[#FF5500] hover:bg-[#E04400] text-white font-semibold rounded-[8px] transition-colors font-['Outfit',sans-serif] text-base sm:text-[18px] shadow-sm inline-block text-center w-full sm:w-auto"
             >
               Request Custom Quote
             </a>
             <a 
               href="tel:+916262629944" 
-              className="px-[30px] py-[15px] bg-white border border-[#E8E2D9] text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/50 transition-colors font-['Outfit',sans-serif] text-[18px] rounded-[8px] inline-block shadow-xs"
+              className="px-6 sm:px-[30px] py-3.5 sm:py-[15px] bg-white border border-[#E8E2D9] text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/50 transition-colors font-['Outfit',sans-serif] text-base sm:text-[18px] rounded-[8px] inline-block shadow-xs text-center w-full sm:w-auto"
             >
               Talk to an Expert
             </a>
