@@ -89,15 +89,15 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none border-b border-white/10 flex flex-col justify-between flex-1"
+      className="relative w-full overflow-hidden select-none border-b border-black/10 flex flex-col justify-between flex-1"
       style={{
-        background: "linear-gradient(180deg, rgba(6,8,10,0.98) 0%, rgba(10,13,16,0.94) 100%)",
+        background: "linear-gradient(180deg, #FAF8F5 0%, #F4EFE6 100%)",
       }}
       aria-label="Interactive Generator Delivery Stage"
     >
-      {/* Ambient Night Aurora Glow */}
-      <div className="absolute top-0 left-1/4 w-[450px] h-36 bg-[#FF5500]/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[450px] h-36 bg-amber-500/10 blur-3xl pointer-events-none" />
+      {/* Ambient Warm Golden Aurora Glow */}
+      <div className="absolute top-0 left-1/4 w-[450px] h-36 bg-[#FF5500]/[0.06] blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[450px] h-36 bg-amber-500/[0.06] blur-3xl pointer-events-none" />
 
       {/* 
         1. OVERHEAD ELECTRICAL CATENARY WIRE & BULBS (Chain Reaction Lighting)
@@ -113,7 +113,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
           <path
             d="M0,6 Q300,15 600,6 T1200,6"
             fill="none"
-            stroke="rgba(255,255,255,0.3)"
+            stroke="rgba(31,31,30,0.35)"
             strokeWidth="1.5"
           />
         </svg>
@@ -134,15 +134,15 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 }}
               >
                 {/* Brass Socket Cap */}
-                <div className="w-1.5 h-1.5 bg-[#8E7958] rounded-xs border border-black/40 shadow-xs" />
+                <div className="w-1.5 h-1.5 bg-[#8E7958] rounded-xs border border-black/30 shadow-xs" />
 
                 {/* Glass Bulb Body */}
                 <div
                   className={cn(
                     "relative size-3 sm:size-4 rounded-full border transition-all duration-500 flex items-center justify-center",
                     isLit
-                      ? "bg-amber-100 border-amber-300 shadow-[0_0_16px_#FF9900,0_0_36px_rgba(255,153,0,0.75)] scale-110"
-                      : "bg-white/10 border-white/20 shadow-none scale-100"
+                      ? "bg-amber-100 border-amber-400 shadow-[0_0_16px_#FF9900,0_0_36px_rgba(255,153,0,0.7)] scale-110"
+                      : "bg-black/5 border-black/20 shadow-none scale-100"
                   )}
                 >
                   {/* Tungsten Filament Wire */}
@@ -150,8 +150,8 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                     className={cn(
                       "w-1 h-1 rounded-xs transition-all duration-300",
                       isLit
-                        ? "bg-amber-400 shadow-[0_0_6px_#FFF] animate-pulse"
-                        : "bg-white/30"
+                        ? "bg-amber-500 shadow-[0_0_6px_#FF9900] animate-pulse"
+                        : "bg-black/25"
                     )}
                   />
 
