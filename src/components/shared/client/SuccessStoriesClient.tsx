@@ -1,8 +1,60 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useInView } from "framer-motion";
 import { Quote, TrendingUp, Users, Star } from "lucide-react";
 import Image from "next/image";
+
+/**
+ * Animated Counter Component
+ * Counts up smoothly when scrolled into view.
+ */
+function CounterNumber({
+  value,
+  decimals = 0,
+  duration = 1.6,
+}: {
+  value: number;
+  decimals?: number;
+  duration?: number;
+}) {
+  const [displayValue, setDisplayValue] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let startTime: number | null = null;
+    let animationFrameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      // Ease out cubic curve
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = eased * value;
+
+      setDisplayValue(decimals > 0 ? parseFloat(current.toFixed(decimals)) : Math.round(current));
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      } else {
+        setDisplayValue(value);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isInView, value, decimals, duration]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {decimals > 0 ? displayValue.toFixed(decimals) : displayValue}
+    </span>
+  );
+}
 
 export function SuccessStoriesClient() {
   return (
@@ -55,18 +107,19 @@ export function SuccessStoriesClient() {
         </div>
       </div>
 
-      {/* Bottom Metrics: Architectural Columns in Free Space (ZERO CARDS, BIG ICONS, NORMAL TEXT) */}
+      {/* Bottom Metrics: Architectural Columns in Free Space with Live Animated Count-Up */}
       <div className="pt-12 border-t border-[#E8E2D9]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           
-          {/* Stat 1 */}
+          {/* Stat 1: 60% Downtime Reduction */}
           <div className="flex items-start gap-5 pr-4 md:border-r md:border-[#E8E2D9]">
             <div className="text-[#FF5500] shrink-0 mt-1">
               <TrendingUp className="size-12 sm:size-14 stroke-[1.8]" />
             </div>
             <div className="flex flex-col">
-              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight">
-                60<span className="text-[#FF5500]">%</span>
+              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
+                <CounterNumber value={60} duration={1.6} />
+                <span className="text-[#FF5500]">%</span>
               </div>
               <div className="text-base sm:text-lg font-bold text-[#111315] font-['Poppins',sans-serif] mt-1">
                 Downtime Reduction
@@ -77,14 +130,15 @@ export function SuccessStoriesClient() {
             </div>
           </div>
 
-          {/* Stat 2 */}
+          {/* Stat 2: 2.5k+ Units Served */}
           <div className="flex items-start gap-5 pr-4 md:border-r md:border-[#E8E2D9]">
             <div className="text-[#FF5500] shrink-0 mt-1">
               <Users className="size-12 sm:size-14 stroke-[1.8]" />
             </div>
             <div className="flex flex-col">
-              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight">
-                2.5k<span className="text-[#FF5500]">+</span>
+              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
+                <CounterNumber value={2.5} decimals={1} duration={1.8} />
+                <span className="text-[#FF5500]">k+</span>
               </div>
               <div className="text-base sm:text-lg font-bold text-[#111315] font-['Poppins',sans-serif] mt-1">
                 Industrial Units Served
@@ -95,14 +149,15 @@ export function SuccessStoriesClient() {
             </div>
           </div>
 
-          {/* Stat 3 */}
+          {/* Stat 3: 4.9/5 Rating */}
           <div className="flex items-start gap-5">
             <div className="text-[#FF5500] shrink-0 mt-1">
               <Star className="size-12 sm:size-14 stroke-[1.8]" />
             </div>
             <div className="flex flex-col">
-              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight">
-                4.9<span className="text-[#FF5500]">/5</span>
+              <div className="text-4xl sm:text-5xl font-extrabold text-[#111315] font-mono tracking-tight flex items-baseline">
+                <CounterNumber value={4.9} decimals={1} duration={1.5} />
+                <span className="text-[#FF5500]">/5</span>
               </div>
               <div className="text-base sm:text-lg font-bold text-[#111315] font-['Poppins',sans-serif] mt-1">
                 Client Rating

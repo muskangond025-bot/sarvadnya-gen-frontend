@@ -5,8 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
   PhoneCall, 
-  ArrowRight, 
-  ShieldCheck 
+  ArrowRight 
 } from "lucide-react";
 import { FloatingGlow } from "@/components/shared/client";
 
@@ -144,23 +143,6 @@ export function ServicesHeroClient() {
 
               {/* Ground Shadow underneath the Generator */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-4/5 h-8 bg-[#111315]/15 blur-xl rounded-full pointer-events-none" />
-            </div>
-
-            {/* Grounded Precision Telemetry Readout Bar (Bespoke Luxury Industrial) */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-6 px-6 py-3 bg-white/90 backdrop-blur-md border border-[#E8E2D9] rounded-2xl shadow-xs">
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-[#FF5500]" />
-                <span className="font-mono text-xs font-bold text-[#111315]">250 kVA PRIME FLEET</span>
-              </div>
-              <div className="w-px h-3.5 bg-[#E8E2D9] hidden sm:block" />
-              <div className="font-mono text-xs text-[#71695F]">
-                415V • 50 Hz • THREE-PHASE
-              </div>
-              <div className="w-px h-3.5 bg-[#E8E2D9] hidden sm:block" />
-              <div className="font-mono text-xs text-[#71695F] flex items-center gap-1.5">
-                <ShieldCheck className="size-3.5 text-[#FF5500]" />
-                CPCB-IV+ COMPLIANT
-              </div>
             </div>
 
           </motion.div>

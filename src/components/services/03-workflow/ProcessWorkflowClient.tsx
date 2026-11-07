@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Cpu, ShieldCheck, Truck, Activity, CheckCircle2 } from "lucide-react";
+import { Cpu, ShieldCheck, Truck, Activity } from "lucide-react";
 import { WorkflowStage } from "./ProcessWorkflow";
 
 const ICONS = {
@@ -56,14 +56,10 @@ export function ProcessWorkflowClient({ stages }: { stages: WorkflowStage[] }) {
               className="flex flex-col group"
             >
               {/* Node Connector */}
-              <div className="relative mb-6 sm:mb-8 flex items-center justify-between lg:justify-start">
+              <div className="relative mb-6 sm:mb-8 flex items-center justify-start">
                 <div className="size-16 sm:size-18 rounded-2xl bg-white border border-[#E8E2D9] flex items-center justify-center relative z-10 shadow-sm group-hover:border-[#FF5500]/50 group-hover:shadow-md transition-all duration-300">
                   <Icon className="size-7 sm:size-8 text-[#FF5500] group-hover:scale-110 transition-transform duration-300" />
                 </div>
-
-                <span className="font-mono text-xs font-bold text-[#8C8275] tracking-wider uppercase lg:hidden">
-                  {stage.phase}
-                </span>
               </div>
 
               {/* Stage Card */}
@@ -72,26 +68,15 @@ export function ProcessWorkflowClient({ stages }: { stages: WorkflowStage[] }) {
                 <div className="absolute top-0 left-6 right-6 h-1 bg-gradient-to-r from-transparent via-[#FF5500] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 <div>
-                  {/* Phase Eyebrow Tag */}
-                  <span className="font-mono text-[11px] font-bold text-[#FF5500] tracking-widest uppercase block mb-2">
-                    {stage.phase}
-                  </span>
-
                   {/* Stage Title */}
                   <h3 className="text-xl sm:text-2xl font-bold text-[#111315] font-['Poppins',sans-serif] tracking-tight mb-3 group-hover:text-[#FF5500] transition-colors duration-300">
                     {stage.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm sm:text-base text-[#625D55] font-['Outfit',sans-serif] leading-relaxed mb-6 font-normal">
+                  <p className="text-sm sm:text-base text-[#625D55] font-['Outfit',sans-serif] leading-relaxed font-normal">
                     {stage.desc}
                   </p>
-                </div>
-
-                {/* Deliverable Indicator */}
-                <div className="pt-4 border-t border-[#E8E2D9] flex items-center gap-2 text-xs font-semibold text-[#111315]">
-                  <CheckCircle2 className="size-4 text-[#FF5500] shrink-0" />
-                  <span className="truncate">{stage.deliverable}</span>
                 </div>
               </div>
             </motion.div>

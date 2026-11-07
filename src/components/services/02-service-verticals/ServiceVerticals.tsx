@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
 import { CrazyServiceDetails } from "./CrazyServiceDetails";
 
 /**
@@ -9,6 +12,7 @@ import { CrazyServiceDetails } from "./CrazyServiceDetails";
  * - Bright translucent wash overlay
  * - Clean open space layout (zero card boxes)
  * - Distinctive data-related icons, bold titles, and Learn More links
+ * - Luxury masked text-reveal animation on scroll
  */
 export function ServiceVerticals() {
   return (
@@ -28,14 +32,26 @@ export function ServiceVerticals() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-[#FF5500]/[0.04] blur-[140px] rounded-full pointer-events-none" />
 
       <div className="max-w-[1440px] mx-auto relative z-10">
-        {/* Section Heading */}
+        {/* Section Heading with Smooth Text Reveal Animation */}
         <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-24">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight"
+          >
             Specialized Power <span className="text-[#FF5500]">Service Verticals</span>
-          </h2>
-          <p className="text-[#625D55] font-['Outfit',sans-serif] text-base sm:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+            className="text-[#625D55] font-['Outfit',sans-serif] text-base sm:text-lg mt-4 max-w-2xl mx-auto leading-relaxed"
+          >
             Turnkey silent generator rentals and mission-critical power solutions engineered for zero downtime across Nashik and Maharashtra.
-          </p>
+          </motion.p>
         </div>
 
         {/* Services Showcase (No Cards, Free Space, BootstrapBrain Service-8 Style) */}

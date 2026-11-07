@@ -31,15 +31,15 @@ export function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="w-full bg-[#FAF8F5] text-[#1F1F1E] relative overflow-hidden border-t border-[#E8E2D9] select-none min-h-[100dvh] lg:h-[100dvh] lg:max-h-[720px] flex flex-col justify-between">
+    <footer className="w-full bg-[#FAF8F5] text-[#1F1F1E] relative overflow-hidden border-t border-[#E8E2D9] select-none flex flex-col justify-between">
       
       {/* 
         INTEGRATED BRIGHT STAGE: Bulbs + Open Free-Space Typography + Generator Truck Track
-        Entire stage rendered on a clean, bright architectural canvas (NO CARDS)
+        Entire stage rendered on a clean, bright architectural canvas (NO CARDS, NO DEAD GAP)
       */}
       <GeneratorTruckTrack>
-        {/* Floating Content Stage (Directly in open free space, ZERO CARDS) */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 w-full flex-1 flex flex-col justify-center z-30">
+        {/* Floating Content Stage (Directly in open free space, ZERO CARDS, tight cohesive spacing) */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 sm:pt-7 pb-2 sm:pb-3 w-full z-30">
           
           {/* Subtle Watermarked Background Marque */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-black text-5xl sm:text-7xl lg:text-[110px] text-black/[0.035] select-none pointer-events-none whitespace-nowrap tracking-tighter">

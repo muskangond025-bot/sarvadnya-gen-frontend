@@ -31,32 +31,32 @@ const FULL_NAV_ITEMS = [
     image: "/images/generators/generator_38.png",
   },
   {
-    key: "nav.fleet",
-    fallback: "Generator Fleet",
-    href: "/generators",
-    image: "/images/generators/generator_10.png",
-  },
-  {
     key: "nav.services",
-    fallback: "Rental Services",
+    fallback: "Services",
     href: "/services",
     image: "/images/generators/generator_14.png",
   },
   {
+    key: "nav.fleet",
+    fallback: "Generator",
+    href: "/generators",
+    image: "/images/generators/generator_10.png",
+  },
+  {
     key: "nav.insights",
-    fallback: "Rental Insights",
+    fallback: "Blog",
     href: "/blog",
     image: "/images/generators/generator_36.png",
   },
   {
     key: "nav.about",
-    fallback: "About Sarvadnya",
+    fallback: "About",
     href: "/about",
     image: "/images/generators/generator_38.png",
   },
   {
     key: "nav.contact",
-    fallback: "Contact & Logistics",
+    fallback: "Contact",
     href: "/contact",
     image: "/images/generators/generator_10.png",
   },
@@ -119,7 +119,6 @@ export default function Header({ children }: { children?: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [hoveredIndex, setHoveredIndex] = useState(0);
   const lastScrollY = useRef(0);
   const { isFullscreen } = useFullscreen();
   const pathname = usePathname();
@@ -361,13 +360,11 @@ export default function Header({ children }: { children?: React.ReactNode }) {
               {/* Drawer Content Container with Top Offset for Floating Header */}
               <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-24 sm:pt-28 pb-8 flex flex-col justify-between flex-1 gap-8">
                 
-                {/* Main 2-Column Split Stage */}
-                <div className="flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-16">
-                  
-                  {/* LEFT HALF: Large-Format Editorial Navigation Links (Zero Unnecessary Text) */}
-                  <div className="flex w-full md:w-1/2 flex-col justify-between">
+                {/* Main Navigation Stage (Centered, Clean, No Card) */}
+                <div className="flex flex-col items-center justify-center max-w-2xl mx-auto w-full py-2">
+                  <div className="flex w-full flex-col justify-between">
                     <nav aria-label="Mega menu navigation">
-                      <ul className="flex flex-col gap-1 sm:gap-2">
+                      <ul className="flex flex-col gap-2 sm:gap-3">
                         {FULL_NAV_ITEMS.map((item, index) => {
                           const isActive =
                             item.href === "/"
@@ -384,14 +381,13 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                                 duration: 0.35,
                                 ease: [0.16, 1, 0.3, 1],
                               }}
-                              onMouseEnter={() => setHoveredIndex(index)}
                             >
                               <Link
                                 href={item.href}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="group relative flex items-center justify-between w-full py-1.5 sm:py-2 text-left"
+                                className="group relative flex items-center justify-between w-full py-2 text-left"
                               >
-                                <div className="flex items-baseline gap-3 sm:gap-5">
+                                <div className="flex items-baseline gap-4 sm:gap-6">
                                   {/* Monospace Index Numeral */}
                                   <span className="font-mono text-xs sm:text-sm text-[#FF5500]/70 group-hover:text-[#FF5500] font-bold transition-colors">
                                     0{index + 1}
@@ -400,7 +396,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                                   {/* Clean Editorial Title */}
                                   <span
                                     className={cn(
-                                      "font-sans font-extrabold text-2xl sm:text-3xl lg:text-[40px] leading-tight tracking-tight transition-all duration-300",
+                                      "font-sans font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight transition-all duration-300",
                                       isActive
                                         ? "text-[#FF5500] translate-x-1"
                                         : "text-white/90 group-hover:text-[#FF5500] group-hover:translate-x-2"
@@ -413,7 +409,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                                 {/* Arrow Glider on Hover */}
                                 <ArrowRight
                                   className={cn(
-                                    "w-5 h-5 text-[#FF5500] transition-all duration-300 shrink-0",
+                                    "w-6 h-6 text-[#FF5500] transition-all duration-300 shrink-0",
                                     isActive
                                       ? "opacity-100 translate-x-0"
                                       : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
@@ -431,66 +427,11 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3, duration: 0.3 }}
-                      className="mt-6 pt-5 border-t border-white/10"
+                      className="mt-8 pt-6 border-t border-white/10"
                     >
                       <LanguageSwitcher variant="drawer" theme="dark" />
                     </motion.div>
                   </div>
-
-                  {/* RIGHT HALF: Photorealistic Equipment Showcase Stage */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.15, duration: 0.4 }}
-                    className="relative hidden md:flex flex-col justify-between w-full md:w-5/12 aspect-[4/3] rounded-3xl bg-white/[0.03] border border-white/10 p-7 overflow-hidden shadow-2xl"
-                  >
-                    {/* Ambient Glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#FF5500]/15 blur-3xl rounded-full pointer-events-none" />
-
-                    {/* Top Stage Tag */}
-                    <div className="relative z-10 flex items-center justify-between text-xs">
-                      <span className="font-mono uppercase font-bold text-white tracking-wider text-[11px]">
-                        {t("range.soundproofFleet", "Sarvadnya Silent DG Fleet")}
-                      </span>
-                      <span className="font-mono text-[11px] text-[#FF5500] font-semibold">
-                        5 – 250 kVA
-                      </span>
-                    </div>
-
-                    {/* Dynamic Equipment Image changing with hovered link */}
-                    <div className="relative z-10 w-full h-44 lg:h-52 my-3 flex items-center justify-center">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={hoveredIndex}
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                          transition={{ duration: 0.22 }}
-                          className="relative w-4/5 h-full filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.65)]"
-                        >
-                          <Image
-                            src={FULL_NAV_ITEMS[hoveredIndex]?.image || "/images/generators/generator_10.png"}
-                            alt={FULL_NAV_ITEMS[hoveredIndex]?.fallback || "Generator"}
-                            fill
-                            sizes="(max-width: 1024px) 35vw, 400px"
-                            className="object-contain"
-                            priority
-                          />
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Clean Equipment Status */}
-                    <div className="relative z-10 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/60">
-                      <span className="font-medium text-white/80">
-                        {t(FULL_NAV_ITEMS[hoveredIndex]?.key, FULL_NAV_ITEMS[hoveredIndex]?.fallback)}
-                      </span>
-                      <span className="font-mono text-[#FF5500] font-semibold">
-                        {t("footer.cpcbCompliance", "CPCB-II Acoustic")}
-                      </span>
-                    </div>
-                  </motion.div>
-
                 </div>
 
                 {/* BOTTOM MINIMAL ACTION STRIP (No Bloat Text) */}

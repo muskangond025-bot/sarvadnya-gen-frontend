@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Phone, ArrowRight, ShieldCheck, Zap, Clock } from "lucide-react";
+import { Phone, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export interface CTAData {
@@ -91,7 +91,7 @@ export function CTAClient({ data }: CTAClientProps) {
         </p>
 
         {/* Action Buttons Row */}
-        <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto mb-10">
+        <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
           {/* Primary Action Button */}
           <Link
             href="/book"
@@ -109,24 +109,6 @@ export function CTAClient({ data }: CTAClientProps) {
             <Phone className="w-4 h-4 text-[#FF5500]" />
             <span>{t("cta.callUs", data.secondaryButtonText)}</span>
           </a>
-        </div>
-
-        {/* Trust Badges Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 pt-6 border-t border-[#E8E2D9] text-xs font-semibold text-[#71695F] font-mono">
-          <div className="flex items-center gap-2">
-            <Zap className="size-3.5 text-[#FF5500]" />
-            <span>5–250 kVA READY FLEET</span>
-          </div>
-          <div className="size-1 rounded-full bg-[#E8E2D9] hidden sm:block" />
-          <div className="flex items-center gap-2">
-            <Clock className="size-3.5 text-[#FF5500]" />
-            <span>&lt; 60 MIN NASHIK HUB</span>
-          </div>
-          <div className="size-1 rounded-full bg-[#E8E2D9] hidden sm:block" />
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="size-3.5 text-[#FF5500]" />
-            <span>CPCB-IV+ ACOUSTIC CERTIFIED</span>
-          </div>
         </div>
       </motion.div>
 

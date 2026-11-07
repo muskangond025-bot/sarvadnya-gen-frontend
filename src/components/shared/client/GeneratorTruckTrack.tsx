@@ -89,7 +89,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none border-b border-black/10 flex flex-col justify-between flex-1"
+      className="relative w-full overflow-hidden select-none border-b border-black/10 flex flex-col justify-between"
       style={{
         background: "linear-gradient(180deg, #FAF8F5 0%, #F4EFE6 100%)",
       }}
@@ -186,7 +186,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         (Text and cards layer cleanly on top of the stage)
       */}
       {children && (
-        <div className="relative z-30 w-full flex-1 flex flex-col justify-center">
+        <div className="relative z-30 w-full">
           {children}
         </div>
       )}
@@ -196,10 +196,10 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         Guaranteed 100% UNCLIPPED & FULL HEADROOM:
         - overflow-x-clip prevents page scrollbars
         - overflow-y-visible guarantees truck cabin roof, sun visor, and exhaust silencer NEVER clip!
-        - Roadway fully engulfs lower undercarriage so zero white/beige gap is ever visible!
+        - Roadway sits right below the content with tight cohesive spacing (zero dead gap)!
         - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
-      <div className="relative w-full h-[210px] sm:h-[235px] lg:h-[255px] overflow-x-clip overflow-y-visible shrink-0">
+      <div className="relative w-full h-[190px] sm:h-[210px] lg:h-[225px] overflow-x-clip overflow-y-visible shrink-0 mt-2 sm:mt-4">
         
         {/* Asphalt Road Surface with Centerline & Shoulder */}
         <div className="absolute inset-x-0 bottom-0 h-16 sm:h-20 lg:h-24 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
