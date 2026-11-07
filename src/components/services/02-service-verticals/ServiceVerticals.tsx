@@ -13,16 +13,16 @@ import { CrazyServiceDetails } from "./CrazyServiceDetails";
 export function ServiceVerticals() {
   return (
     <section className="relative py-24 sm:py-32 px-6 md:px-10 lg:px-[60px] overflow-hidden bg-[#FAF8F5]">
-      {/* Full-Bleed Photographic Background */}
+      {/* Full-Bleed Generator Engine Background (Matching User Uploaded Machine) */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-40 sm:opacity-50"
         style={{
-          backgroundImage: "url('/images/services/service_engineer_bg.jpg')",
+          backgroundImage: "url('/images/services/generator_engine_bg.jpg')",
         }}
       />
 
-      {/* Bright Translucent Wash Overlay (Matching Service-8 light wash) */}
-      <div className="absolute inset-0 bg-white/85 sm:bg-[#FAF8F5]/85 backdrop-blur-[1px] pointer-events-none" />
+      {/* Bright Translucent Wash (Ensures typography readability while clearly displaying generator machinery) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FAF8F5]/85 via-[#FAF8F5]/60 to-[#FAF8F5]/90 backdrop-blur-[0.5px] pointer-events-none" />
 
       {/* Subtle Warm Amber Core Lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-[#FF5500]/[0.04] blur-[140px] rounded-full pointer-events-none" />

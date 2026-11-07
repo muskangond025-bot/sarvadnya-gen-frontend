@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Phone, ArrowRight, Zap } from "lucide-react";
+import { Phone, ArrowRight, ShieldCheck, Zap, Clock } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export interface CTAData {
@@ -23,71 +23,61 @@ interface CTAClientProps {
 /**
  * CTAClient Component
  * 
- * Re-architected as an open, fluid architectural conversion stage (NO CARDS):
- * - Completely eliminates boxed card borders, background boxes, and nested frames
- * - Subtle ambient navbar logo watermark in the background with warm radial lighting
- * - Preserves exact copy, phone number, and action routes
- * - Zero unwanted text added
+ * Luxury Architectural Conversion Stage:
+ * - High-definition, vibrant 3D Electric Power Symbol with concentric energy aura
+ * - Zero background text overlap, zero visual noise
+ * - Clear, authoritative typography and verified fleet trust markers
+ * - Pure bright luxury theme
  */
 export function CTAClient({ data }: CTAClientProps) {
   const { t } = useLanguage();
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center select-none py-4 sm:py-6 lg:py-8">
+    <div className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center select-none py-6 sm:py-10">
       
-      {/* 
-        BACKGROUND 3D ELECTRIC SYMBOL & AMBIENT AURA
-        Exact 3D Electric Power Symbol (Envato 2CG6TSH style) with orbital energy rings & warm atmospheric glow
-      */}
+      {/* Soft Ambient Volumetric Amber Illumination */}
       <div 
         aria-hidden="true" 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 flex items-center justify-center w-full overflow-visible select-none"
-      >
-        {/* Soft Warm Radial Amber Glow */}
-        <div className="w-[500px] sm:w-[680px] h-[320px] sm:h-[420px] bg-[#FF5500]/[0.10] blur-[120px] rounded-full" />
-
-        {/* Floating 3D Electric Power Symbol */}
-        <motion.div
-          animate={{
-            y: [-8, 8, -8],
-            rotate: [-1.2, 1.2, -1.2],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center opacity-25 sm:opacity-30 dark:opacity-40"
-        >
-          <img
-            src="/images/cta/electric_symbol_3d_orange.png"
-            alt="3D Electric Power Symbol"
-            width={603}
-            height={1016}
-            className="w-[220px] sm:w-[280px] md:w-[320px] h-auto object-contain drop-shadow-[0_24px_48px_rgba(255,85,0,0.35)]"
-            draggable={false}
-          />
-
-          {/* Watermark Brand Name Under Symbol */}
-          <div className="flex flex-col items-center -mt-6 sm:-mt-8 select-none opacity-40">
-            <span className="font-sans font-black text-2xl sm:text-3xl tracking-widest uppercase text-[#1F1F1E]">
-              SARVADNYA
-            </span>
-            <span className="font-mono text-xs font-bold tracking-[0.3em] uppercase text-[#FF5500] -mt-1">
-              POWER NASHIK
-            </span>
-          </div>
-        </motion.div>
-      </div>
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] sm:w-[650px] h-[300px] sm:h-[400px] bg-[#FF5500]/[0.08] blur-[130px] rounded-full pointer-events-none z-0" 
+      />
 
       {/* 
-        FOREGROUND CONVERSION CLUSTER (NO CARD BOX, OPEN ARCHITECTURAL FLOW)
+        PREMIUM 3D POWER LIGHTNING SYMBOL STAGE
+        Vibrant, high-gloss 3D symbol with smooth levitation & energy ripples
+      */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        animate={{
+          y: [-6, 6, -6],
+        }}
+        className="relative z-10 size-28 sm:size-36 md:size-40 flex items-center justify-center mb-6 sm:mb-8"
+      >
+        {/* Concentric Energy Aura Ripples */}
+        <div className="absolute inset-0 rounded-full border border-[#FF5500]/25 animate-[ping_4s_cubic-bezier(0,0,0.2,1)_infinite] pointer-events-none" />
+        <div className="absolute -inset-4 rounded-full bg-[#FF5500]/10 blur-xl pointer-events-none" />
+
+        {/* 3D Glossy Orange Electric Symbol (Full Visual Fidelity) */}
+        <img
+          src="/images/cta/electric_symbol_3d_orange.png"
+          alt="Sarvadnya 3D Electric Power Symbol"
+          width={603}
+          height={1016}
+          className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(255,85,0,0.32)] filter brightness-105 pointer-events-none"
+          draggable={false}
+        />
+      </motion.div>
+
+      {/* 
+        FOREGROUND CONVERSION CLUSTER
       */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 max-w-3xl flex flex-col items-center"
       >
         {/* Simple, Punchy Display Headline */}
@@ -101,7 +91,7 @@ export function CTAClient({ data }: CTAClientProps) {
         </p>
 
         {/* Action Buttons Row */}
-        <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto mb-10">
           {/* Primary Action Button */}
           <Link
             href="/book"
@@ -114,11 +104,29 @@ export function CTAClient({ data }: CTAClientProps) {
           {/* Secondary Action Button */}
           <a
             href={`tel:${data.contactPhone.replace(/\s+/g, "")}`}
-            className="inline-flex items-center justify-center gap-2.5 font-bold font-sans text-sm sm:text-base px-7 py-4 rounded-xl bg-white border border-[#E8E2D9] text-[#1F1F1E] hover:border-[#1F1F1E] hover:bg-[#FAF8F5] transition-all shadow-xs w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2.5 font-bold font-sans text-sm sm:text-base px-7 py-4 rounded-xl bg-white border border-[#E8E2D9] text-[#1F1F1E] hover:border-[#FF5500]/50 hover:bg-[#FAF8F5] transition-all shadow-xs w-full sm:w-auto"
           >
             <Phone className="w-4 h-4 text-[#FF5500]" />
             <span>{t("cta.callUs", data.secondaryButtonText)}</span>
           </a>
+        </div>
+
+        {/* Trust Badges Bar */}
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 pt-6 border-t border-[#E8E2D9] text-xs font-semibold text-[#71695F] font-mono">
+          <div className="flex items-center gap-2">
+            <Zap className="size-3.5 text-[#FF5500]" />
+            <span>5–250 kVA READY FLEET</span>
+          </div>
+          <div className="size-1 rounded-full bg-[#E8E2D9] hidden sm:block" />
+          <div className="flex items-center gap-2">
+            <Clock className="size-3.5 text-[#FF5500]" />
+            <span>&lt; 60 MIN NASHIK HUB</span>
+          </div>
+          <div className="size-1 rounded-full bg-[#E8E2D9] hidden sm:block" />
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="size-3.5 text-[#FF5500]" />
+            <span>CPCB-IV+ ACOUSTIC CERTIFIED</span>
+          </div>
         </div>
       </motion.div>
 

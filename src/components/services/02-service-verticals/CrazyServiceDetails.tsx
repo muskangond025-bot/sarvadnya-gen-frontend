@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Cog, Package, Truck, Wrench, ArrowRight } from "lucide-react";
+import { Cog, Sparkles, Truck, Wrench, ArrowRight } from "lucide-react";
 
 interface ServiceItem {
   id: string;
@@ -27,7 +27,7 @@ const SERVICES: ServiceItem[] = [
     id: "events",
     title: "Event Silent Power",
     description: "Acoustic-shielded silent generators for luxury weddings, grand concerts, and VIP festivals with certified zero noise disruption.",
-    icon: Package,
+    icon: Sparkles,
     href: "/contact",
     actionText: "Learn More",
   },
