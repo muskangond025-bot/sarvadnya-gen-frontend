@@ -27,6 +27,8 @@ export interface RentalCalendarProps {
   minDate?: Date;
   /** Optional: maximum selectable date */
   maxDate?: Date;
+  /** Optional: color theme (defaults to dark for backward compatibility) */
+  theme?: "dark" | "light";
 }
 
 export function RentalCalendar({
@@ -37,7 +39,9 @@ export function RentalCalendar({
   onDatesChange,
   minDate,
   maxDate,
+  theme = "dark",
 }: RentalCalendarProps) {
+  const isLight = theme === "light";
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectionStart, setSelectionStart] = useState<Date | null>(null);
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
@@ -295,20 +299,233 @@ export function RentalCalendar({
     "December",
   ];
 
+  if (isLight) {
+    return (
+      <div className="w-full select-none">
+        {/* Tactile Calendar Sheet Top Header Bar */}
+        <div className="bg-[#18181B] text-white px-4 sm:px-6 py-4 rounded-t-2xl border-b-2 border-[#FF5500] flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() =>
+              setCurrentMonth(
+                new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+              )
+            }
+            aria-label="Previous month"
+            className="p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-[#FF5500] text-white transition-colors cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <div className="text-center">
+            <h3 className="font-sans text-lg sm:text-2xl font-extrabold tracking-tight text-white">
+              {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+            </h3>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              setCurrentMonth(
+                new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+              )
+            }
+            aria-label="Next month"
+            className="p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-[#FF5500] text-white transition-colors cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Printed Calendar Weekday Strip */}
+        <div className="grid grid-cols-7 bg-[#FAF8F5] border-x border-b border-[#E8E2D9]">
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, idx) => (
+            <div
+              key={day}
+              className={cn(
+                "text-center py-2.5 sm:py-3 font-mono text-[11px] sm:text-xs uppercase tracking-wider font-bold border-r last:border-r-0 border-[#E8E2D9]",
+                idx === 0 ? "text-[#FF5500]" : "text-[#111315]"
+              )}
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Crisp 1px Cell-Bordered Calendar Grid Sheet */}
+        <div
+          className="grid grid-cols-7 gap-px bg-[#E8E2D9] border-x border-b border-[#E8E2D9] rounded-b-2xl overflow-hidden touch-none shadow-xs"
+          onMouseLeave={() => {
+            // Handled via global mouseup listener
+          }}
+        >
+          {days.map((date, idx) => {
+            const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
+            const isToday = date.toDateString() === new Date().toDateString();
+            const isPast = date < effectiveMinDate;
+            const isFuture = maxDate ? date > maxDate : false;
+            const isDisabled = isPast || isFuture;
+
+            const selected =
+              selectionMode === "range"
+                ? isDateSelectedInRange(date)
+                : isDateSelectedIndividually(date);
+            const preview = selectionMode === "range" && isDateInPreview(date);
+            const rangeStart = selectionMode === "range" && isRangeStart(date);
+            const rangeEnd = selectionMode === "range" && isRangeEnd(date);
+            const isDragStart =
+              selectionMode === "range" &&
+              selectionStart?.toDateString() === date.toDateString();
+
+            const isHighlightedEnd =
+              isDragStart ||
+              rangeStart ||
+              rangeEnd ||
+              (selectionMode === "individual" && selected);
+
+            const isMidRange =
+              selectionMode === "range" &&
+              (selected || preview) &&
+              !rangeStart &&
+              !rangeEnd &&
+              !isDragStart;
+
+            return (
+              <button
+                key={idx}
+                type="button"
+                data-date={date.toISOString()}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleMouseDown(date);
+                }}
+                onMouseEnter={() => handleMouseEnter(date)}
+                onMouseUp={() => handleMouseUp(date)}
+                onTouchStart={(e) => {
+                  handleTouchStart(e, date);
+                }}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                disabled={isDisabled}
+                className={cn(
+                  "h-12 sm:h-14 md:h-16 flex flex-col items-center justify-center text-sm sm:text-base font-bold transition-colors relative select-none",
+                  isHighlightedEnd
+                    ? "bg-[#FF5500] text-white font-black"
+                    : isMidRange
+                    ? "bg-[#FFE7D6] text-[#C74000] font-bold"
+                    : isDisabled
+                    ? "bg-[#FAF8F5] text-[#8C857B] cursor-not-allowed"
+                    : !isCurrentMonth
+                    ? "bg-[#FAF8F5]/60 text-[#A8A29E] hover:bg-white hover:text-[#111315] cursor-pointer"
+                    : isToday
+                    ? "bg-[#FFF5EE] text-[#FF5500] font-black hover:bg-[#FF5500] hover:text-white cursor-pointer"
+                    : "bg-white text-[#111315] hover:bg-[#FFF5EE] hover:text-[#FF5500] cursor-pointer"
+                )}
+              >
+                <span>{date.getDate()}</span>
+                {isToday && (
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full mt-0.5",
+                      isHighlightedEnd ? "bg-white" : "bg-[#FF5500]"
+                    )}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected Ranges Display */}
+        {selectionMode === "range" && selectedRanges.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {selectedRanges.map((range) => (
+              <div
+                key={range.id}
+                className="flex items-center gap-2.5 bg-[#FF5500]/10 border border-[#FF5500]/30 text-[#111315] px-4 py-2 rounded-full"
+              >
+                <span className="text-xs sm:text-sm font-bold">
+                  {range.start.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                  {" → "}
+                  {range.end.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeRange(range.id)}
+                  className="text-[#FF5500] hover:text-[#111315] transition-colors cursor-pointer"
+                  aria-label="Remove range"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Selected Dates Display */}
+        {selectionMode === "individual" && selectedDates.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[...selectedDates]
+              .sort((a, b) => a.getTime() - b.getTime())
+              .map((date) => (
+                <div
+                  key={date.toISOString()}
+                  className="flex items-center gap-2 bg-[#FF5500]/10 border border-[#FF5500]/30 text-[#111315] px-3.5 py-1.5 rounded-full"
+                >
+                  <span className="text-xs sm:text-sm font-bold">
+                    {date.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeDate(date)}
+                    className="text-[#FF5500] hover:text-[#111315] transition-colors cursor-pointer"
+                    aria-label="Remove date"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {selectionMode === "range" && isDragging && (
+          <p className="text-[#FF5500] mt-4 text-sm font-semibold text-center animate-pulse">
+            Release to select range
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
         <button
+          type="button"
           onClick={() =>
             setCurrentMonth(
-              new Date(currentMonth.setMonth(currentMonth.getMonth() - 1))
+              new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
             )
           }
-          className="text-white/50 hover:text-[#00ff8f] transition-colors p-3"
+          aria-label="Previous month"
+          className={cn(
+            "transition-all p-2.5 sm:p-3 rounded-xl cursor-pointer",
+            isLight
+              ? "bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315] hover:border-[#FF5500] hover:text-[#FF5500]"
+              : "text-white/50 hover:text-[#00ff8f]"
+          )}
         >
           <svg
-            className="w-8 h-8"
+            className={cn(isLight ? "w-5 h-5 sm:w-6 sm:h-6" : "w-8 h-8")}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -321,19 +538,33 @@ export function RentalCalendar({
             />
           </svg>
         </button>
-        <h3 className="text-4xl md:text-5xl font-bold text-white font-['Poppins',sans-serif]">
+        <h3
+          className={cn(
+            "font-bold tracking-tight",
+            isLight
+              ? "text-xl sm:text-2xl md:text-3xl text-[#111315] font-sans"
+              : "text-4xl md:text-5xl text-white font-['Poppins',sans-serif]"
+          )}
+        >
           {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
         </h3>
         <button
+          type="button"
           onClick={() =>
             setCurrentMonth(
-              new Date(currentMonth.setMonth(currentMonth.getMonth() + 1))
+              new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
             )
           }
-          className="text-white/50 hover:text-[#00ff8f] transition-colors p-3"
+          aria-label="Next month"
+          className={cn(
+            "transition-all p-2.5 sm:p-3 rounded-xl cursor-pointer",
+            isLight
+              ? "bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315] hover:border-[#FF5500] hover:text-[#FF5500]"
+              : "text-white/50 hover:text-[#00ff8f]"
+          )}
         >
           <svg
-            className="w-8 h-8"
+            className={cn(isLight ? "w-5 h-5 sm:w-6 sm:h-6" : "w-8 h-8")}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -349,11 +580,16 @@ export function RentalCalendar({
       </div>
 
       {/* Day Names */}
-      <div className="grid grid-cols-7 gap-1 mb-4">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-3 sm:mb-4">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div
             key={day}
-            className="text-center text-white/30 text-sm md:text-base py-2 font-medium"
+            className={cn(
+              "text-center py-2",
+              isLight
+                ? "text-[#524E48] font-mono text-xs uppercase tracking-wider font-bold"
+                : "text-white/30 text-sm md:text-base font-medium"
+            )}
           >
             {day}
           </div>
@@ -362,11 +598,9 @@ export function RentalCalendar({
 
       {/* Calendar Grid */}
       <div
-        className="grid grid-cols-7 gap-1 touch-none" // touch-none is important to prevent browser processing touches
+        className="grid grid-cols-7 gap-1 sm:gap-2 touch-none"
         onMouseLeave={() => {
-          // If mouse leaves the entire grid while dragging, we could choose to cancel or keep dragging.
-          // For simplicity, let's keep dragging enabled so you can re-enter.
-          // Or strictly relying on global mouseup.
+          // Handled via global mouseup listener
         }}
       >
         {days.map((date, idx) => {
@@ -376,7 +610,6 @@ export function RentalCalendar({
           const isFuture = maxDate ? date > maxDate : false;
           const isDisabled = isPast || isFuture;
 
-          // Selection state based on mode
           const selected =
             selectionMode === "range"
               ? isDateSelectedInRange(date)
@@ -385,7 +618,6 @@ export function RentalCalendar({
           const rangeStart = selectionMode === "range" && isRangeStart(date);
           const rangeEnd = selectionMode === "range" && isRangeEnd(date);
 
-          // Is this date the start of the current drag selection?
           const isDragStart =
             selectionMode === "range" &&
             selectionStart?.toDateString() === date.toDateString();
@@ -393,6 +625,7 @@ export function RentalCalendar({
           return (
             <button
               key={idx}
+              type="button"
               data-date={date.toISOString()}
               onMouseDown={(e) => {
                 e.preventDefault();
@@ -400,59 +633,74 @@ export function RentalCalendar({
               }}
               onMouseEnter={() => handleMouseEnter(date)}
               onMouseUp={() => handleMouseUp(date)}
-              // Touch Events
               onTouchStart={(e) => {
-                // allow scroll if not valid date? no, prevent default for drag intent
-                // only prevent default if we actually start a drag?
-                // Let's try preventing mostly to simulate robust app feel.
-                // Actually for a calendar grid, scroll is usually vertical outside grid.
-                // Inside grid, touchmove should correspond to selection.
-                // e.preventDefault(); // handled in handler if needed
                 handleTouchStart(e, date);
               }}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
               disabled={isDisabled}
               className={cn(
-                "aspect-square flex items-center justify-center text-lg md:text-xl font-medium transition-all duration-150 relative select-none", // Added select-none
-                !isCurrentMonth && "opacity-20",
-                isDisabled && "opacity-10 cursor-not-allowed",
+                "aspect-square flex items-center justify-center transition-all duration-150 relative select-none",
+                isLight
+                  ? "text-sm sm:text-base font-semibold rounded-xl"
+                  : "text-lg md:text-xl font-medium",
+                !isCurrentMonth && (isLight ? "text-[#B5AEA4]" : "opacity-20"),
+                isDisabled &&
+                  (isLight
+                    ? "cursor-not-allowed text-[#8C857B] bg-[#FAF8F5]/70"
+                    : "opacity-10 cursor-not-allowed"),
 
                 // Drag start indicator
-                isDragStart && "bg-[#00ff8f] text-black font-bold rounded-l-lg",
+                isDragStart &&
+                  (isLight
+                    ? "bg-[#FF5500] text-white font-bold rounded-l-xl"
+                    : "bg-[#00ff8f] text-black font-bold rounded-l-lg"),
 
-                // Range start and end dates (committed)
-                rangeStart && "rounded-l-lg bg-[#00ff8f] text-black font-bold",
-                rangeEnd && "rounded-r-lg bg-[#00ff8f] text-black font-bold",
+                // Range start and end dates
+                rangeStart &&
+                  (isLight
+                    ? "rounded-l-xl bg-[#FF5500] text-white font-bold"
+                    : "rounded-l-lg bg-[#00ff8f] text-black font-bold"),
+                rangeEnd &&
+                  (isLight
+                    ? "rounded-r-xl bg-[#FF5500] text-white font-bold"
+                    : "rounded-r-lg bg-[#00ff8f] text-black font-bold"),
 
-                // Active Drag Preview OR Committed Range Selection (middle parts)
-                ((selectionMode === "range" &&
+                // Range middle
+                selectionMode === "range" &&
                   (selected || preview) &&
                   !rangeStart &&
                   !rangeEnd &&
-                  !isDragStart) ||
-                  (selectionMode === "individual" && selected)) &&
-                  "bg-brand-green-dark text-white",
+                  !isDragStart &&
+                  (isLight
+                    ? "bg-[#FF5500]/15 text-[#FF5500] font-bold"
+                    : "bg-brand-green-dark text-white"),
 
-                // Individual mode selected - round corners
+                // Individual mode selected
                 selectionMode === "individual" &&
                   selected &&
-                  "rounded-lg bg-[#00ff8f] text-black font-bold",
+                  (isLight
+                    ? "rounded-xl bg-[#FF5500] text-white font-bold shadow-md shadow-[#FF5500]/25"
+                    : "rounded-lg bg-[#00ff8f] text-black font-bold"),
 
                 // Today indicator
                 isToday &&
                   !selected &&
                   !preview &&
                   !isDragStart &&
-                  "text-[#00ff8f]",
+                  (isLight
+                    ? "text-[#FF5500] ring-1 ring-[#FF5500]/45 bg-[#FF5500]/[0.05] font-bold"
+                    : "text-[#00ff8f]"),
 
-                // Default hover state
+                // Default interactive tile
                 !selected &&
                   !preview &&
                   !isDragStart &&
                   isCurrentMonth &&
                   !isDisabled &&
-                  "text-white hover:text-[#00ff8f]"
+                  (isLight
+                    ? "text-[#111315] hover:bg-[#FAF8F5] hover:text-[#FF5500] border border-transparent hover:border-[#E8E2D9] cursor-pointer"
+                    : "text-white hover:text-[#00ff8f]")
               )}
             >
               {date.getDate()}
@@ -463,13 +711,18 @@ export function RentalCalendar({
 
       {/* Selected Ranges Display - Range Mode */}
       {selectionMode === "range" && selectedRanges.length > 0 && (
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-6 sm:mt-8 flex flex-wrap gap-2.5 sm:gap-3">
           {selectedRanges.map((range) => (
             <div
               key={range.id}
-              className="flex items-center gap-4 bg-brand-green px-6 py-3 rounded-xl"
+              className={cn(
+                "flex items-center gap-3 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl",
+                isLight
+                  ? "bg-[#FF5500]/10 border border-[#FF5500]/30 text-[#111315]"
+                  : "bg-brand-green text-black"
+              )}
             >
-              <span className="text-black text-base md:text-lg font-semibold">
+              <span className="text-sm sm:text-base font-semibold">
                 {range.start.toLocaleDateString("en-IN", {
                   day: "numeric",
                   month: "short",
@@ -481,11 +734,17 @@ export function RentalCalendar({
                 })}
               </span>
               <button
+                type="button"
                 onClick={() => removeRange(range.id)}
-                className="text-black/60 hover:text-black transition-colors"
+                className={cn(
+                  "transition-colors cursor-pointer",
+                  isLight
+                    ? "text-[#FF5500] hover:text-[#111315]"
+                    : "text-black/60 hover:text-black"
+                )}
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -505,26 +764,38 @@ export function RentalCalendar({
 
       {/* Selected Dates Display - Individual Mode */}
       {selectionMode === "individual" && selectedDates.length > 0 && (
-        <div className="mt-8 flex flex-wrap gap-3">
-          {selectedDates
+        <div className="mt-6 flex flex-wrap gap-2">
+          {[...selectedDates]
             .sort((a, b) => a.getTime() - b.getTime())
             .map((date) => (
               <div
                 key={date.toISOString()}
-                className="flex items-center gap-3 bg-brand-green px-4 py-2 rounded-xl"
+                className={cn(
+                  "flex items-center gap-2 px-3.5 py-1.5 rounded-full",
+                  isLight
+                    ? "bg-[#FF5500]/10 border border-[#FF5500]/30 text-[#111315]"
+                    : "bg-brand-green text-black rounded-xl"
+                )}
               >
-                <span className="text-black text-base font-semibold">
+                <span className="text-xs sm:text-sm font-semibold">
                   {date.toLocaleDateString("en-IN", {
                     day: "numeric",
                     month: "short",
                   })}
                 </span>
                 <button
+                  type="button"
                   onClick={() => removeDate(date)}
-                  className="text-black/60 hover:text-black transition-colors"
+                  className={cn(
+                    "transition-colors cursor-pointer",
+                    isLight
+                      ? "text-[#FF5500] hover:text-[#111315]"
+                      : "text-black/60 hover:text-black"
+                  )}
+                  aria-label="Remove date"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -544,7 +815,12 @@ export function RentalCalendar({
 
       {/* Helper text for range mode */}
       {selectionMode === "range" && isDragging && (
-        <p className="text-[#00ff8f]/60 mt-4 text-lg text-center animate-pulse">
+        <p
+          className={cn(
+            "mt-4 text-base sm:text-lg text-center animate-pulse",
+            isLight ? "text-[#FF5500]" : "text-[#00ff8f]/60"
+          )}
+        >
           Release to select range
         </p>
       )}

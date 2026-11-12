@@ -1,13 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import { CheckCircle2, Zap } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StepEquipmentVisual } from "./Solutions3DElements";
 
@@ -23,206 +18,179 @@ interface SolutionsClientProps {
   steps: StepItem[];
 }
 
+const CYCLE_INTERVAL = 3000; // Exact 3 seconds auto-advance
+
 /**
- * 3D Tilt Card with Framer Motion Spring Parallax & Photorealistic Isolated Equipment Stage
+ * SolutionsClient Component
+ *
+ * Open Editorial Process Stage (ZERO CARDS):
+ * - Left: Floating high-resolution equipment image synced to the active step
+ * - Right: Only the single active step's typography & verification row
+ * - Bottom: Interactive horizontal dotted line advancing automatically every 3 seconds
  */
-function TiltCard({
-  item,
-  index,
-  isActive,
-  onActivate,
-}: {
-  item: StepItem;
-  index: number;
-  isActive: boolean;
-  onActivate: () => void;
-}) {
-  const cardRef = useRef<HTMLDivElement | null>(null);
-
-  // Motion values for smooth 3D tilt
-  const mouseX = useMotionValue(0.5);
-  const mouseY = useMotionValue(0.5);
-
-  const springConfig = { damping: 20, stiffness: 240, mass: 0.1 };
-  const smoothMouseX = useSpring(mouseX, springConfig);
-  const smoothMouseY = useSpring(mouseY, springConfig);
-
-  const rotateX = useTransform(smoothMouseY, [0, 1], [6, -6]);
-  const rotateY = useTransform(smoothMouseX, [0, 1], [-6, 6]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0.5);
-    mouseY.set(0.5);
-  };
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={onActivate}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-      }}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.6, delay: index * 0.14, ease: [0.16, 1, 0.3, 1] }}
-      className={cn(
-        "relative rounded-2xl sm:rounded-[24px] p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer group will-change-transform",
-        isActive
-          ? "bg-white border-2 border-[#FF5500] shadow-[0_20px_45px_rgba(255,85,0,0.12)] scale-[1.01]"
-          : "bg-white/90 border border-[#E8E2D9] hover:border-[#1F1F1E] shadow-[0_10px_30px_rgba(31,31,30,0.04)]"
-      )}
-    >
-      {/* 3D Depth Parallax Content Layer */}
-      <div style={{ transform: "translateZ(20px)" }} className="relative z-10 flex flex-col justify-between h-full">
-        <div>
-          {/* Top Header: Step Numeral */}
-          <div className="mb-3">
-            <span
-              className={cn(
-                "font-sans font-extrabold text-2xl transition-colors",
-                isActive ? "text-[#FF5500]" : "text-[#1F1F1E]"
-              )}
-            >
-              {item.step}.
-            </span>
-          </div>
-
-          {/* Step Title */}
-          <h3 className="font-sans font-bold text-xl sm:text-2xl text-[#1F1F1E] group-hover:text-[#FF5500] transition-colors mb-1 leading-snug">
-            {item.title}
-          </h3>
-
-          {/* Centered Isolated 3D Equipment Render with Radial Ambient Glow */}
-          <div style={{ transform: "translateZ(30px)" }}>
-            <StepEquipmentVisual stepIndex={index} isActive={isActive} />
-          </div>
-
-          {/* High-Signal Description */}
-          <p className="text-sm sm:text-base text-[#1F1F1E] leading-relaxed mb-6 font-medium relative z-20">
-            {item.description}
-          </p>
-        </div>
-
-        {/* Card Footer: Verified Architectural Check */}
-        <div
-          style={{ transform: "translateZ(15px)" }}
-          className="pt-4 border-t border-[#E8E2D9]/70 flex items-center justify-between text-xs font-semibold text-[#1F1F1E]"
-        >
-          <span className="flex items-center gap-1.5 text-[#625D55]">
-            <CheckCircle2
-              className={cn(
-                "w-4 h-4 transition-colors",
-                isActive ? "text-[#FF5500]" : "text-[#625D55]"
-              )}
-            />
-            <span>{item.metric || "Verified Protocol"}</span>
-          </span>
-
-          <span
-            className={cn(
-              "text-[11px] uppercase tracking-wider font-mono transition-opacity",
-              isActive ? "text-[#FF5500] opacity-100" : "opacity-0 group-hover:opacity-100"
-            )}
-          >
-            Active Step
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export function SolutionsClient({ steps }: SolutionsClientProps) {
   const [activeStep, setActiveStep] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Rhythmic Active Step Cycling (Auto-progress every 3.2s unless hovered)
+  const currentStep = steps[activeStep] || steps[0];
+
+  // Auto-advance every 3 seconds unless paused on hover
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || steps.length <= 1) return;
 
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % steps.length);
-    }, 3200);
+    }, CYCLE_INTERVAL);
 
     return () => clearInterval(interval);
   }, [isPaused, steps.length]);
+
+  const progressPercent =
+    steps.length > 1 ? (activeStep / (steps.length - 1)) * 100 : 0;
 
   return (
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full"
+      className="relative w-full flex flex-col gap-10 sm:gap-12 select-none"
     >
-      {/* Principle 1: SVG Animated Electric Conduit Flow connecting the steps */}
-      <div
-        aria-hidden="true"
-        className="hidden lg:block absolute top-14 left-[16%] right-[16%] h-1 pointer-events-none z-0"
-      >
-        <svg className="w-full h-8 overflow-visible" preserveAspectRatio="none">
-          {/* Base Guide Track */}
-          <line
-            x1="0%"
-            y1="50%"
-            x2="100%"
-            y2="50%"
-            stroke="#E8E2D9"
-            strokeWidth="2"
-            strokeDasharray="6 6"
+      {/* 1. OPEN IMAGE + SINGLE ACTIVE TEXT STAGE (ZERO CARDS / ZERO BOXES) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+        {/* Left: Floating Equipment Visual */}
+        <div className="lg:col-span-6 w-full">
+          <StepEquipmentVisual
+            stepIndex={activeStep}
+            stepNumber={currentStep.step}
           />
-
-          {/* Animated Flowing Laser Conduit Beam */}
-          <motion.line
-            x1="0%"
-            y1="50%"
-            x2="100%"
-            y2="50%"
-            stroke="#FF5500"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            initial={{ strokeDashoffset: 120, strokeDasharray: "30 90" }}
-            animate={{ strokeDashoffset: -120 }}
-            transition={{
-              repeat: Infinity,
-              duration: 2.4,
-              ease: "linear",
-            }}
-          />
-        </svg>
-
-        {/* Pulsing Energy Sparks at Node Intersection Points */}
-        <div className="absolute left-[33%] top-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center">
-          <Zap className="w-3.5 h-3.5 text-[#FF5500] fill-[#FF5500]/30 animate-pulse" />
         </div>
-        <div className="absolute left-[67%] top-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center">
-          <Zap className="w-3.5 h-3.5 text-[#FF5500] fill-[#FF5500]/30 animate-pulse" />
+
+        {/* Right: Single Active Step Typography */}
+        <div className="lg:col-span-6 min-h-[220px] sm:min-h-[250px] flex flex-col justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep.step}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col text-left"
+            >
+              {/* Minimal Architectural Counter + Metric */}
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="font-mono text-sm font-extrabold text-[#FF5500] tracking-wider">
+                  {currentStep.step} / 0{steps.length}
+                </span>
+                <span className="text-[#D4CEC3]">•</span>
+                <span className="font-mono text-xs font-semibold uppercase tracking-widest text-[#625D55]">
+                  {currentStep.metric || currentStep.actionLabel}
+                </span>
+              </div>
+
+              {/* Active Step Title */}
+              <h3 className="font-sans font-extrabold text-2xl sm:text-3xl lg:text-[36px] text-[#1F1F1E] tracking-tight leading-[1.18] mb-3.5">
+                {currentStep.title}
+              </h3>
+
+              {/* Single Active Description */}
+              <p className="text-base sm:text-lg text-[#403C36] leading-relaxed mb-6 font-normal max-w-xl">
+                {currentStep.description}
+              </p>
+
+              {/* Hairline Protocol Action Row */}
+              <div className="pt-4 border-t border-[#E8E2D9] flex items-center gap-2.5 text-sm font-semibold text-[#1F1F1E] max-w-xl">
+                <CheckCircle2 className="w-4 h-4 text-[#FF5500] shrink-0" />
+                <span>{currentStep.actionLabel}</span>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Grid of 3D Perspective Tilt Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 relative z-10 [perspective:1200px]">
-        {steps.map((item, index) => (
-          <TiltCard
-            key={item.step}
-            item={item}
-            index={index}
-            isActive={activeStep === index}
-            onActivate={() => setActiveStep(index)}
+      {/* 2. BOTTOM DOTTED STEP LINE (Auto-changes every 3 seconds) */}
+      <div className="relative w-full pt-2">
+        {/* Dotted Connecting Line between Node 01 -> Node 02 -> Node 03 */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[16.666%] right-[16.666%] top-[26px] sm:top-[28px] -translate-y-1/2 z-0"
+        >
+          {/* Base Grey Dotted Track */}
+          <div className="w-full border-t-2 border-dotted border-[#CFC8BC]" />
+
+          {/* Active Orange Progress Overlay */}
+          <motion.div
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute top-0 left-0 border-t-2 border-dotted border-[#FF5500]"
           />
-        ))}
+        </div>
+
+        {/* Interactive Dotted Step Nodes */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-6 relative z-10">
+          {steps.map((item, idx) => {
+            const isActive = activeStep === idx;
+            const isPassed = idx < activeStep;
+
+            return (
+              <button
+                key={item.step}
+                type="button"
+                onClick={() => setActiveStep(idx)}
+                className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
+                aria-label={`Step ${item.step}: ${item.title}`}
+                aria-current={isActive ? "step" : undefined}
+              >
+                {/* Step Dot Circle sitting directly on dotted line */}
+                <div
+                  className={cn(
+                    "size-9 sm:size-10 rounded-full flex items-center justify-center font-mono text-xs sm:text-sm font-extrabold transition-all duration-300",
+                    isActive
+                      ? "bg-[#FF5500] text-white border-2 border-[#FF5500] shadow-[0_0_0_5px_rgba(255,85,0,0.16)] scale-110"
+                      : isPassed
+                      ? "bg-[#1F1F1E] text-white border-2 border-[#1F1F1E]"
+                      : "bg-[#FAF8F5] text-[#625D55] border-2 border-[#CFC8BC] group-hover:border-[#1F1F1E] group-hover:text-[#1F1F1E]"
+                  )}
+                >
+                  {item.step}
+                </div>
+
+                {/* Concise Step Label */}
+                <span
+                  className={cn(
+                    "mt-3 font-sans text-xs sm:text-sm font-bold leading-snug transition-colors line-clamp-2 px-1 max-w-[200px]",
+                    isActive
+                      ? "text-[#1F1F1E]"
+                      : "text-[#7A756D] group-hover:text-[#1F1F1E]"
+                  )}
+                >
+                  {item.title}
+                </span>
+
+                {/* 3-Second Active Timer Bar */}
+                <div className="w-14 sm:w-20 h-[2px] bg-[#E8E2D9] rounded-full overflow-hidden mt-2">
+                  {isActive && !isPaused ? (
+                    <motion.div
+                      key={`step-timer-${activeStep}`}
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{
+                        duration: CYCLE_INTERVAL / 1000,
+                        ease: "linear",
+                      }}
+                      className="h-full bg-[#FF5500]"
+                    />
+                  ) : (
+                    <div
+                      className={cn(
+                        "h-full transition-all duration-300",
+                        isPassed || isActive ? "w-full bg-[#FF5500]" : "w-0"
+                      )}
+                    />
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

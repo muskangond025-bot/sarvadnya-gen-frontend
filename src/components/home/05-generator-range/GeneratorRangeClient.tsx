@@ -18,7 +18,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { SectionHeading, type IconName, type ProductDetailsData } from "@/components/common";
-import { cn } from "@/lib/utils";
+import { cn, scrollChildCenterX } from "@/lib/utils";
 import { useLanguage } from "@/lib/LanguageContext";
 
 const AUTO_SCROLL_INTERVAL = 5500;
@@ -48,19 +48,14 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
   const [isPaused, setIsPaused] = useState(false);
   const { t } = useLanguage();
   const visualRef = useRef<HTMLDivElement | null>(null);
+  const railRef = useRef<HTMLDivElement | null>(null);
   const capacityRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const currentGen = generators[currentIndex] || generators[0];
 
-  // Auto-scroll active capacity into view on mobile
+  // Center active capacity horizontally within its own rail (never scrolls window vertically)
   useEffect(() => {
-    if (capacityRefs.current[currentIndex]) {
-      capacityRefs.current[currentIndex]?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-    }
+    scrollChildCenterX(railRef.current, capacityRefs.current[currentIndex]);
   }, [currentIndex]);
 
   const handlePrev = useCallback(() => {
@@ -145,7 +140,7 @@ export function GeneratorRangeClient({ generators }: GeneratorRangeClientProps) 
               <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#FAF8F5] to-transparent z-10 sm:hidden" />
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#FAF8F5] to-transparent z-10 sm:hidden" />
 
-              <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1">
+              <div ref={railRef} className="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1">
                 {generators.map((gen, idx) => {
                   const isActive = idx === currentIndex;
                   return (

@@ -3,7 +3,11 @@ import { BookingHero } from "./01-hero";
 import { BookingClient } from "./02-flow";
 import { generatorsData } from "@/constants/data";
 
-export function Booking() {
+interface BookingProps {
+  initialKvaRaw?: string | null;
+}
+
+export function Booking({ initialKvaRaw = null }: BookingProps) {
   const availableGenerators = generatorsData
     .filter((g) => g.status !== "retired" && !g.is_deleted)
     .map((g) => ({
@@ -19,9 +23,17 @@ export function Booking() {
     }));
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="relative min-h-screen bg-[#FAF8F5] text-[#111315] overflow-x-clip">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 right-0 w-[480px] h-[480px] rounded-full bg-[#FF5500]/[0.05] blur-[140px]"
+      />
       <BookingHero />
-      <BookingClient generators={availableGenerators} />
+      <BookingClient
+        key={initialKvaRaw ?? "default"}
+        generators={availableGenerators}
+        initialKvaRaw={initialKvaRaw}
+      />
     </div>
   );
 }

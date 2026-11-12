@@ -5,33 +5,27 @@ import {
   BlogGrid,
   BlogNewsletter,
 } from "@/components/blog";
-import { FloatingGlow } from "@/components/shared/client";
 
 export const metadata: Metadata = {
   title: "Power Insights Blog | Sarvadnya Generators Nashik",
-  description: "Expert advice on generator maintenance, selection guides for weddings, and power solution news for Nashik and Maharashtra.",
+  description:
+    "Expert advice on generator maintenance, selection guides for weddings, and power solution news for Nashik and Maharashtra.",
 };
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-black pt-28 pb-20 relative overflow-hidden">
-      {/* Floating Gradients */}
-      <FloatingGlow color="#00ff8f" size="xl" className="-top-1/4 -right-1/4 opacity-10" />
-      <FloatingGlow color="#00d1ff" size="lg" className="top-1/2 -left-1/4 opacity-10" delay={2} />
-      
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[60px] relative z-10">
-        {/* 1. Blog Hero - Featured Post */}
-        <BlogHero />
+    <main className="min-h-screen bg-[#FAF8F5] text-[#111315] pb-20 relative overflow-x-clip">
+      {/* 1. Full-Width Featured Blog Hero */}
+      <BlogHero />
 
-        {/* 2. Categories and Search */}
-        <div className="my-10 sm:my-16">
+      {/* 2–4. Categories, High-Contrast Grid & Card-Free Editorial Newsletter */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[60px] pt-10 sm:pt-14">
+        <div className="mb-10 sm:mb-12">
           <BlogCategories />
         </div>
 
-        {/* 3. Blog Grid */}
         <BlogGrid />
 
-        {/* 4. Newsletter Section */}
         <div className="mt-16 sm:mt-24">
           <BlogNewsletter />
         </div>

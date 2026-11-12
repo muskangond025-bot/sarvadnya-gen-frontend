@@ -121,33 +121,38 @@ export function GlobalLoader() {
                 >
                   <div className="relative size-24 sm:size-28 md:size-32 flex items-center justify-center">
                     <img
-                      src="/images/cta/electric_symbol_3d_orange.png"
-                      alt="Sarvadnya Electric Symbol"
-                      className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(255,85,0,0.32)]"
+                      src="/images/brand/sarvadnya-emblem.png"
+                      alt="Sarvadnya Generator Emblem"
+                      width={524}
+                      height={524}
+                      className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(243,104,5,0.22)]"
                     />
 
                     {/* Luminous Ripple Pulse on Entrance */}
                     <motion.div
                       initial={{ scale: 0.8, opacity: 0.8 }}
-                      animate={{ scale: 1.6, opacity: 0 }}
+                      animate={{ scale: 1.5, opacity: 0 }}
                       transition={{ duration: 0.65, ease: "easeOut" }}
-                      className="absolute inset-0 rounded-full border-2 border-[#FF5500] pointer-events-none"
+                      className="absolute inset-0 rounded-2xl border-2 border-[#FF5500] pointer-events-none"
                     />
                   </div>
                 </motion.div>
               )}
             </div>
 
-            {/* Brand Typography: Prominent, Big, Highly Visible */}
+            {/* Official Brand Lockup Typography */}
             <div className="flex flex-col items-center">
-              <span className="font-sans font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] sm:tracking-[0.25em] text-[#111315] uppercase select-none drop-shadow-xs">
-                SARVADNYA
+              <span className="font-sans font-black text-2xl sm:text-4xl md:text-5xl tracking-tight text-[#111315] uppercase select-none">
+                SARVADNYA GENERATOR
+              </span>
+              <span className="font-sans font-bold text-lg sm:text-2xl md:text-3xl text-[#F36805] mt-1 select-none">
+                सर्वज्ञ जनरेटर
               </span>
 
-              <div className="flex items-center gap-2.5 mt-2.5 sm:mt-3">
+              <div className="flex items-center gap-2.5 mt-2 sm:mt-2.5">
                 <div className="h-px w-6 sm:w-10 bg-[#FF5500]/40" />
-                <span className="font-mono text-xs sm:text-sm md:text-base font-bold tracking-[0.32em] text-[#FF5500] uppercase">
-                  SILENT GENERATOR FLEET • NASHIK
+                <span className="font-mono text-[11px] sm:text-xs md:text-sm font-bold tracking-[0.28em] text-[#C75B0A] uppercase">
+                  POWER YOU CAN TRUST
                 </span>
                 <div className="h-px w-6 sm:w-10 bg-[#FF5500]/40" />
               </div>

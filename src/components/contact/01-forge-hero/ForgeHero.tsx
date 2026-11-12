@@ -80,6 +80,7 @@ export function ForgeHero() {
           >
             <RollingText
               text="Start the conversation"
+              singleLine
               className="font-mono text-xs sm:text-sm uppercase tracking-[0.22em] font-bold"
               charClassName="group-hover:text-white"
             />

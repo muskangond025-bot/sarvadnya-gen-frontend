@@ -5,16 +5,15 @@ import { motion, useScroll, useSpring } from "framer-motion";
 
 /**
  * ScrollProgress Indicator Component
- * 
- * A high-fidelity progress bar that tracks reading progress.
- * Features a smooth spring animation and an emerald-to-white gradient.
+ *
+ * Tracks reading progress across blog articles in the bright theme palette.
  */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
-    restDelta: 0.001
+    restDelta: 0.001,
   });
 
   const [isVisible, setIsVisible] = useState(false);
@@ -23,17 +22,17 @@ export function ScrollProgress() {
     const handleScroll = () => {
       setIsVisible(window.scrollY > 200);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <motion.div 
-      className="fixed top-0 left-0 right-0 h-1.5 bg-linear-to-r from-[#00ff8f] via-[#00ff8f] to-white z-[9999] origin-left"
-      style={{ 
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF5500] via-[#FF7700] to-[#18181B] z-[9999] origin-left"
+      style={{
         scaleX,
         opacity: isVisible ? 1 : 0,
-        transition: "opacity 0.3s ease"
+        transition: "opacity 0.3s ease",
       }}
     />
   );

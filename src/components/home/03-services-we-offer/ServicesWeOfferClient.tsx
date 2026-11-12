@@ -11,7 +11,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, scrollChildCenterX } from "@/lib/utils";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export interface ServiceSpec {
@@ -58,19 +58,14 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
   const [isPaused, setIsPaused] = useState(false);
   const { t } = useLanguage();
   const visualRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const activeVertical = verticals[activeIndex] || verticals[0];
 
-  // Auto-scroll active tab into view on mobile
+  // Center active tab horizontally within its own track (never scrolls window vertically)
   useEffect(() => {
-    if (tabRefs.current[activeIndex]) {
-      tabRefs.current[activeIndex]?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-    }
+    scrollChildCenterX(trackRef.current, tabRefs.current[activeIndex]);
   }, [activeIndex]);
 
   // 3D Interactive Mouse Tracking on the Visual Theater
@@ -130,7 +125,7 @@ export function ServicesWeOfferClient({ verticals }: ServicesWeOfferClientProps)
         <div className="pointer-events-none absolute left-0 top-6 bottom-4 w-6 bg-gradient-to-r from-[#FAF8F5] to-transparent z-10 sm:hidden" />
         <div className="pointer-events-none absolute right-0 top-6 bottom-4 w-8 bg-gradient-to-l from-[#FAF8F5] to-transparent z-10 sm:hidden" />
 
-        <div className="w-full flex items-center justify-between border-b border-[#E8E2D9] pb-4 overflow-x-auto no-scrollbar scroll-smooth">
+        <div ref={trackRef} className="w-full flex items-center justify-between border-b border-[#E8E2D9] pb-4 overflow-x-auto no-scrollbar scroll-smooth">
           <div className="flex items-center gap-3 sm:gap-6 min-w-max px-1">
             {verticals.map((vertical, index) => {
               const isActive = activeIndex === index;

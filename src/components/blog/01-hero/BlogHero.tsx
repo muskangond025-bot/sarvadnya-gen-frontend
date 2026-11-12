@@ -1,67 +1,67 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 /**
  * BlogHero Component
- * 
- * Showcases the featured blog post with a cinematic, large-scale layout.
+ *
+ * Full-bleed panoramic featured story stage with integrated high-contrast typography.
  */
 export function BlogHero() {
   const featuredPost = {
     slug: "choosing-right-generator-wedding",
-    title: "The Ultimate Guide to Choosing the Right Generator for Your Wedding",
-    excerpt: "Don't let power outages dim your big day. Learn how to calculate your kVA needs, manage acoustic levels, and ensure seamless entertainment.",
-    category: "Guides",
-    date: "May 15, 2026",
-    readTime: "8 min read",
-    image: "/images/blog/blog-main.png"
+    title:
+      "The Ultimate Guide to Choosing the Right Generator for Your Wedding",
+    excerpt:
+      "Don't let power outages dim your big day. Learn how to calculate your kVA needs, manage acoustic levels, and ensure seamless entertainment.",
+    image: "/images/blog/blog-main.png",
   };
 
   return (
-    <section className="relative w-full aspect-[21/9] min-h-[400px] rounded-[32px] overflow-hidden group">
-      {/* Background Image with Overlay */}
-      <Image 
+    <section className="relative w-full min-h-[540px] sm:min-h-[580px] lg:min-h-[620px] flex items-end overflow-hidden group pt-24 sm:pt-28 bg-[#18181B]">
+      {/* Full-Bleed Background Visual */}
+      <Image
         src={featuredPost.image}
         alt={featuredPost.title}
         fill
-        className="object-cover transition-transform duration-1000 group-hover:scale-105"
+        priority
+        className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
       />
-      <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
 
-      {/* Content Container */}
-      <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 lg:p-20">
-        <div className="max-w-3xl flex flex-col gap-6">
-          <div className="flex items-center gap-4">
-            <span className="px-4 py-1 rounded-full bg-[#00ff8f] text-black font-bold text-xs uppercase tracking-widest">
-              {featuredPost.category}
-            </span>
-            <div className="flex items-center gap-2 text-white/60 text-sm">
-              <Calendar size={14} />
-              <span>{featuredPost.date}</span>
-            </div>
-            <div className="flex items-center gap-2 text-white/60 text-sm">
-              <Clock size={14} />
-              <span>{featuredPost.readTime}</span>
-            </div>
-          </div>
+      {/* Directional Contrast Scrim for Crisp Legibility */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-t from-[#111315]/95 via-[#111315]/55 to-[#111315]/25"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-r from-[#111315]/80 via-[#111315]/30 to-transparent"
+      />
 
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white font-['Poppins',sans-serif] leading-tight">
+      {/* Overlaid Editorial Copy */}
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 lg:px-[60px] pb-10 sm:pb-14 lg:pb-16">
+        <div className="max-w-3xl space-y-5">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[56px] font-extrabold text-white leading-[1.08] tracking-tight">
             {featuredPost.title}
-          </h2>
+          </h1>
 
-          <p className="text-[#bfbfbf] text-lg md:text-xl font-['Outfit',sans-serif] line-clamp-2">
+          <p className="text-white/95 text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl">
             {featuredPost.excerpt}
           </p>
 
-          <Link 
-            href={`/blog/${featuredPost.slug}`}
-            className="w-fit flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-2xl hover:bg-[#00ff8f] transition-all group/btn"
-          >
-            Read Article
-            <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
-          </Link>
+          <div className="pt-2">
+            <Link
+              href={`/blog/${featuredPost.slug}`}
+              className="inline-flex items-center gap-2.5 px-7 py-4 bg-white text-[#111315] hover:bg-[#FF5500] hover:text-white font-bold text-sm sm:text-base rounded-xl transition-colors shadow-lg group/btn"
+            >
+              <span>Read Full Guide</span>
+              <ArrowRight
+                size={18}
+                className="group-hover/btn:translate-x-1 transition-transform"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

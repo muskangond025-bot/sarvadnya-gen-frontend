@@ -14,7 +14,6 @@ import {
   Phone,
   ArrowRight,
   ShieldCheck,
-  Zap,
 } from "lucide-react";
 import { Button, LanguageSwitcher } from "@/components/common";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -226,26 +225,33 @@ export default function Header({ children }: { children?: React.ReactNode }) {
           )}
         >
           {/* 
-            LEFT COLUMN: CIRCULAR WHITE LOGO BADGE
-            Matches reference image: pure white circle with high-contrast icon
+            LEFT COLUMN: OFFICIAL SARVADNYA GENERATOR EMBLEM BADGE
+            Clean white rounded-square tile framing the double-orange G + lightning mark
           */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <Link
               href="/"
-              className="size-8.5 sm:size-10 rounded-full bg-white text-[#18181B] hover:scale-105 active:scale-95 flex items-center justify-center shrink-0 shadow-md transition-all duration-200"
-              aria-label="Sarvadnya Generators Home"
+              className="size-9 sm:size-10 rounded-xl bg-white hover:scale-105 active:scale-95 flex items-center justify-center p-0.5 shrink-0 shadow-md transition-all duration-200 overflow-hidden"
+              aria-label="Sarvadnya Generator Home"
             >
-              <Zap className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#FF5500] fill-[#FF5500]" />
+              <img
+                src="/images/brand/sarvadnya-emblem.png"
+                alt="Sarvadnya Generator Logo"
+                width={524}
+                height={524}
+                className="w-full h-full object-contain"
+                draggable={false}
+              />
             </Link>
             <Link
               href="/"
-              className="hidden xl:flex flex-col text-left leading-none hover:opacity-90 transition-opacity"
+              className="hidden xl:flex flex-col text-left leading-none gap-0.5 hover:opacity-90 transition-opacity"
             >
-              <span className="font-sans font-black text-xs sm:text-sm tracking-tight text-white uppercase">
-                Sarvadnya
+              <span className="font-sans font-black text-xs tracking-tight text-white uppercase whitespace-nowrap">
+                Sarvadnya Generator
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-[#FF5500] font-bold">
-                Power Nashik
+              <span className="font-sans text-[10.5px] text-[#F36805] font-bold whitespace-nowrap">
+                सर्वज्ञ जनरेटर
               </span>
             </Link>
           </div>
@@ -274,216 +280,212 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             {/* User Authentication Profile Dropdown */}
             <ProfileDropdown />
 
-            {/* Architectural Full-Screen Menu Drawer Toggle */}
+            {/* Architectural Full-Screen Menu Drawer Toggle (White Capsule Pill) */}
             <button
               type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="group flex items-center gap-1.5 sm:gap-2 py-1 sm:py-1.5 px-2.5 sm:px-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white transition-all shadow-xs shrink-0 cursor-pointer"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95 cursor-pointer"
               aria-expanded={isMenuOpen}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               title={isMenuOpen ? "Close Menu" : "Explore All Fleet & Insights"}
             >
-              <div className="relative size-3.5 flex flex-col items-center justify-center gap-1">
-                <motion.span
+              <svg
+                className="w-4 h-3.5 shrink-0 text-[#18181B] group-hover:text-white transition-colors"
+                viewBox="0 0 18 14"
+                fill="none"
+                aria-hidden="true"
+              >
+                <motion.line
+                  x1={2}
+                  y1={2.5}
+                  x2={16}
+                  y2={2.5}
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
                   animate={
                     isMenuOpen
-                      ? { rotate: 45, y: 4.5, backgroundColor: "#FF5500" }
-                      : { rotate: 0, y: 0, backgroundColor: "#FFFFFF" }
+                      ? { x1: 4, y1: 2, x2: 14, y2: 12 }
+                      : { x1: 2, y1: 2.5, x2: 16, y2: 2.5 }
                   }
                   transition={{ duration: 0.2 }}
-                  className="w-3.5 h-[1.5px] rounded-full block"
                 />
-                <motion.span
-                  animate={
-                    isMenuOpen
-                      ? { opacity: 0, scaleX: 0 }
-                      : { opacity: 1, scaleX: 1, backgroundColor: "#FFFFFF" }
-                  }
+                <motion.line
+                  x1={2}
+                  y1={7}
+                  x2={16}
+                  y2={7}
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  animate={isMenuOpen ? { opacity: 0 } : { opacity: 1 }}
                   transition={{ duration: 0.15 }}
-                  className="w-3.5 h-[1.5px] rounded-full block"
                 />
-                <motion.span
+                <motion.line
+                  x1={2}
+                  y1={11.5}
+                  x2={16}
+                  y2={11.5}
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
                   animate={
                     isMenuOpen
-                      ? { rotate: -45, y: -4.5, backgroundColor: "#FF5500" }
-                      : { rotate: 0, y: 0, backgroundColor: "#FFFFFF" }
+                      ? { x1: 4, y1: 12, x2: 14, y2: 2 }
+                      : { x1: 2, y1: 11.5, x2: 16, y2: 11.5 }
                   }
                   transition={{ duration: 0.2 }}
-                  className="w-3.5 h-[1.5px] rounded-full block"
                 />
-              </div>
-              <span className="font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white group-hover:text-[#FF5500] transition-colors">
+              </svg>
+              <span className="font-sans text-xs sm:text-sm font-bold tracking-tight">
                 {isMenuOpen ? t("nav.close", "CLOSE") : t("nav.menu", "MENU")}
               </span>
             </button>
-
-            {/* Primary White Capsule CTA Button matching user reference image */}
-            <Link
-              href="/book"
-              className="hidden sm:inline-flex items-center justify-center rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95"
-            >
-              {t("nav.requestQuote", "Request Quote")}
-            </Link>
           </div>
         </nav>
       </header>
 
       {/* 
-        SPYKER FULL-SCREEN ARCHITECTURAL CURTAIN DRAWER
-        Ultra-premium dark luxury stage with zero unnecessary text bloat
+        NAVBAR-ALIGNED ARCHITECTURAL MENU PANEL
+        Matches exact w-full max-w-5xl width of the floating navbar without altering it
       */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* Backdrop Dimmer */}
+            {/* Click-outside Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "linear" }}
+              transition={{ duration: 0.2, ease: "linear" }}
               onClick={() => setIsMenuOpen(false)}
-              className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-black/45"
               aria-hidden="true"
             />
 
-            {/* Sliding Curtain Drawer Panel */}
-            <motion.div
-              initial={{ y: "-100%" }}
-              animate={{ y: "0%" }}
-              exit={{ y: "-100%" }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation menu"
-              className="fixed inset-x-0 top-0 z-40 w-screen max-h-screen md:max-h-[92vh] flex flex-col bg-[#121212]/98 text-white backdrop-blur-2xl border-b border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.85)] overflow-y-auto overscroll-contain"
-            >
-              {/* Drawer Content Container with Top Offset for Floating Header */}
-              <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-24 sm:pt-28 pb-8 flex flex-col justify-between flex-1 gap-8">
-                
-                {/* Main Navigation Stage (Centered, Clean, No Card) */}
-                <div className="flex flex-col items-center justify-center max-w-2xl mx-auto w-full py-2">
-                  <div className="flex w-full flex-col justify-between">
-                    <nav aria-label="Mega menu navigation">
-                      <ul className="flex flex-col gap-2 sm:gap-3">
-                        {FULL_NAV_ITEMS.map((item, index) => {
-                          const isActive =
-                            item.href === "/"
-                              ? pathname === "/"
-                              : pathname.startsWith(item.href);
+            {/* Dropdown Drawer Aligned to Navbar Width */}
+            <div className="fixed top-[4.75rem] sm:top-[5.25rem] inset-x-0 z-40 flex justify-center px-3 sm:px-6 pointer-events-none">
+              <motion.div
+                initial={{ opacity: 0, y: -12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Navigation menu"
+                className="pointer-events-auto w-full max-w-5xl max-h-[calc(100vh-6rem)] flex flex-col bg-[#18181B]/98 text-white border border-white/15 rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.65)] overflow-y-auto overscroll-contain"
+              >
+                <div className="w-full px-5 sm:px-8 py-6 sm:py-7 flex flex-col justify-between gap-6">
+                  {/* Navigation Grid */}
+                  <nav aria-label="Mega menu navigation">
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5">
+                      {FULL_NAV_ITEMS.map((item, index) => {
+                        const isActive =
+                          item.href === "/"
+                            ? pathname === "/"
+                            : pathname.startsWith(item.href);
 
-                          return (
-                            <motion.li
-                              key={item.href}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{
-                                delay: 0.08 + index * 0.04,
-                                duration: 0.35,
-                                ease: [0.16, 1, 0.3, 1],
-                              }}
+                        return (
+                          <motion.li
+                            key={item.href}
+                            initial={{ opacity: 0, x: -12 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{
+                              delay: 0.04 + index * 0.03,
+                              duration: 0.25,
+                              ease: [0.16, 1, 0.3, 1],
+                            }}
+                          >
+                            <Link
+                              href={item.href}
+                              onClick={() => setIsMenuOpen(false)}
+                              className="group relative flex items-center justify-between w-full px-3 py-2.5 rounded-2xl hover:bg-white/[0.04] transition-colors text-left"
                             >
-                              <Link
-                                href={item.href}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="group relative flex items-center justify-between w-full py-2 text-left"
-                              >
-                                <div className="flex items-baseline gap-4 sm:gap-6">
-                                  {/* Monospace Index Numeral */}
-                                  <span className="font-mono text-xs sm:text-sm text-[#FF5500]/70 group-hover:text-[#FF5500] font-bold transition-colors">
-                                    0{index + 1}
-                                  </span>
+                              <div className="flex items-baseline gap-3.5">
+                                {/* Monospace Index Numeral */}
+                                <span className="font-mono text-xs text-[#FF5500]/75 group-hover:text-[#FF5500] font-bold transition-colors">
+                                  0{index + 1}
+                                </span>
 
-                                  {/* Clean Editorial Title */}
-                                  <span
-                                    className={cn(
-                                      "font-sans font-extrabold text-2xl sm:text-4xl lg:text-5xl leading-tight tracking-tight transition-all duration-300",
-                                      isActive
-                                        ? "text-[#FF5500] translate-x-1"
-                                        : "text-white/90 group-hover:text-[#FF5500] group-hover:translate-x-2"
-                                    )}
-                                  >
-                                    {t(item.key, item.fallback)}
-                                  </span>
-                                </div>
-
-                                {/* Arrow Glider on Hover */}
-                                <ArrowRight
+                                {/* Editorial Title */}
+                                <span
                                   className={cn(
-                                    "w-6 h-6 text-[#FF5500] transition-all duration-300 shrink-0",
+                                    "font-sans font-extrabold text-xl sm:text-2xl leading-tight tracking-tight transition-all duration-200",
                                     isActive
-                                      ? "opacity-100 translate-x-0"
-                                      : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+                                      ? "text-[#FF5500] translate-x-0.5"
+                                      : "text-white/90 group-hover:text-[#FF5500] group-hover:translate-x-1"
                                   )}
-                                />
-                              </Link>
-                            </motion.li>
-                          );
-                        })}
-                      </ul>
-                    </nav>
+                                >
+                                  {t(item.key, item.fallback)}
+                                </span>
+                              </div>
 
-                    {/* Mobile & Drawer Language Selector */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.3, duration: 0.3 }}
-                      className="mt-8 pt-6 border-t border-white/10"
-                    >
-                      <LanguageSwitcher variant="drawer" theme="dark" />
-                    </motion.div>
+                              {/* Arrow Glider on Hover */}
+                              <ArrowRight
+                                className={cn(
+                                  "w-5 h-5 text-[#FF5500] transition-all duration-200 shrink-0",
+                                  isActive
+                                    ? "opacity-100 translate-x-0"
+                                    : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+                                )}
+                              />
+                            </Link>
+                          </motion.li>
+                        );
+                      })}
+                    </ul>
+                  </nav>
+
+                  {/* Drawer Language Selector */}
+                  <div className="pt-4 border-t border-white/10">
+                    <LanguageSwitcher variant="drawer" theme="dark" />
+                  </div>
+
+                  {/* Bottom Action Strip */}
+                  <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+                    {/* Direct Contact Links */}
+                    <div className="flex flex-wrap items-center gap-5">
+                      <a
+                        href="tel:+916262629944"
+                        className="font-mono font-bold text-white hover:text-[#FF5500] transition-colors flex items-center gap-2"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
+                        +91 62626 29944
+                      </a>
+                      <a
+                        href="mailto:info@sarvadnyagenerators.com"
+                        className="text-white/70 hover:text-white transition-colors"
+                      >
+                        info@sarvadnyagenerators.com
+                      </a>
+                    </div>
+
+                    {/* Social Media & Quick Quote Action */}
+                    <div className="flex items-center gap-3">
+                      {SOCIAL_LINKS.map((social) => (
+                        <a
+                          key={social.label}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={social.label}
+                          className="size-8 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 hover:border-white/30 flex items-center justify-center text-white/80 hover:text-[#FF5500] transition-all shadow-xs"
+                        >
+                          {social.icon}
+                        </a>
+                      ))}
+                      <Link
+                        href="/book"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs"
+                      >
+                        {t("nav.requestQuote", "Request Quote")}
+                      </Link>
+                    </div>
                   </div>
                 </div>
-
-                {/* BOTTOM MINIMAL ACTION STRIP (No Bloat Text) */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35, duration: 0.35 }}
-                  className="pt-5 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs"
-                >
-                  {/* Direct Contact Links */}
-                  <div className="flex flex-wrap items-center gap-6">
-                    <a
-                      href="tel:+916262629944"
-                      className="font-mono font-bold text-white hover:text-[#FF5500] transition-colors flex items-center gap-2"
-                    >
-                      <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
-                      +91 62626 29944
-                    </a>
-                    <a
-                      href="mailto:info@sarvadnyagenerators.com"
-                      className="text-white/70 hover:text-white transition-colors"
-                    >
-                      info@sarvadnyagenerators.com
-                    </a>
-                  </div>
-
-                  {/* Social Media & Quick Quote Action */}
-                  <div className="flex items-center gap-3">
-                    {SOCIAL_LINKS.map((social) => (
-                      <a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={social.label}
-                        className="size-8 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 hover:border-white/30 flex items-center justify-center text-white/80 hover:text-[#FF5500] transition-all shadow-xs"
-                      >
-                        {social.icon}
-                      </a>
-                    ))}
-                    <Link
-                      href="/book"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs"
-                    >
-                      {t("nav.requestQuote", "Request Quote")}
-                    </Link>
-                  </div>
-                </motion.div>
-
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>

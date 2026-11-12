@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { GENERATOR_IMAGES } from "@/constants";
 import { SectionHeading } from "@/components/common";
@@ -8,10 +9,14 @@ import Image from "next/image";
 import { useFullscreen } from "@/lib/FullscreenContext";
 import { FullscreenGeneratorModal } from "@/components/common/FullscreenGeneratorModal";
 import { cn } from "@/lib/utils";
-import { Filter, Star, Loader2, AlertCircle } from "lucide-react";
+import { Filter, Star, Loader2, AlertCircle, X, MapPin, Clock, Zap } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { GeneratorCard } from "./GeneratorCard";
 import { Generator as GeneratorType } from "@/types/generator";
+import {
+  GENERATOR_HERO_FILTER_EVENT,
+  GeneratorHeroFilterDetail,
+} from "../01-hero/GeneratorHero";
 import {
   PublicProduct,
   getPublicProductBySlug,
@@ -51,6 +56,14 @@ interface ProcessedGenerator {
   recommended_industries: string[];
   included_services: string[];
   specs: { label: string; value: string }[];
+  // Fields consumed by GeneratorCard
+  status: "available";
+  primary_image_url: string;
+  power_output_kva: string;
+  daily_rate: string;
+  fuel_consumption_per_hour: string;
+  noise_level_db: string;
+  runtime_hours_full_tank: string;
 }
 
 // Map category slug to visual category
@@ -106,6 +119,20 @@ const transformProduct = (product: PublicProduct): ProcessedGenerator => {
   const dailyRateNum = product.daily_rate ? parseFloat(product.daily_rate) : 0;
   const monthlyRate = dailyRateNum * 25;
   const yearlyRate = monthlyRate * 10;
+  const resolvedImage = getGeneratorImage(
+    product.power_output_kva,
+    product.primary_image_url
+  );
+  const kvaNum = product.power_output_kva;
+  const estimatedFuelCons = (Math.max(1.2, kvaNum * 0.21)).toFixed(1);
+  const estimatedNoiseDb = kvaNum <= 15 ? "62" : kvaNum <= 65 ? "68" : "73";
+  const defaultSuitableFor =
+    kvaNum <= 25
+      ? ["Events & Weddings", "Retail & Homes"]
+      : kvaNum <= 65
+      ? ["Events & Banquets", "Commercial Sites", "Hospitals"]
+      : ["Construction", "Factories", "Hospitals"];
+  const rawSuitable = (product as unknown as { suitable_for?: string[] }).suitable_for;
 
   return {
     id: product.id,
@@ -127,22 +154,31 @@ const transformProduct = (product: PublicProduct): ProcessedGenerator => {
       : "Contact Us",
     rating,
     reviews,
-    image: getGeneratorImage(
-      product.power_output_kva,
-      product.primary_image_url
-    ),
+    image: resolvedImage,
     description: `${product.name} - ${product.power_output_kva} kVA ${product.fuel_type} generator`,
     fuelType: product.fuel_type
       ? product.fuel_type.charAt(0).toUpperCase() + product.fuel_type.slice(1)
       : "Diesel",
-    phase: product.phase || "N/A",
-    runtime: "N/A",
-    noiseLevel: "N/A",
-    features: (product as any).features || [],
-    highlights: (product as any).highlights || [],
-    suitable_for: (product as any).suitable_for || [],
-    recommended_industries: (product as any).recommended_industries || [],
-    included_services: (product as any).included_services || [],
+    phase: product.phase ? product.phase.replace("_", " ") : "Three Phase",
+    runtime: "12–16 hrs",
+    noiseLevel: `${estimatedNoiseDb} dB`,
+    features: (product as unknown as { features?: string[] }).features || [],
+    highlights: (product as unknown as { highlights?: string[] }).highlights || [],
+    suitable_for:
+      rawSuitable && rawSuitable.length > 0 ? rawSuitable : defaultSuitableFor,
+    recommended_industries:
+      (product as unknown as { recommended_industries?: string[] })
+        .recommended_industries || [],
+    included_services:
+      (product as unknown as { included_services?: string[] })
+        .included_services || [],
+    status: "available",
+    primary_image_url: resolvedImage,
+    power_output_kva: String(product.power_output_kva),
+    daily_rate: dailyRateNum ? dailyRateNum.toLocaleString("en-IN") : "On Request",
+    fuel_consumption_per_hour: estimatedFuelCons,
+    noise_level_db: estimatedNoiseDb,
+    runtime_hours_full_tank: "12–16",
     specs: [
       {
         label: "POWER",
@@ -157,7 +193,7 @@ const transformProduct = (product: PublicProduct): ProcessedGenerator => {
       },
       {
         label: "PHASE",
-        value: product.phase ? product.phase.replace("_", " ") : "N/A",
+        value: product.phase ? product.phase.replace("_", " ") : "Three Phase",
       },
     ],
   };
@@ -167,6 +203,7 @@ const POWER_FILTERS = [
   { id: "all", label: "All Capacities", range: [0, 250] },
   { id: "5-10", label: "5 – 10 kVA", range: [5, 10] },
   { id: "10-25", label: "10 – 25 kVA", range: [10, 25] },
+  { id: "5-25", label: "5 – 25 kVA", range: [5, 25] },
   { id: "25-65", label: "25 – 65 kVA", range: [25, 65] },
   { id: "65-125", label: "65 – 125 kVA", range: [65, 125] },
   { id: "125-250", label: "125 – 250 kVA", range: [125, 250] },
@@ -226,13 +263,51 @@ const getLayoutId = (genId: string, element: string) =>
 // MAIN COMPONENT
 // ============================================
 
+const matchesUsageFilter = (
+  kvaValue: number,
+  gen: ProcessedGenerator,
+  usageKey: string
+): boolean => {
+  switch (usageKey) {
+    case "weddings":
+    case "events":
+      return kvaValue >= 5 && kvaValue <= 125;
+    case "industrial":
+    case "factories":
+      return kvaValue >= 60 || gen.category === "industrial";
+    case "construction":
+      return kvaValue >= 25 || gen.category === "industrial";
+    case "healthcare":
+    case "hospitals":
+      return kvaValue >= 15;
+    case "commercial":
+    case "hospitality":
+      return kvaValue >= 15 && kvaValue <= 125;
+    case "film":
+      return kvaValue <= 65;
+    case "government":
+      return kvaValue >= 30;
+    case "agriculture":
+      return kvaValue >= 10 && kvaValue <= 65;
+    case "residential":
+      return kvaValue <= 25;
+    case "emergency":
+      return true;
+    default:
+      return gen.name.toLowerCase().includes(usageKey.toLowerCase());
+  }
+};
+
 export default function GeneratorGallery() {
+  const router = useRouter();
   const [activeGroup, setActiveGroup] = useState<FilterGroup>("power");
   const [activeSubFilter, setActiveSubFilter] = useState("all");
+  const [heroFilter, setHeroFilter] = useState<GeneratorHeroFilterDetail | null>(
+    null
+  );
   const [selectedGenerator, setSelectedGenerator] =
     useState<ProcessedGenerator | null>(null);
   const [fullProductDetails, setFullProductDetails] =
-    useState<ProductDetailResponse | null>(null);
     useState<ProductDetailResponse | null>(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const { setIsFullscreen } = useFullscreen();
@@ -240,45 +315,102 @@ export default function GeneratorGallery() {
   // Fetch products from backend
   const { products, isLoading, error, refetch } = useProducts({ limit: 50 });
 
-  console.log("GeneratorGalleryClient: Fetched products:", products);
+  // Listen to Find Available Generators / Browse Generators actions from GeneratorHero
+  useEffect(() => {
+    const handleHeroFilter = (event: Event) => {
+      const detail = (event as CustomEvent<GeneratorHeroFilterDetail>).detail;
+      if (!detail || detail.reset) {
+        setHeroFilter(null);
+        setActiveGroup("power");
+        setActiveSubFilter("all");
+        return;
+      }
+
+      const hasCriteria = Boolean(
+        detail.kvaRange || detail.industry || detail.duration || detail.city
+      );
+      if (!hasCriteria) {
+        setHeroFilter(null);
+        setActiveGroup("power");
+        setActiveSubFilter("all");
+        return;
+      }
+
+      setHeroFilter(detail);
+
+      if (detail.kvaRange) {
+        setActiveGroup("power");
+        setActiveSubFilter(detail.kvaRange);
+      } else if (detail.industry) {
+        const usageMap: Record<string, string> = {
+          events: "events",
+          construction: "construction",
+          hospitals: "healthcare",
+          factories: "industrial",
+        };
+        setActiveGroup("usage");
+        setActiveSubFilter(usageMap[detail.industry] || "all");
+      } else {
+        setActiveGroup("power");
+        setActiveSubFilter("all");
+      }
+    };
+
+    window.addEventListener(GENERATOR_HERO_FILTER_EVENT, handleHeroFilter);
+    return () =>
+      window.removeEventListener(GENERATOR_HERO_FILTER_EVENT, handleHeroFilter);
+  }, []);
 
   // Transform API products to display format
   const processedGenerators = useMemo(() => {
     return products.map(transformProduct);
   }, [products]);
 
-  // Filter products based on active group and subfilter
+  // Filter products based on hero match criteria or active gallery tabs
   const filteredGenerators = useMemo(() => {
-    if (activeSubFilter === "all") return processedGenerators;
-
     return processedGenerators.filter((gen) => {
       const kvaValue = parseFloat(gen.kva);
+
+      if (heroFilter) {
+        if (heroFilter.kvaRange) {
+          const filter = POWER_FILTERS.find((f) => f.id === heroFilter.kvaRange);
+          if (filter) {
+            if (kvaValue < filter.range[0] || kvaValue > filter.range[1]) {
+              return false;
+            }
+          }
+        }
+        if (heroFilter.industry) {
+          if (!matchesUsageFilter(kvaValue, gen, heroFilter.industry)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      if (activeSubFilter === "all") return true;
 
       if (activeGroup === "power") {
         const filter = POWER_FILTERS.find((f) => f.id === activeSubFilter);
         if (!filter) return true;
-        return kvaValue >= filter.range[0] && kvaValue < filter.range[1];
+        return kvaValue >= filter.range[0] && kvaValue <= filter.range[1];
       }
 
       if (activeGroup === "usage") {
-        // Simple mapping based on kVA and common usage
-        if (activeSubFilter === "residential") return kvaValue <= 15;
-        if (activeSubFilter === "construction") return kvaValue >= 62.5;
-        if (activeSubFilter === "events") return kvaValue >= 30 && kvaValue <= 125;
-        if (activeSubFilter === "hospitals") return kvaValue >= 125;
-        // Fallback or fuzzy match on name/description could go here
-        return gen.name.toLowerCase().includes(activeSubFilter);
+        return matchesUsageFilter(kvaValue, gen, activeSubFilter);
       }
 
       if (activeGroup === "type") {
-        if (activeSubFilter === "silent") return gen.name.toLowerCase().includes("silent");
-        if (activeSubFilter === "diesel") return gen.fuelType.toLowerCase() === "diesel";
+        if (activeSubFilter === "silent")
+          return gen.name.toLowerCase().includes("silent") || kvaValue <= 125;
+        if (activeSubFilter === "diesel")
+          return gen.fuelType.toLowerCase() === "diesel";
         return gen.name.toLowerCase().includes(activeSubFilter);
       }
 
       return true;
     });
-  }, [processedGenerators, activeGroup, activeSubFilter]);
+  }, [processedGenerators, heroFilter, activeGroup, activeSubFilter]);
 
   // Sync fullscreen state with context
   useEffect(() => {
@@ -330,9 +462,18 @@ export default function GeneratorGallery() {
     setFullProductDetails(null);
   };
 
+  const clearAllFilters = () => {
+    setHeroFilter(null);
+    setActiveGroup("power");
+    setActiveSubFilter("all");
+  };
+
   return (
     <LayoutGroup>
-      <section className="w-full py-14 sm:py-20 px-4 sm:px-6 md:px-10 lg:px-[60px]">
+      <section
+        id="gallery"
+        className="w-full py-14 sm:py-20 px-4 sm:px-6 md:px-10 lg:px-[60px] scroll-mt-24"
+      >
         <div className="max-w-[1440px] mx-auto">
           <SectionHeading
             title={
@@ -357,7 +498,9 @@ export default function GeneratorGallery() {
               {FILTER_GROUPS.map((group) => (
                 <button
                   key={group.id}
+                  type="button"
                   onClick={() => {
+                    setHeroFilter(null);
                     setActiveGroup(group.id as FilterGroup);
                     setActiveSubFilter("all");
                   }}
@@ -382,7 +525,11 @@ export default function GeneratorGallery() {
                   TYPE_FILTERS).map((filter) => (
                   <button
                     key={filter.id}
-                    onClick={() => setActiveSubFilter(filter.id)}
+                    type="button"
+                    onClick={() => {
+                      setHeroFilter(null);
+                      setActiveSubFilter(filter.id);
+                    }}
                     className={cn(
                       "px-5 py-2.5 rounded-full font-['Outfit',sans-serif] text-sm font-medium transition-all border",
                       activeSubFilter === filter.id
@@ -395,6 +542,50 @@ export default function GeneratorGallery() {
                 ))}
               </div>
             </div>
+
+            {/* Active Hero Filter Summary Banner */}
+            {heroFilter && (
+              <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-[#FF5500]/30 shadow-xs">
+                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+                  <span className="font-bold text-[#111315]">
+                    Showing {filteredGenerators.length} available match
+                    {filteredGenerators.length === 1 ? "" : "es"}
+                  </span>
+                  {heroFilter.kvaRange && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF3EC] border border-[#FF5500]/25 text-[#FF5500] font-semibold">
+                      <Zap className="w-3.5 h-3.5" />
+                      {heroFilter.kvaRange} kVA
+                    </span>
+                  )}
+                  {heroFilter.industry && (
+                    <span className="px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315] font-medium capitalize">
+                      {heroFilter.industry}
+                    </span>
+                  )}
+                  {heroFilter.duration && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315] font-medium capitalize">
+                      <Clock className="w-3.5 h-3.5 text-[#FF5500]" />
+                      {heroFilter.duration}
+                    </span>
+                  )}
+                  {heroFilter.city && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315] font-medium">
+                      <MapPin className="w-3.5 h-3.5 text-[#FF5500]" />
+                      {heroFilter.city}
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#625D55] hover:text-[#111315] hover:bg-[#FAF8F5] border border-[#E8E2D9] transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  <span>Reset Filters</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Loading State */}
@@ -415,6 +606,7 @@ export default function GeneratorGallery() {
                 {error}
               </p>
               <button
+                type="button"
                 onClick={() => refetch()}
                 className="px-6 py-3 bg-[#FF5500] text-white font-['Outfit',sans-serif] font-semibold rounded-xl hover:bg-[#E04400] transition-colors"
               >
@@ -435,8 +627,14 @@ export default function GeneratorGallery() {
                     key={gen.id}
                     generator={gen as unknown as GeneratorType}
                     onViewDetails={() => handleCardClick(gen)}
-                    onAddToQuote={() => {}}
-                    onCompare={() => {}}
+                    onAddToQuote={() =>
+                      router.push(`/book?kVA=${encodeURIComponent(gen.kva)}`)
+                    }
+                    onCompare={() =>
+                      document
+                        .getElementById("compare")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }
                   />
                 ))}
               </AnimatePresence>
@@ -444,10 +642,17 @@ export default function GeneratorGallery() {
           )}
 
           {!isLoading && !error && filteredGenerators.length === 0 && (
-            <div className="text-center py-20">
+            <div className="text-center py-16 space-y-4">
               <p className="text-[#71695F] text-[18px] font-['Outfit',sans-serif]">
-                No generators found in this category.
+                No generators matched those exact criteria.
               </p>
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="px-6 py-3 bg-[#FF5500] text-white font-bold text-sm rounded-xl hover:bg-[#E04400] transition-colors"
+              >
+                Show All Generators
+              </button>
             </div>
           )}
         </div>

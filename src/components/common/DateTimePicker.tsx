@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Types
@@ -15,6 +15,7 @@ export interface DateTimePickerProps {
   is24Hour?: boolean;
   placeholder?: string;
   className?: string;
+  theme?: "dark" | "light";
 }
 
 // Format helpers
@@ -43,11 +44,13 @@ function ClockFace({
   onChange,
   selectingMinutes,
   is24Hour,
+  isLight = false,
 }: {
   value: { hours: number; minutes: number };
   onChange: (value: { hours: number; minutes: number }) => void;
   selectingMinutes: boolean;
   is24Hour: boolean;
+  isLight?: boolean;
 }) {
   const numbers = selectingMinutes
     ? [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
@@ -98,14 +101,26 @@ function ClockFace({
   return (
     <div className="relative w-64 h-64 mx-auto">
       {/* Clock background */}
-      <div className="absolute inset-0 rounded-full bg-white/5 border border-white/10" />
+      <div
+        className={`absolute inset-0 rounded-full border ${
+          isLight
+            ? "bg-[#FAF8F5] border-[#E8E2D9] shadow-inner"
+            : "bg-white/5 border-white/10"
+        }`}
+      />
 
       {/* Center dot */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#00ff8f] z-20" />
+      <div
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full z-20 ${
+          isLight ? "bg-[#FF5500]" : "bg-[#00ff8f]"
+        }`}
+      />
 
       {/* Clock hand */}
       <motion.div
-        className="absolute top-1/2 left-1/2 origin-left h-0.5 bg-[#00ff8f] z-10"
+        className={`absolute top-1/2 left-1/2 origin-left h-0.5 z-10 ${
+          isLight ? "bg-[#FF5500]" : "bg-[#00ff8f]"
+        }`}
         style={{
           width: handLength + 20,
           transformOrigin: "0 50%",
@@ -118,7 +133,11 @@ function ClockFace({
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
         {/* Hand end circle */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#00ff8f] translate-x-[50%]" />
+        <div
+          className={`absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full translate-x-[50%] ${
+            isLight ? "bg-[#FF5500]" : "bg-[#00ff8f]"
+          }`}
+        />
       </motion.div>
 
       {/* Numbers - Inner ring for 24h mode (13-23, 0) */}
@@ -130,12 +149,17 @@ function ClockFace({
             return (
               <motion.button
                 key={`inner-${num}`}
+                type="button"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleClick(num)}
                 className={`absolute flex items-center justify-center w-8 h-8 text-sm font-medium rounded-full transition-colors z-30 ${
                   isSelected
-                    ? "bg-[#00ff8f] text-black"
+                    ? isLight
+                      ? "bg-[#FF5500] text-white font-bold"
+                      : "bg-[#00ff8f] text-black"
+                    : isLight
+                    ? "text-[#524E48] hover:text-[#111315] hover:bg-[#EAE4DC]"
                     : "text-white/60 hover:text-white hover:bg-white/10"
                 }`}
                 style={{
@@ -169,12 +193,17 @@ function ClockFace({
         return (
           <motion.button
             key={num}
+            type="button"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleClick(num)}
             className={`absolute flex items-center justify-center w-10 h-10 text-lg font-medium rounded-full transition-colors z-30 ${
               isSelected
-                ? "bg-[#00ff8f] text-black"
+                ? isLight
+                  ? "bg-[#FF5500] text-white font-bold shadow-sm"
+                  : "bg-[#00ff8f] text-black"
+                : isLight
+                ? "text-[#111315] hover:bg-[#EAE4DC]"
                 : "text-white hover:bg-white/10"
             }`}
             style={{
@@ -196,11 +225,13 @@ function MiniCalendar({
   onChange,
   minDate,
   maxDate,
+  isLight = false,
 }: {
   value: Date | undefined;
   onChange: (date: Date) => void;
   minDate?: Date;
   maxDate?: Date;
+  isLight?: boolean;
 }) {
   const [viewDate, setViewDate] = useState(value || new Date());
 
@@ -258,17 +289,26 @@ function MiniCalendar({
     days.push(
       <motion.button
         key={day}
+        type="button"
         whileHover={!disabled ? { scale: 1.1 } : {}}
         whileTap={!disabled ? { scale: 0.95 } : {}}
         onClick={() => !disabled && onChange(date)}
         disabled={disabled}
         className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
           isSelected(day)
-            ? "bg-[#00ff8f] text-black"
+            ? isLight
+              ? "bg-[#FF5500] text-white font-bold"
+              : "bg-[#00ff8f] text-black"
             : isToday(day)
-            ? "border border-[#00ff8f] text-[#00ff8f]"
+            ? isLight
+              ? "border border-[#FF5500] text-[#FF5500] font-semibold"
+              : "border border-[#00ff8f] text-[#00ff8f]"
             : disabled
-            ? "text-white/20 cursor-not-allowed"
+            ? isLight
+              ? "text-[#B8B0A6] cursor-not-allowed"
+              : "text-white/20 cursor-not-allowed"
+            : isLight
+            ? "text-[#111315] hover:bg-[#FAF8F5]"
             : "text-white hover:bg-white/10"
         }`}
       >
@@ -282,10 +322,15 @@ function MiniCalendar({
       {/* Month Navigation */}
       <div className="flex items-center justify-between mb-4">
         <motion.button
+          type="button"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={prevMonth}
-          className="w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+          className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+            isLight
+              ? "text-[#524E48] hover:text-[#111315] hover:bg-[#FAF8F5]"
+              : "text-white/60 hover:text-white hover:bg-white/10"
+          }`}
         >
           <svg
             className="w-5 h-5"
@@ -301,17 +346,22 @@ function MiniCalendar({
             />
           </svg>
         </motion.button>
-        <span className="text-white font-semibold">
+        <span className={isLight ? "text-[#111315] font-semibold" : "text-white font-semibold"}>
           {viewDate.toLocaleDateString("en-IN", {
             month: "long",
             year: "numeric",
           })}
         </span>
         <motion.button
+          type="button"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={nextMonth}
-          className="w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+          className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+            isLight
+              ? "text-[#524E48] hover:text-[#111315] hover:bg-[#FAF8F5]"
+              : "text-white/60 hover:text-white hover:bg-white/10"
+          }`}
         >
           <svg
             className="w-5 h-5"
@@ -334,7 +384,9 @@ function MiniCalendar({
         {["S", "M", "T", "W", "T", "F", "S"].map((day, idx) => (
           <div
             key={idx}
-            className="w-9 h-9 flex items-center justify-center text-white/40 text-sm font-medium"
+            className={`w-9 h-9 flex items-center justify-center text-sm font-medium ${
+              isLight ? "text-[#6E685F]" : "text-white/40"
+            }`}
           >
             {day}
           </div>
@@ -357,7 +409,9 @@ export function DateTimePicker({
   is24Hour = false,
   placeholder = "Select...",
   className = "",
+  theme = "dark",
 }: DateTimePickerProps) {
+  const isLight = theme === "light";
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"date" | "time">(
     mode === "time" ? "time" : "date"
@@ -371,6 +425,27 @@ export function DateTimePicker({
   const [period, setPeriod] = useState<"AM" | "PM">(
     value?.time ? (parseTime(value.time).hours >= 12 ? "PM" : "AM") : "AM"
   );
+
+  const openPicker = () => {
+    const parsed = value?.time ? parseTime(value.time) : { hours: 8, minutes: 0 };
+    setTempTime(parsed);
+    setPeriod(parsed.hours >= 12 ? "PM" : "AM");
+    setTempDate(value?.date);
+    setSelectingMinutes(false);
+    setIsOpen(true);
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, [isOpen]);
 
   const displayValue = useMemo(() => {
     const parts: string[] = [];
@@ -440,19 +515,32 @@ export function DateTimePicker({
     <div className={`relative ${className}`}>
       {/* Trigger Button */}
       <motion.button
+        type="button"
         whileTap={{ scale: 0.98 }}
-        onClick={() => setIsOpen(true)}
-        className="w-full p-4 bg-black text-left rounded-xl border border-white/10 flex items-center justify-between hover:border-[#00ff8f]/50 transition-colors"
+        onClick={openPicker}
+        className={`w-full px-4 py-3.5 text-left rounded-xl border flex items-center justify-between transition-colors ${
+          isLight
+            ? "bg-[#FAF8F5] border-[#DED8CE] hover:border-[#FF5500] focus:outline-none focus:border-[#FF5500]"
+            : "bg-black border-white/10 hover:border-[#00ff8f]/50"
+        }`}
       >
         <span
           className={
-            value?.date || value?.time ? "text-white" : "text-white/40"
+            value?.date || value?.time
+              ? isLight
+                ? "text-[#111315] font-medium"
+                : "text-white"
+              : isLight
+              ? "text-[#6E685F]"
+              : "text-white/40"
           }
         >
           {displayValue}
         </span>
         <svg
-          className="w-5 h-5 text-white/40"
+          className={`w-5 h-5 shrink-0 ${
+            isLight ? "text-[#FF5500]" : "text-white/40"
+          }`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -485,7 +573,9 @@ export function DateTimePicker({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={handleCancel}
-              className="fixed inset-0 bg-black/80 z-50"
+              className={`fixed inset-0 z-[120] touch-none overscroll-none ${
+                isLight ? "bg-[#111315]/55" : "bg-black/80"
+              }`}
             />
 
             {/* Modal */}
@@ -494,28 +584,42 @@ export function DateTimePicker({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-black border border-white/10 rounded-3xl p-6 z-50"
+              className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-6 z-[121] border ${
+                isLight
+                  ? "bg-white border-[#E8E2D9] shadow-2xl"
+                  : "bg-black border-white/10"
+              }`}
             >
               {/* Mode Tabs (for datetime mode) */}
               {mode === "datetime" && (
                 <div className="flex gap-2 mb-6">
                   <motion.button
+                    type="button"
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setActiveTab("date")}
                     className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                       activeTab === "date"
-                        ? "bg-[#00ff8f] text-black"
+                        ? isLight
+                          ? "bg-[#18181B] text-white"
+                          : "bg-[#00ff8f] text-black"
+                        : isLight
+                        ? "border border-[#DED8CE] text-[#524E48] hover:text-[#111315]"
                         : "border border-white/10 text-white hover:border-white/20"
                     }`}
                   >
                     Date
                   </motion.button>
                   <motion.button
+                    type="button"
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setActiveTab("time")}
                     className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                       activeTab === "time"
-                        ? "bg-[#00ff8f] text-black"
+                        ? isLight
+                          ? "bg-[#18181B] text-white"
+                          : "bg-[#00ff8f] text-black"
+                        : isLight
+                        ? "border border-[#DED8CE] text-[#524E48] hover:text-[#111315]"
                         : "border border-white/10 text-white hover:border-white/20"
                     }`}
                   >
@@ -531,11 +635,16 @@ export function DateTimePicker({
                   {/* Time Display */}
                   <div className="flex items-center justify-center gap-2">
                     <motion.button
+                      type="button"
                       whileTap={{ scale: 0.95 }}
                       onClick={handleHoursClick}
-                      className={`text-6xl font-light px-4 py-2 rounded-xl transition-colors ${
+                      className={`text-5xl sm:text-6xl font-light px-4 py-2 rounded-xl transition-colors ${
                         !selectingMinutes
-                          ? "bg-[#00ff8f]/20 text-[#00ff8f]"
+                          ? isLight
+                            ? "bg-[#FFF3EC] text-[#FF5500] border border-[#FF5500]/25"
+                            : "bg-[#00ff8f]/20 text-[#00ff8f]"
+                          : isLight
+                          ? "text-[#111315] hover:bg-[#FAF8F5]"
                           : "text-white hover:bg-white/5"
                       }`}
                     >
@@ -545,13 +654,24 @@ export function DateTimePicker({
                             .toString()
                             .padStart(2, "0")}
                     </motion.button>
-                    <span className="text-6xl font-light text-white/40">:</span>
+                    <span
+                      className={`text-5xl sm:text-6xl font-light ${
+                        isLight ? "text-[#8C847A]" : "text-white/40"
+                      }`}
+                    >
+                      :
+                    </span>
                     <motion.button
+                      type="button"
                       whileTap={{ scale: 0.95 }}
                       onClick={handleMinutesClick}
-                      className={`text-6xl font-light px-4 py-2 rounded-xl transition-colors ${
+                      className={`text-5xl sm:text-6xl font-light px-4 py-2 rounded-xl transition-colors ${
                         selectingMinutes
-                          ? "bg-[#00ff8f]/20 text-[#00ff8f]"
+                          ? isLight
+                            ? "bg-[#FFF3EC] text-[#FF5500] border border-[#FF5500]/25"
+                            : "bg-[#00ff8f]/20 text-[#00ff8f]"
+                          : isLight
+                          ? "text-[#111315] hover:bg-[#FAF8F5]"
                           : "text-white hover:bg-white/5"
                       }`}
                     >
@@ -560,24 +680,34 @@ export function DateTimePicker({
 
                     {/* AM/PM Toggle */}
                     {!is24Hour && (
-                      <div className="flex flex-col gap-1 ml-2">
+                      <div className="flex flex-col gap-1.5 ml-2">
                         <motion.button
+                          type="button"
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handlePeriodChange("AM")}
                           className={`px-3 py-1 rounded-lg text-sm font-bold transition-colors ${
                             period === "AM"
-                              ? "bg-[#00ff8f] text-black"
+                              ? isLight
+                                ? "bg-[#18181B] text-white"
+                                : "bg-[#00ff8f] text-black"
+                              : isLight
+                              ? "bg-[#FAF8F5] text-[#524E48] hover:text-[#111315] border border-[#E8E2D9]"
                               : "text-white/40 hover:text-white"
                           }`}
                         >
                           AM
                         </motion.button>
                         <motion.button
+                          type="button"
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handlePeriodChange("PM")}
                           className={`px-3 py-1 rounded-lg text-sm font-bold transition-colors ${
                             period === "PM"
-                              ? "bg-[#00ff8f] text-black"
+                              ? isLight
+                                ? "bg-[#18181B] text-white"
+                                : "bg-[#00ff8f] text-black"
+                              : isLight
+                              ? "bg-[#FAF8F5] text-[#524E48] hover:text-[#111315] border border-[#E8E2D9]"
                               : "text-white/40 hover:text-white"
                           }`}
                         >
@@ -593,6 +723,7 @@ export function DateTimePicker({
                     onChange={handleTimeChange}
                     selectingMinutes={selectingMinutes}
                     is24Hour={is24Hour}
+                    isLight={isLight}
                   />
                 </div>
               )}
@@ -605,24 +736,35 @@ export function DateTimePicker({
                   onChange={setTempDate}
                   minDate={minDate}
                   maxDate={maxDate}
+                  isLight={isLight}
                 />
               )}
 
               {/* Action Buttons */}
               <div className="flex gap-3 mt-6">
                 <motion.button
+                  type="button"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleCancel}
-                  className="flex-1 py-3 border border-white/10 text-white rounded-xl font-medium hover:border-white/20 transition-colors"
+                  className={`flex-1 py-3 rounded-xl font-medium transition-colors border ${
+                    isLight
+                      ? "border-[#DED8CE] text-[#111315] hover:bg-[#FAF8F5]"
+                      : "border-white/10 text-white hover:border-white/20"
+                  }`}
                 >
                   Cancel
                 </motion.button>
                 <motion.button
+                  type="button"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleConfirm}
-                  className="flex-1 py-3 bg-[#00ff8f] text-black rounded-xl font-bold"
+                  className={`flex-1 py-3 rounded-xl font-bold transition-colors ${
+                    isLight
+                      ? "bg-[#18181B] hover:bg-[#FF5500] text-white"
+                      : "bg-[#00ff8f] text-black"
+                  }`}
                 >
                   Confirm
                 </motion.button>

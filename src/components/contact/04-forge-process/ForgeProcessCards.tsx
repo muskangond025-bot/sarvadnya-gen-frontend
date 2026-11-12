@@ -9,7 +9,6 @@ interface ProcessStep {
   number: string;
   title: string;
   description: string;
-  tag: string;
 }
 
 const PROCESS_STEPS: ProcessStep[] = [
@@ -18,21 +17,18 @@ const PROCESS_STEPS: ProcessStep[] = [
     title: "We’ll Review Your Enquiry",
     description:
       "Our senior electrical engineering team reviews your site parameters, harmonic loads, peak kVA demand, and acoustics within 60 minutes.",
-    tag: "TECHNICAL AUDIT",
   },
   {
     number: "02",
     title: "Discovery Call Or Site Visit",
     description:
       "We’ll arrange an immediate technical consultation or rapid on-site survey in Nashik to inspect distribution boards, cable length, and safety clearances.",
-    tag: "SITE TELEMETRY",
   },
   {
     number: "03",
     title: "Tailored Proposal Delivered",
     description:
       "You’ll receive a transparent, all-inclusive proposal detailing the exact CPCB-IV+ DG set capacity, heavy hydraulic mobilization, and turnkey fuel logistics.",
-    tag: "TURNKEY DISPATCH",
   },
 ];
 
@@ -67,15 +63,6 @@ export function ForgeProcessCards() {
         
         {/* Section Header */}
         <div className="max-w-3xl mb-12 sm:mb-20">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-mono text-xs uppercase tracking-[0.25em] text-[#FF5500] font-semibold block mb-4"
-          >
-            Our Approach
-          </motion.span>
-
           <motion.h2
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -100,27 +87,23 @@ export function ForgeProcessCards() {
                 delay: index * 0.15,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="group relative flex flex-col justify-between p-6 sm:p-10 rounded-2xl bg-white hover:bg-white border border-[#E8E2D9] hover:border-[#FF5500]/50 transition-all duration-500 shadow-sm hover:shadow-2xl min-h-[auto] sm:min-h-[380px] overflow-hidden"
+              className="group relative flex flex-col justify-between p-6 sm:p-8 xl:p-10 rounded-2xl bg-white hover:bg-white border border-[#E8E2D9] hover:border-[#FF5500]/50 transition-all duration-500 shadow-sm hover:shadow-2xl min-h-[auto] sm:min-h-[340px] overflow-hidden"
             >
               {/* Top Accent Orange Beam on Hover */}
               <div className="absolute top-0 inset-x-8 h-1 bg-gradient-to-r from-transparent via-[#FF5500] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              {/* Top: Numeral & Tag */}
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xl sm:text-2xl text-[#FF5500] italic font-bold tracking-tight">
+              {/* Top: Numeral */}
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-mono text-xl sm:text-2xl text-[#FF5500] italic font-bold tracking-tight whitespace-nowrap">
                   {step.number}
-                </span>
-
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#8C8275] group-hover:text-[#111315] transition-colors font-semibold">
-                  {step.tag}
                 </span>
               </div>
 
               {/* Bottom: Title & Narrative */}
-              <div className="pt-12">
-                <h3 className="font-serif text-2xl sm:text-[26px] text-[#111315] font-normal tracking-tight leading-snug mb-4 transition-colors duration-300 flex items-start justify-between gap-3">
-                  <RollingText text={step.title} />
-                  <ArrowUpRight className="size-4 text-[#FF5500] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 shrink-0 mt-1" />
+              <div className="pt-10">
+                <h3 className="font-serif text-[19px] sm:text-lg lg:text-xl xl:text-[22px] text-[#111315] font-normal tracking-tight leading-snug mb-4 transition-colors duration-300 flex items-center justify-between gap-2 whitespace-nowrap">
+                  <RollingText text={step.title} singleLine />
+                  <ArrowUpRight className="size-4 text-[#FF5500] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 shrink-0" />
                 </h3>
 
                 <p className="font-sans text-sm sm:text-base text-[#625D55] leading-relaxed transition-colors duration-300">

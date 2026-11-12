@@ -42,42 +42,13 @@ export function CTAClient({ data }: CTAClientProps) {
       />
 
       {/* 
-        PREMIUM 3D POWER LIGHTNING SYMBOL STAGE
-        Vibrant, high-gloss 3D symbol with smooth levitation & energy ripples
-      */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        animate={{
-          y: [-6, 6, -6],
-        }}
-        className="relative z-10 size-28 sm:size-36 md:size-40 flex items-center justify-center mb-6 sm:mb-8"
-      >
-        {/* Concentric Energy Aura Ripples */}
-        <div className="absolute inset-0 rounded-full border border-[#FF5500]/25 animate-[ping_4s_cubic-bezier(0,0,0.2,1)_infinite] pointer-events-none" />
-        <div className="absolute -inset-4 rounded-full bg-[#FF5500]/10 blur-xl pointer-events-none" />
-
-        {/* 3D Glossy Orange Electric Symbol (Full Visual Fidelity) */}
-        <img
-          src="/images/cta/electric_symbol_3d_orange.png"
-          alt="Sarvadnya 3D Electric Power Symbol"
-          width={603}
-          height={1016}
-          className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(255,85,0,0.32)] filter brightness-105 pointer-events-none"
-          draggable={false}
-        />
-      </motion.div>
-
-      {/* 
         FOREGROUND CONVERSION CLUSTER
       */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 max-w-3xl flex flex-col items-center"
       >
         {/* Simple, Punchy Display Headline */}

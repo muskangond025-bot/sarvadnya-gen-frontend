@@ -240,7 +240,11 @@ export function ForgeSpecificationForm() {
                   type="submit"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 px-10 py-5 rounded-full bg-[#111315] hover:bg-[#FF5500] text-white font-mono text-xs sm:text-sm uppercase tracking-[0.22em] font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] cursor-pointer"
                 >
-                  <RollingText text="Submit Enquiry" charClassName="group-hover:text-white" />
+                  <RollingText
+                    text="Submit Enquiry"
+                    singleLine
+                    charClassName="group-hover:text-white"
+                  />
                   <ArrowRight className="size-4 text-[#FF5500] group-hover:text-white group-hover:translate-x-1.5 transition-all duration-300" />
                 </button>
               </div>

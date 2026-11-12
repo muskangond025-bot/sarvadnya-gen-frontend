@@ -1,131 +1,218 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, ArrowUpRight } from "lucide-react";
-import { motion, Variants } from "framer-motion";
+import { Calendar, Clock, ArrowUpRight, ArrowRight } from "lucide-react";
+import {
+  BLOG_FILTER_EVENT,
+  BlogFilterDetail,
+} from "../02-categories/BlogCategories";
 
-const POSTS = [
+export const BLOG_POSTS = [
   {
     slug: "industrial-generator-maintenance",
     title: "Essential Maintenance Tips for Industrial Silent DG Sets",
+    excerpt:
+      "Preventive oil, coolant, and load-bank inspection checklists to maximize uptime across continuous industrial operations.",
     category: "Maintenance",
     date: "May 10, 2026",
-    image: "/images/blog/blog-main.png"
+    readTime: "6 min read",
+    image: "/images/services/service_engineer_bg.jpg",
   },
   {
     slug: "hospital-power-backup",
     title: "Critical Power Backup for Hospitals: Why Every Second Counts",
+    excerpt:
+      "How sub-10-second AMF failover panels and synchronized redundant DG units protect life-critical medical loads.",
     category: "Industrial",
     date: "May 08, 2026",
-    image: "/images/blog/blog-main.png"
+    readTime: "7 min read",
+    image: "/images/industries/healthcare.png",
   },
   {
     slug: "fuel-management-strategies",
     title: "Optimizing Fuel Management: Strategies for Long-Term Rentals",
+    excerpt:
+      "Right-sizing generator kVA load curves and tracking diesel burn rates for multi-week site deployments.",
     category: "Efficiency",
     date: "May 05, 2026",
-    image: "/images/blog/blog-main.png"
+    readTime: "5 min read",
+    image: "/images/services/generator_engine_bg.jpg",
   },
   {
     slug: "nashik-industrial-growth",
-    title: "How Sarvadnya Generators is Powering Nashik's Industrial Expansion",
-    category: "Case Study",
+    title:
+      "How Sarvadnya Generators is Powering Nashik's Industrial Expansion",
+    excerpt:
+      "Supporting Ambad, Satpur, and Sinnar MIDC manufacturing facilities with rapid multi-generator fleet deployment.",
+    category: "Case Studies",
     date: "May 01, 2026",
-    image: "/images/blog/blog-main.png"
+    readTime: "6 min read",
+    image: "/images/industries/construction.png",
   },
   {
     slug: "acoustic-enclosures-explained",
     title: "The Science of Silence: How Our Acoustic Enclosures Work",
+    excerpt:
+      "Inside CPCB-II certified soundproof canopies, baffled airflow channels, and multi-stage exhaust attenuation.",
     category: "Technology",
     date: "April 28, 2026",
-    image: "/images/blog/blog-main.png"
+    readTime: "5 min read",
+    image: "/images/generators/generator_38.png",
   },
   {
     slug: "event-power-planning",
     title: "Pro Tips for Planning Power Infrastructure for Outdoor Concerts",
+    excerpt:
+      "Balancing stage audio, LED walls, and site lighting across phase-isolated silent generators for live venues.",
     category: "Events",
     date: "April 25, 2026",
-    image: "/images/blog/blog-main.png"
+    readTime: "7 min read",
+    image: "/images/blog/blog-image-1.png",
+  },
+  {
+    slug: "choosing-right-generator-wedding",
+    title:
+      "The Ultimate Guide to Choosing the Right Generator for Your Wedding",
+    excerpt:
+      "Learn how to calculate your kVA needs, manage acoustic levels, and ensure uninterrupted celebration power.",
+    category: "Guides",
+    date: "May 15, 2026",
+    readTime: "8 min read",
+    image: "/images/blog/blog-main.png",
   },
 ];
 
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-};
-
 export function BlogGrid() {
-  return (
-    <motion.div 
-      variants={container}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true }}
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"
-    >
-      {POSTS.map((post) => (
-        <motion.div 
-          variants={item} 
-          key={post.slug}
-          whileHover={{ 
-            scale: 1.02, 
-            rotateY: 2, 
-            rotateX: -2,
-            transition: { duration: 0.3 }
-          }}
-          style={{ perspective: 1000 }}
-        >
-          <Link 
-            href={`/blog/${post.slug}`}
-            className="group flex flex-col gap-6 h-full"
-          >
-          {/* Card Image */}
-          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-white/5 group-hover:border-[#00ff8f]/30 transition-all">
-            <Image 
-              src={post.image}
-              alt={post.title}
-              fill
-              className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-            />
-            <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[#00ff8f] text-[10px] font-bold uppercase tracking-widest border border-white/10">
-                {post.category}
-              </span>
-            </div>
-            {/* Hover Icon */}
-            <div className="absolute top-4 right-4 size-10 rounded-full bg-[#00ff8f] flex items-center justify-center text-black opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0">
-              <ArrowUpRight size={20} />
-            </div>
-          </div>
+  const [filter, setFilter] = useState<BlogFilterDetail>({
+    category: "All Articles",
+    query: "",
+  });
 
-          {/* Card Info */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-white/40 text-xs font-bold uppercase tracking-widest">
-              <Calendar size={12} className="text-[#00ff8f]" />
-              <span>{post.date}</span>
+  useEffect(() => {
+    const handleFilter = (event: Event) => {
+      const detail = (event as CustomEvent<BlogFilterDetail>).detail;
+      if (detail) {
+        setFilter(detail);
+      }
+    };
+    window.addEventListener(BLOG_FILTER_EVENT, handleFilter);
+    return () => window.removeEventListener(BLOG_FILTER_EVENT, handleFilter);
+  }, []);
+
+  const visiblePosts = useMemo(() => {
+    const q = filter.query.trim().toLowerCase();
+    return BLOG_POSTS.filter((post) => {
+      if (filter.category === "All Articles" && !q) {
+        return post.slug !== "choosing-right-generator-wedding";
+      }
+
+      const matchesCategory =
+        filter.category === "All Articles" ||
+        post.category.toLowerCase() === filter.category.toLowerCase();
+
+      const matchesQuery =
+        !q ||
+        post.title.toLowerCase().includes(q) ||
+        post.excerpt.toLowerCase().includes(q) ||
+        post.category.toLowerCase().includes(q);
+
+      return matchesCategory && matchesQuery;
+    });
+  }, [filter]);
+
+  const resetFilters = () => {
+    const next = { category: "All Articles", query: "" };
+    setFilter(next);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("blog-filter-reset", { detail: next })
+      );
+    }
+  };
+
+  if (visiblePosts.length === 0) {
+    return (
+      <div className="bg-white border border-[#E8E2D9] rounded-3xl p-12 text-center space-y-4">
+        <p className="text-lg font-bold text-[#111315]">
+          No articles match your current filter.
+        </p>
+        <p className="text-sm text-[#2D2A26]">
+          Try clearing your search or switching back to all articles.
+        </p>
+        <button
+          type="button"
+          onClick={resetFilters}
+          className="px-6 py-3 bg-[#18181B] hover:bg-[#FF5500] text-white text-sm font-bold rounded-xl transition-colors"
+        >
+          Show All Articles
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8">
+      {visiblePosts.map((post) => (
+        <article key={post.slug} className="h-full">
+          <Link
+            href={`/blog/${post.slug}`}
+            className="group bg-white border border-[#E8E2D9] hover:border-[#FF5500] rounded-3xl overflow-hidden shadow-[0_12px_36px_-14px_rgba(17,19,21,0.06)] hover:shadow-[0_22px_50px_-14px_rgba(255,85,0,0.14)] transition-all duration-300 flex flex-col h-full"
+          >
+            {/* Card Media */}
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#EFEAE1] border-b border-[#E8E2D9]">
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute top-4 left-4">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#18181B] text-white text-[11px] font-mono font-bold uppercase tracking-wider border border-white/15 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500]" />
+                  {post.category}
+                </span>
+              </div>
+              <div className="absolute top-4 right-4 size-9 rounded-full bg-white text-[#111315] group-hover:bg-[#FF5500] group-hover:text-white flex items-center justify-center shadow-md transition-colors">
+                <ArrowUpRight size={18} />
+              </div>
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-white font-['Poppins',sans-serif] group-hover:text-[#00ff8f] transition-colors leading-tight">
-              {post.title}
-            </h3>
-            <p className="text-[#bfbfbf] text-sm font-['Outfit',sans-serif] line-clamp-2 opacity-60 group-hover:opacity-100 transition-opacity">
-              In-depth analysis and expert recommendations for achieving maximum operational efficiency in your sector.
-            </p>
-          </div>
+
+            {/* Card Content — Immediate Full Visibility */}
+            <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between gap-5 bg-white">
+              <div className="space-y-3">
+                <div className="flex items-center gap-4 text-xs font-mono font-semibold text-[#2D2A26]">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar size={13} className="text-[#FF5500]" />
+                    {post.date}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock size={13} className="text-[#FF5500]" />
+                    {post.readTime}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-extrabold text-[#111315] group-hover:text-[#FF5500] transition-colors leading-snug">
+                  {post.title}
+                </h3>
+
+                <p className="text-sm text-[#2D2A26] leading-relaxed">
+                  {post.excerpt}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#ECE6DC] flex items-center justify-between text-sm font-bold text-[#111315] group-hover:text-[#FF5500] transition-colors">
+                <span>Read Article</span>
+                <ArrowRight
+                  size={16}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </div>
+            </div>
           </Link>
-        </motion.div>
+        </article>
       ))}
-    </motion.div>
+    </div>
   );
 }
