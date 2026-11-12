@@ -3,13 +3,182 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
+type TrackFn = <T extends { dispose: () => void }>(item: T) => T;
+
+/**
+ * Shared procedural studio lighting & softbox reflection map so the cart scene
+ * and viewport high-jump ball share identical reflections and lighting.
+ */
+function applyStudioEnvironment(
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  track: TrackFn
+) {
+  const pmremGenerator = new THREE.PMREMGenerator(renderer);
+  pmremGenerator.compileEquirectangularShader();
+
+  const envCanvas = document.createElement("canvas");
+  envCanvas.width = 512;
+  envCanvas.height = 256;
+  const envCtx = envCanvas.getContext("2d");
+  if (envCtx) {
+    const bgGrad = envCtx.createLinearGradient(0, 0, 0, 256);
+    bgGrad.addColorStop(0, "#eef3f8");
+    bgGrad.addColorStop(0.28, "#ffffff");
+    bgGrad.addColorStop(0.48, "#c8d4e0");
+    bgGrad.addColorStop(0.55, "#ffffff");
+    bgGrad.addColorStop(0.75, "#7e8a98");
+    bgGrad.addColorStop(1, "#e9e3da");
+    envCtx.fillStyle = bgGrad;
+    envCtx.fillRect(0, 0, 512, 256);
+
+    const warmSpot = envCtx.createRadialGradient(390, 92, 8, 390, 92, 150);
+    warmSpot.addColorStop(0, "rgba(255, 246, 234, 0.95)");
+    warmSpot.addColorStop(1, "transparent");
+    envCtx.fillStyle = warmSpot;
+    envCtx.fillRect(0, 0, 512, 256);
+
+    const skySpot = envCtx.createRadialGradient(130, 82, 6, 130, 82, 120);
+    skySpot.addColorStop(0, "rgba(210, 238, 255, 0.9)");
+    skySpot.addColorStop(1, "transparent");
+    envCtx.fillStyle = skySpot;
+    envCtx.fillRect(0, 0, 512, 256);
+
+    const envTexture = new THREE.CanvasTexture(envCanvas);
+    envTexture.mapping = THREE.EquirectangularReflectionMapping;
+    const envMap = pmremGenerator.fromEquirectangular(envTexture).texture;
+    scene.environment = envMap;
+    track(envMap);
+    envTexture.dispose();
+    pmremGenerator.dispose();
+  }
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 2.7);
+  keyLight.position.set(-3.0, 5.2, 4.6);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xfff5ea, 1.85);
+  fillLight.position.set(4.5, 2.6, 3.4);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xeef6ff, 2.9);
+  rimLight.position.set(0.4, 4.5, -5.0);
+  scene.add(rimLight);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+  scene.add(ambientLight);
+}
+
+/**
+ * Shared 3D glossy yellow sad ball factory matching the studio sphere reference.
+ */
+function createSadBall(ballRadius: number, track: TrackFn) {
+  const sadBallBodyMat = track(
+    new THREE.MeshPhysicalMaterial({
+      color: 0xffd21f,
+      metalness: 0.02,
+      roughness: 0.28,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.18,
+      sheen: 0.25,
+      sheenRoughness: 0.45,
+      sheenColor: new THREE.Color(0xfff0a0),
+      envMapIntensity: 1.15,
+    })
+  );
+
+  const sadBallFeatureMat = track(
+    new THREE.MeshPhysicalMaterial({
+      color: 0x0a396d,
+      metalness: 0.72,
+      roughness: 0.1,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.04,
+      envMapIntensity: 1.9,
+    })
+  );
+
+  const eyeSocketMat = track(
+    new THREE.MeshStandardMaterial({
+      color: 0xd9a400,
+      roughness: 0.55,
+      metalness: 0.05,
+    })
+  );
+
+  const ballRig = new THREE.Group();
+  const ballRotGroup = new THREE.Group();
+  ballRig.add(ballRotGroup);
+
+  const ballSphereGeom = track(new THREE.SphereGeometry(ballRadius, 48, 36));
+  const ballSphere = new THREE.Mesh(ballSphereGeom, sadBallBodyMat);
+  ballRotGroup.add(ballSphere);
+
+  const eyeGeom = track(new THREE.SphereGeometry(ballRadius * 0.159, 28, 24));
+  const eyeSocketGeom = track(
+    new THREE.TorusGeometry(ballRadius * 0.167, ballRadius * 0.032, 12, 28)
+  );
+
+  for (const eyeSide of [-1, 1]) {
+    const eyeAngle = eyeSide * 0.34;
+    const eyeElev = 0.17;
+    const ex = Math.sin(eyeAngle) * Math.cos(eyeElev) * (ballRadius - ballRadius * 0.049);
+    const ey = Math.sin(eyeElev) * (ballRadius - ballRadius * 0.049);
+    const ez = Math.cos(eyeAngle) * Math.cos(eyeElev) * (ballRadius - ballRadius * 0.049);
+
+    const socketRing = new THREE.Mesh(eyeSocketGeom, eyeSocketMat);
+    socketRing.position.set(ex, ey, ez);
+    socketRing.lookAt(ex * 2, ey * 2, ez * 2);
+    ballRotGroup.add(socketRing);
+
+    const eyeMesh = new THREE.Mesh(eyeGeom, sadBallFeatureMat);
+    eyeMesh.position.set(ex, ey, ez);
+    eyeMesh.scale.set(1.0, 1.06, 0.72);
+    eyeMesh.lookAt(ex * 2, ey * 2, ez * 2);
+    ballRotGroup.add(eyeMesh);
+  }
+
+  const mouthPoints: THREE.Vector3[] = [];
+  const mouthSamples = 18;
+  for (let i = 0; i <= mouthSamples; i++) {
+    const t = i / mouthSamples;
+    const u = (t - 0.5) * 2;
+    const yaw = u * 0.4;
+    const pitch = -0.24 - 0.14 * (u * u);
+    const mr = ballRadius - ballRadius * 0.012;
+    mouthPoints.push(
+      new THREE.Vector3(
+        Math.sin(yaw) * Math.cos(pitch) * mr,
+        Math.sin(pitch) * mr,
+        Math.cos(yaw) * Math.cos(pitch) * mr
+      )
+    );
+  }
+  const mouthCurve = new THREE.CatmullRomCurve3(mouthPoints);
+  const mouthGeom = track(
+    new THREE.TubeGeometry(mouthCurve, 28, ballRadius * 0.069, 12, false)
+  );
+  const mouthMesh = new THREE.Mesh(mouthGeom, sadBallFeatureMat);
+  ballRotGroup.add(mouthMesh);
+
+  const mouthCapGeom = track(new THREE.SphereGeometry(ballRadius * 0.069, 14, 12));
+  for (const endPt of [mouthPoints[0], mouthPoints[mouthPoints.length - 1]]) {
+    const cap = new THREE.Mesh(mouthCapGeom, sadBallFeatureMat);
+    cap.position.copy(endPt);
+    ballRotGroup.add(cap);
+  }
+
+  ballRotGroup.rotation.y = 0.36;
+  return { ballRig, ballRotGroup };
+}
+
 /**
  * Cart3D
  *
  * Interactive Three.js studio-rendered 3D shopping cart paired with a 3D
- * glossy yellow "sad ball" character that drops from above into the cart on
- * page load, triggers cushioned bounce physics, and rolls randomly inside
- * the wire basket bounds.
+ * glossy yellow "sad ball" character that drops into the basket on mount,
+ * rolls randomly inside the wires, and on click leaps high out of the cart
+ * to touch the fixed top Navbar before plunging back inside the basket.
  */
 export function Cart3D() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -20,9 +189,10 @@ export function Cart3D() {
 
     let animationFrameId = 0;
     let renderer: THREE.WebGLRenderer | null = null;
+    let cleanupJumpOverlay: (() => void) | null = null;
     const disposables: Array<{ dispose: () => void }> = [];
 
-    const track = <T extends { dispose: () => void }>(item: T): T => {
+    const track: TrackFn = (item) => {
       disposables.push(item);
       return item;
     };
@@ -52,61 +222,7 @@ export function Cart3D() {
       renderer.domElement.style.height = "100%";
       container.appendChild(renderer.domElement);
 
-      // Procedural Studio Softbox Environment Map for realistic steel & glossy ball
-      const pmremGenerator = new THREE.PMREMGenerator(renderer);
-      pmremGenerator.compileEquirectangularShader();
-
-      const envCanvas = document.createElement("canvas");
-      envCanvas.width = 512;
-      envCanvas.height = 256;
-      const envCtx = envCanvas.getContext("2d");
-      if (envCtx) {
-        const bgGrad = envCtx.createLinearGradient(0, 0, 0, 256);
-        bgGrad.addColorStop(0, "#eef3f8");
-        bgGrad.addColorStop(0.28, "#ffffff");
-        bgGrad.addColorStop(0.48, "#c8d4e0");
-        bgGrad.addColorStop(0.55, "#ffffff");
-        bgGrad.addColorStop(0.75, "#7e8a98");
-        bgGrad.addColorStop(1, "#e9e3da");
-        envCtx.fillStyle = bgGrad;
-        envCtx.fillRect(0, 0, 512, 256);
-
-        const warmSpot = envCtx.createRadialGradient(390, 92, 8, 390, 92, 150);
-        warmSpot.addColorStop(0, "rgba(255, 246, 234, 0.95)");
-        warmSpot.addColorStop(1, "transparent");
-        envCtx.fillStyle = warmSpot;
-        envCtx.fillRect(0, 0, 512, 256);
-
-        const skySpot = envCtx.createRadialGradient(130, 82, 6, 130, 82, 120);
-        skySpot.addColorStop(0, "rgba(210, 238, 255, 0.9)");
-        skySpot.addColorStop(1, "transparent");
-        envCtx.fillStyle = skySpot;
-        envCtx.fillRect(0, 0, 512, 256);
-
-        const envTexture = new THREE.CanvasTexture(envCanvas);
-        envTexture.mapping = THREE.EquirectangularReflectionMapping;
-        const envMap = pmremGenerator.fromEquirectangular(envTexture).texture;
-        scene.environment = envMap;
-        track(envMap);
-        envTexture.dispose();
-        pmremGenerator.dispose();
-      }
-
-      // 3-Point Studio Lighting Rig
-      const keyLight = new THREE.DirectionalLight(0xffffff, 2.7);
-      keyLight.position.set(-3.0, 5.2, 4.6);
-      scene.add(keyLight);
-
-      const fillLight = new THREE.DirectionalLight(0xfff5ea, 1.85);
-      fillLight.position.set(4.5, 2.6, 3.4);
-      scene.add(fillLight);
-
-      const rimLight = new THREE.DirectionalLight(0xeef6ff, 2.9);
-      rimLight.position.set(0.4, 4.5, -5.0);
-      scene.add(rimLight);
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
-      scene.add(ambientLight);
+      applyStudioEnvironment(renderer, scene, track);
 
       // Materials for the tubular chrome cart
       const chromeSteelMat = track(
@@ -165,41 +281,6 @@ export function Cart3D() {
         })
       );
 
-      // Materials for the Realistic 3D Sad Yellow Ball (matched to reference photo)
-      const sadBallBodyMat = track(
-        new THREE.MeshPhysicalMaterial({
-          color: 0xffd21f,
-          metalness: 0.02,
-          roughness: 0.28,
-          clearcoat: 0.55,
-          clearcoatRoughness: 0.18,
-          sheen: 0.25,
-          sheenRoughness: 0.45,
-          sheenColor: new THREE.Color(0xfff0a0),
-          envMapIntensity: 1.15,
-        })
-      );
-
-      const sadBallFeatureMat = track(
-        new THREE.MeshPhysicalMaterial({
-          color: 0x0a396d,
-          metalness: 0.72,
-          roughness: 0.1,
-          clearcoat: 1.0,
-          clearcoatRoughness: 0.04,
-          envMapIntensity: 1.9,
-        })
-      );
-
-      const eyeSocketMat = track(
-        new THREE.MeshStandardMaterial({
-          color: 0xd9a400,
-          roughness: 0.55,
-          metalness: 0.05,
-        })
-      );
-
-      // Master group (centered)
       const cartRoot = new THREE.Group();
       cartRoot.position.set(0, -0.05, 0);
       scene.add(cartRoot);
@@ -242,7 +323,6 @@ export function Cart3D() {
         }
       };
 
-      // Corner coordinates of tapered wire basket (Handle on -X, Nose on +X)
       const rearBotY = -0.22;
       const frontBotY = -0.15;
       const topY = 0.64;
@@ -311,7 +391,6 @@ export function Cart3D() {
         const er = new THREE.Vector3().lerpVectors(frBot, frTop, h);
         addRod(cartGroup, sr, er, wireR, chromeSteelMat);
 
-        // Front & Rear wall horizontal wires
         addRod(cartGroup, el, er, wireR, chromeSteelMat);
         addRod(cartGroup, sl, sr, wireR, chromeSteelMat);
       }
@@ -366,7 +445,6 @@ export function Cart3D() {
       gripMesh.position.set(-1.0, 1.035, 0);
       cartGroup.add(gripMesh);
 
-      // End collars between chrome tubes and maroon grip
       const collarGeom = track(new THREE.CylinderGeometry(0.036, 0.036, 0.05, 16));
       for (const side of [-1, 1]) {
         const collar = new THREE.Mesh(collarGeom, brushedFrameMat);
@@ -398,7 +476,6 @@ export function Cart3D() {
         cartGroup.add(tipCap);
       }
 
-      // Crossbars on lower chassis + basket saddle plates
       addRod(
         cartGroup,
         new THREE.Vector3(-0.44, chassisY, -0.40),
@@ -487,77 +564,18 @@ export function Cart3D() {
         cartGroup.add(caster);
       }
 
-      // -----------------------------------------------------------------------
-      // REALISTIC 3D SAD YELLOW BALL (Drops from above into basket & moves randomly)
-      // -----------------------------------------------------------------------
+      // Build the Sad Ball inside the cart
       const ballRadius = 0.245;
-      const ballRig = new THREE.Group(); // carries world position + squash/stretch
-      const ballRotGroup = new THREE.Group(); // carries face orientation & roll tilt
-      ballRig.add(ballRotGroup);
+      const { ballRig, ballRotGroup } = createSadBall(ballRadius, track);
       cartGroup.add(ballRig);
 
-      // Smooth high-segment yellow sphere body
-      const ballSphereGeom = track(new THREE.SphereGeometry(ballRadius, 48, 36));
-      const ballSphere = new THREE.Mesh(ballSphereGeom, sadBallBodyMat);
-      ballRotGroup.add(ballSphere);
+      // Generous invisible hit sphere around the ball for responsive clicks
+      const ballHitGeom = track(new THREE.SphereGeometry(ballRadius * 1.45, 16, 12));
+      const ballHitMat = track(new THREE.MeshBasicMaterial({ visible: false }));
+      const ballHitMesh = new THREE.Mesh(ballHitGeom, ballHitMat);
+      ballRig.add(ballHitMesh);
 
-      // Slight face bias facing +Z / camera-side angle by default
-      const eyeGeom = track(new THREE.SphereGeometry(0.039, 28, 24));
-      const eyeSocketGeom = track(new THREE.TorusGeometry(0.041, 0.008, 12, 28));
-
-      for (const eyeSide of [-1, 1]) {
-        const eyeAngle = eyeSide * 0.34;
-        const eyeElev = 0.17;
-        const ex = Math.sin(eyeAngle) * Math.cos(eyeElev) * (ballRadius - 0.012);
-        const ey = Math.sin(eyeElev) * (ballRadius - 0.012);
-        const ez = Math.cos(eyeAngle) * Math.cos(eyeElev) * (ballRadius - 0.012);
-
-        const socketRing = new THREE.Mesh(eyeSocketGeom, eyeSocketMat);
-        socketRing.position.set(ex, ey, ez);
-        socketRing.lookAt(ex * 2, ey * 2, ez * 2);
-        ballRotGroup.add(socketRing);
-
-        const eyeMesh = new THREE.Mesh(eyeGeom, sadBallFeatureMat);
-        eyeMesh.position.set(ex, ey, ez);
-        eyeMesh.scale.set(1.0, 1.06, 0.72);
-        eyeMesh.lookAt(ex * 2, ey * 2, ez * 2);
-        ballRotGroup.add(eyeMesh);
-      }
-
-      // 3D Sculpted Sad Frown Mouth Curve wrapped cleanly onto the front sphere surface
-      const mouthPoints: THREE.Vector3[] = [];
-      const mouthSamples = 18;
-      for (let i = 0; i <= mouthSamples; i++) {
-        const t = i / mouthSamples; // 0..1
-        const u = (t - 0.5) * 2; // -1..1
-        const yaw = u * 0.4;
-        // Arched downward frown peak in center, curving down at ends
-        const pitch = -0.24 - 0.14 * (u * u);
-        const mr = ballRadius - 0.003;
-        mouthPoints.push(
-          new THREE.Vector3(
-            Math.sin(yaw) * Math.cos(pitch) * mr,
-            Math.sin(pitch) * mr,
-            Math.cos(yaw) * Math.cos(pitch) * mr
-          )
-        );
-      }
-      const mouthCurve = new THREE.CatmullRomCurve3(mouthPoints);
-      const mouthGeom = track(new THREE.TubeGeometry(mouthCurve, 28, 0.017, 12, false));
-      const mouthMesh = new THREE.Mesh(mouthGeom, sadBallFeatureMat);
-      ballRotGroup.add(mouthMesh);
-
-      const mouthCapGeom = track(new THREE.SphereGeometry(0.017, 14, 12));
-      for (const endPt of [mouthPoints[0], mouthPoints[mouthPoints.length - 1]]) {
-        const cap = new THREE.Mesh(mouthCapGeom, sadBallFeatureMat);
-        cap.position.copy(endPt);
-        ballRotGroup.add(cap);
-      }
-
-      // Start sad ball slightly rotated toward the default camera angle (+0.36 rad in Y)
-      ballRotGroup.rotation.y = 0.36;
-
-      // Ground Contact Shadow on warm light studio plane
+      // Ground Contact Shadow
       const shadowCanvas = document.createElement("canvas");
       shadowCanvas.width = 256;
       shadowCanvas.height = 256;
@@ -585,7 +603,7 @@ export function Cart3D() {
         cartRoot.add(shadowMesh);
       }
 
-      // Basket physics helpers in cartGroup local space
+      // Basket physics helpers
       const getBasketFloorY = (x: number) => {
         const tx = THREE.MathUtils.clamp((x - rbx) / (fbx - rbx), 0, 1);
         return THREE.MathUtils.lerp(rearBotY, frontBotY, tx) + ballRadius + 0.015;
@@ -602,7 +620,7 @@ export function Cart3D() {
         return { minX, maxX, maxZ };
       };
 
-      // Physics State for Drop-in + Random Wandering inside Cart
+      // Physics State
       const ballPos = new THREE.Vector3(0.22, 2.35, 0.04);
       const ballVel = new THREE.Vector3(
         (Math.random() - 0.5) * 0.28,
@@ -610,6 +628,7 @@ export function Cart3D() {
         (Math.random() - 0.5) * 0.22
       );
       let hasEnteredBasket = false;
+      let isHighJumping = false;
       let nextWanderTime = 1.65;
       let wanderDirX = (Math.random() > 0.5 ? 1 : -1) * 0.45;
       let wanderDirZ = (Math.random() > 0.5 ? 1 : -1) * 0.35;
@@ -628,11 +647,200 @@ export function Cart3D() {
       let lastX = 0;
       let lastY = 0;
 
+      const dom = renderer.domElement;
+      const raycaster = new THREE.Raycaster();
+      const pointerNdc = new THREE.Vector2();
+
+      // Projects a local point inside cartGroup into viewport client pixel coordinates
+      const projectCartPointToViewport = (localPt: THREE.Vector3) => {
+        cartGroup.updateMatrixWorld(true);
+        camera.updateMatrixWorld(true);
+        const worldPt = localPt.clone().applyMatrix4(cartGroup.matrixWorld);
+        const projected = worldPt.clone().project(camera);
+        const rect = dom.getBoundingClientRect();
+        const screenX = rect.left + ((projected.x + 1) / 2) * rect.width;
+        const screenY = rect.top + ((1 - projected.y) / 2) * rect.height;
+
+        // Compute rendered pixel radius using a horizontal tangent offset in camera space
+        const camRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+        const edgeWorld = worldPt.clone().addScaledVector(camRight, ballRadius);
+        const edgeProj = edgeWorld.project(camera);
+        const edgeX = rect.left + ((edgeProj.x + 1) / 2) * rect.width;
+        const pxRadius = Math.max(22, Math.abs(edgeX - screenX));
+
+        return { screenX, screenY, pxRadius };
+      };
+
+      // Launches the real 3D Sad Ball upward out of the cart box to touch the top Navbar and return
+      const launchNavbarHighJump = () => {
+        if (isHighJumping || !hasEnteredBasket) return;
+        isHighJumping = true;
+        ballRig.visible = false;
+
+        const { screenX: startX, screenY: startY, pxRadius } =
+          projectCartPointToViewport(ballPos);
+
+        const navEl = document.querySelector(
+          '[data-testid="site-header"] nav'
+        ) as HTMLElement | null;
+        const navRect = navEl?.getBoundingClientRect();
+        const navBottom = navRect ? Math.max(navRect.bottom, 48) : 72;
+        const peakY = navBottom + pxRadius * 0.72;
+        const peakX = startX + (Math.random() - 0.5) * 44;
+
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        const overlayRenderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        });
+        overlayRenderer.setSize(vw, vh);
+        overlayRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        overlayRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+        overlayRenderer.toneMappingExposure = 1.2;
+        overlayRenderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        const overlayCanvas = overlayRenderer.domElement;
+        overlayCanvas.style.position = "fixed";
+        overlayCanvas.style.inset = "0";
+        overlayCanvas.style.width = "100vw";
+        overlayCanvas.style.height = "100vh";
+        overlayCanvas.style.pointerEvents = "none";
+        overlayCanvas.style.zIndex = "45";
+        document.body.appendChild(overlayCanvas);
+
+        const overlayDisposables: Array<{ dispose: () => void }> = [];
+        const oTrack: TrackFn = (item) => {
+          overlayDisposables.push(item);
+          return item;
+        };
+
+        const overlayScene = new THREE.Scene();
+        const overlayCam = new THREE.OrthographicCamera(0, vw, vh, 0, -500, 500);
+        applyStudioEnvironment(overlayRenderer, overlayScene, oTrack);
+
+        const { ballRig: flyRig, ballRotGroup: flyRot } = createSadBall(
+          pxRadius,
+          oTrack
+        );
+        flyRot.rotation.y = ballRotGroup.rotation.y;
+        overlayScene.add(flyRig);
+
+        let jumpRaf = 0;
+        let finished = false;
+        const jumpStartMs = performance.now();
+        const totalDurationMs = 1120;
+
+        const cleanup = () => {
+          if (finished) return;
+          finished = true;
+          cancelAnimationFrame(jumpRaf);
+          for (const d of overlayDisposables) d.dispose();
+          overlayRenderer.dispose();
+          if (overlayCanvas.parentNode) {
+            overlayCanvas.parentNode.removeChild(overlayCanvas);
+          }
+          cleanupJumpOverlay = null;
+        };
+
+        cleanupJumpOverlay = cleanup;
+
+        // Basket target local coordinates for clean re-entry drop
+        const returnLocalX = THREE.MathUtils.clamp(
+          0.18 + (Math.random() - 0.5) * 0.4,
+          rbx + ballRadius + 0.08,
+          fbx - ballRadius - 0.08
+        );
+        const returnLocalZ = (Math.random() - 0.5) * 0.25;
+        const returnLocalEntry = new THREE.Vector3(
+          returnLocalX,
+          topY + 0.05,
+          returnLocalZ
+        );
+
+        const tickJump = (now: number) => {
+          const elapsed = now - jumpStartMs;
+          const u = Math.min(elapsed / totalDurationMs, 1);
+
+          const { screenX: landX, screenY: landY } =
+            projectCartPointToViewport(returnLocalEntry);
+
+          let curX = startX;
+          let curY = startY;
+          let sY = 1;
+
+          if (u < 0.44) {
+            // Soar smoothly up out of the cart toward the bottom of the Navbar
+            const p = u / 0.44;
+            const easeOut = 1 - Math.pow(1 - p, 2.35);
+            curX = THREE.MathUtils.lerp(startX, peakX, easeOut);
+            curY = THREE.MathUtils.lerp(startY, peakY, easeOut);
+            sY = 1 + 0.13 * Math.sin(p * Math.PI);
+          } else if (u < 0.58) {
+            // Brief elastic squish tap right against the Navbar pill
+            const p = (u - 0.44) / 0.14;
+            const squish = Math.sin(p * Math.PI);
+            curX = peakX;
+            curY = peakY - squish * (pxRadius * 0.14);
+            sY = 1 - 0.24 * squish;
+          } else {
+            // Accelerate under gravity straight back down into the moving cart basket
+            const p = (u - 0.58) / 0.42;
+            const easeIn = Math.pow(p, 1.9);
+            curX = THREE.MathUtils.lerp(peakX, landX, easeIn);
+            curY = THREE.MathUtils.lerp(peakY, landY, easeIn);
+            sY = 1 + 0.11 * Math.sin(p * Math.PI);
+          }
+
+          const sXZ = 1 / Math.sqrt(sY);
+          // Orthographic Y runs bottom=0..top=vh, so invert viewport top-down Y
+          flyRig.position.set(curX, vh - curY, 0);
+          flyRig.scale.set(sXZ, sY, sXZ);
+          flyRot.rotation.z = Math.sin(u * Math.PI * 2) * 0.22;
+          flyRot.rotation.x = Math.cos(u * Math.PI * 2) * 0.14;
+
+          overlayRenderer.render(overlayScene, overlayCam);
+
+          if (u < 1) {
+            jumpRaf = requestAnimationFrame(tickJump);
+          } else {
+            cleanup();
+            // Hand off seamlessly back to in-basket 3D physics with energetic landing
+            ballPos.copy(returnLocalEntry);
+            ballVel.set(
+              (Math.random() - 0.5) * 1.1,
+              -4.8,
+              (Math.random() - 0.5) * 0.9
+            );
+            squashY = 0.86;
+            ballRig.visible = true;
+            isHighJumping = false;
+          }
+        };
+
+        jumpRaf = requestAnimationFrame(tickJump);
+      };
+
+      const isPointerOverBall = (clientX: number, clientY: number): boolean => {
+        if (isHighJumping) return false;
+        const rect = dom.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return false;
+        pointerNdc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        pointerNdc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointerNdc, camera);
+        return raycaster.intersectObject(ballHitMesh, false).length > 0;
+      };
+
       const onPointerDown = (e: PointerEvent) => {
         isDragging = true;
         dragDistance = 0;
         lastX = e.clientX;
         lastY = e.clientY;
+        dom.style.cursor = isPointerOverBall(e.clientX, e.clientY)
+          ? "pointer"
+          : "grabbing";
         renderer?.domElement.setPointerCapture(e.pointerId);
       };
 
@@ -651,19 +859,22 @@ export function Cart3D() {
           const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
           targetRotX = 0.08 + ny * 0.06;
           targetRotY = -0.36 + nx * 0.22;
+          dom.style.cursor = isPointerOverBall(e.clientX, e.clientY)
+            ? "pointer"
+            : "grab";
         }
       };
 
       const onPointerUp = (e: PointerEvent) => {
         if (isDragging) {
           isDragging = false;
-          // Crisp click gives the sad ball a cute playful hop inside the cart
-          if (dragDistance < 6 && hasEnteredBasket) {
-            ballVel.y = Math.max(ballVel.y, 2.35);
-            ballVel.x += (Math.random() - 0.5) * 1.1;
-            ballVel.z += (Math.random() - 0.5) * 0.9;
-            squashY = 0.85;
+          // Clicking the ball (or a clean tap on the cart) launches the high Navbar jump!
+          if (dragDistance < 12 && hasEnteredBasket && !isHighJumping) {
+            launchNavbarHighJump();
           }
+          dom.style.cursor = isPointerOverBall(e.clientX, e.clientY)
+            ? "pointer"
+            : "grab";
           try {
             renderer?.domElement.releasePointerCapture(e.pointerId);
           } catch {
@@ -672,7 +883,6 @@ export function Cart3D() {
         }
       };
 
-      const dom = renderer.domElement;
       dom.style.cursor = "grab";
       dom.addEventListener("pointerdown", onPointerDown);
       dom.addEventListener("pointermove", onPointerMove);
@@ -698,7 +908,6 @@ export function Cart3D() {
         const dt = Math.min(clock.getDelta(), 0.045);
         const t = clock.elapsedTime;
 
-        // Cart turntable & wheel motion
         const swayY = isDragging ? 0 : Math.sin(t * 0.85) * 0.14;
         const desiredY = targetRotY + swayY;
 
@@ -706,7 +915,6 @@ export function Cart3D() {
         currentRotY += (desiredY - currentRotY) * 0.08;
         currentRotX += (targetRotX - currentRotX) * 0.08;
 
-        // Cart suspension cushion spring on ball impact
         const dipForce = -cartDipY * 90 - cartDipVel * 11;
         cartDipVel += dipForce * dt;
         cartDipY += cartDipVel * dt;
@@ -720,96 +928,93 @@ export function Cart3D() {
           wheel.rotation.y += deltaRot * 2.2;
         }
 
-        // Ball gravity + drop-in + random wandering physics inside basket
-        ballVel.y -= 11.2 * dt;
+        if (!isHighJumping) {
+          ballVel.y -= 11.2 * dt;
 
-        if (!hasEnteredBasket && ballPos.y < topY + 0.1) {
-          hasEnteredBasket = true;
-        }
+          if (!hasEnteredBasket && ballPos.y < topY + 0.1) {
+            hasEnteredBasket = true;
+          }
 
-        if (hasEnteredBasket) {
-          // Periodic random direction shifts + small hop so the ball actively roams around the cart
-          if (t >= nextWanderTime) {
-            nextWanderTime = t + 0.9 + Math.random() * 1.3;
-            wanderDirX = (Math.random() - 0.5) * 1.35;
-            wanderDirZ = (Math.random() - 0.5) * 1.05;
-            if (Math.abs(ballPos.y - getBasketFloorY(ballPos.x)) < 0.04 && Math.random() > 0.35) {
-              ballVel.y += 1.05 + Math.random() * 0.9;
+          if (hasEnteredBasket) {
+            if (t >= nextWanderTime) {
+              nextWanderTime = t + 0.9 + Math.random() * 1.3;
+              wanderDirX = (Math.random() - 0.5) * 1.35;
+              wanderDirZ = (Math.random() - 0.5) * 1.05;
+              if (
+                Math.abs(ballPos.y - getBasketFloorY(ballPos.x)) < 0.04 &&
+                Math.random() > 0.35
+              ) {
+                ballVel.y += 1.05 + Math.random() * 0.9;
+              }
+            }
+
+            ballVel.x += (wanderDirX + Math.sin(t * 2.1) * 0.25) * dt;
+            ballVel.z += (wanderDirZ + Math.cos(t * 1.7) * 0.25) * dt;
+
+            ballVel.x *= 1 - 0.65 * dt;
+            ballVel.z *= 1 - 0.65 * dt;
+          }
+
+          ballPos.addScaledVector(ballVel, dt);
+
+          const floorY = getBasketFloorY(ballPos.x);
+          if (ballPos.y <= floorY) {
+            const impactSpeed = -ballVel.y;
+            ballPos.y = floorY;
+
+            if (impactSpeed > 0.45) {
+              ballVel.y = impactSpeed * 0.48;
+              squashY = THREE.MathUtils.clamp(1 - impactSpeed * 0.045, 0.78, 0.95);
+              cartDipVel -= Math.min(impactSpeed * 0.16, 0.75);
+              if (impactSpeed > 1.2) {
+                ballVel.x += (Math.random() - 0.5) * 0.9;
+                ballVel.z += (Math.random() - 0.5) * 0.7;
+              }
+            } else {
+              ballVel.y = 0;
             }
           }
 
-          // Continuous random acceleration + mild slope/tilt drift
-          ballVel.x += (wanderDirX + Math.sin(t * 2.1) * 0.25) * dt;
-          ballVel.z += (wanderDirZ + Math.cos(t * 1.7) * 0.25) * dt;
-
-          // Subtle rolling damping so motion stays natural and smooth
-          ballVel.x *= 1 - 0.65 * dt;
-          ballVel.z *= 1 - 0.65 * dt;
-        }
-
-        ballPos.addScaledVector(ballVel, dt);
-
-        // Floor bounce inside basket
-        const floorY = getBasketFloorY(ballPos.x);
-        if (ballPos.y <= floorY) {
-          const impactSpeed = -ballVel.y;
-          ballPos.y = floorY;
-
-          if (impactSpeed > 0.45) {
-            ballVel.y = impactSpeed * 0.48;
-            squashY = THREE.MathUtils.clamp(1 - impactSpeed * 0.045, 0.78, 0.95);
-            cartDipVel -= Math.min(impactSpeed * 0.16, 0.75);
-            if (impactSpeed > 1.2) {
-              // Add slight scatter impulse on major drop bounce
-              ballVel.x += (Math.random() - 0.5) * 0.9;
-              ballVel.z += (Math.random() - 0.5) * 0.7;
+          if (hasEnteredBasket) {
+            const bounds = getBasketBounds(ballPos.x, ballPos.y);
+            if (ballPos.x < bounds.minX) {
+              ballPos.x = bounds.minX;
+              ballVel.x = Math.abs(ballVel.x) * 0.75 + 0.15;
+              wanderDirX = Math.abs(wanderDirX);
+            } else if (ballPos.x > bounds.maxX) {
+              ballPos.x = bounds.maxX;
+              ballVel.x = -Math.abs(ballVel.x) * 0.75 - 0.15;
+              wanderDirX = -Math.abs(wanderDirX);
             }
-          } else {
-            ballVel.y = 0;
+
+            if (ballPos.z < -bounds.maxZ) {
+              ballPos.z = -bounds.maxZ;
+              ballVel.z = Math.abs(ballVel.z) * 0.75 + 0.15;
+              wanderDirZ = Math.abs(wanderDirZ);
+            } else if (ballPos.z > bounds.maxZ) {
+              ballPos.z = bounds.maxZ;
+              ballVel.z = -Math.abs(ballVel.z) * 0.75 - 0.15;
+              wanderDirZ = -Math.abs(wanderDirZ);
+            }
           }
+
+          const squashForce = (1 - squashY) * 140 - squashVel * 12;
+          squashVel += squashForce * dt;
+          squashY += squashVel * dt;
+          const stretchXZ = 1 / Math.sqrt(Math.max(squashY, 0.65));
+
+          ballRig.position.copy(ballPos);
+          ballRig.scale.set(stretchXZ, squashY, stretchXZ);
+
+          const targetRollZ = THREE.MathUtils.clamp(-ballVel.x * 0.35, -0.45, 0.45);
+          const targetPitchX = THREE.MathUtils.clamp(ballVel.z * 0.38, -0.4, 0.4);
+          const targetFaceYaw =
+            -currentRotY * 0.45 + THREE.MathUtils.clamp(ballVel.x * 0.45, -0.48, 0.48);
+
+          ballRotGroup.rotation.z += (targetRollZ - ballRotGroup.rotation.z) * 0.14;
+          ballRotGroup.rotation.x += (targetPitchX - ballRotGroup.rotation.x) * 0.14;
+          ballRotGroup.rotation.y += (targetFaceYaw - ballRotGroup.rotation.y) * 0.08;
         }
-
-        // Constrain ball horizontally within tapered wire walls once inside basket
-        if (hasEnteredBasket) {
-          const bounds = getBasketBounds(ballPos.x, ballPos.y);
-          if (ballPos.x < bounds.minX) {
-            ballPos.x = bounds.minX;
-            ballVel.x = Math.abs(ballVel.x) * 0.75 + 0.15;
-            wanderDirX = Math.abs(wanderDirX);
-          } else if (ballPos.x > bounds.maxX) {
-            ballPos.x = bounds.maxX;
-            ballVel.x = -Math.abs(ballVel.x) * 0.75 - 0.15;
-            wanderDirX = -Math.abs(wanderDirX);
-          }
-
-          if (ballPos.z < -bounds.maxZ) {
-            ballPos.z = -bounds.maxZ;
-            ballVel.z = Math.abs(ballVel.z) * 0.75 + 0.15;
-            wanderDirZ = Math.abs(wanderDirZ);
-          } else if (ballPos.z > bounds.maxZ) {
-            ballPos.z = bounds.maxZ;
-            ballVel.z = -Math.abs(ballVel.z) * 0.75 - 0.15;
-            wanderDirZ = -Math.abs(wanderDirZ);
-          }
-        }
-
-        // Elastic squash & stretch recovery
-        const squashForce = (1 - squashY) * 140 - squashVel * 12;
-        squashVel += squashForce * dt;
-        squashY += squashVel * dt;
-        const stretchXZ = 1 / Math.sqrt(Math.max(squashY, 0.65));
-
-        ballRig.position.copy(ballPos);
-        ballRig.scale.set(stretchXZ, squashY, stretchXZ);
-
-        // Realistic expressive tilt + roll while keeping the sad face camera-readable
-        const targetRollZ = THREE.MathUtils.clamp(-ballVel.x * 0.35, -0.45, 0.45);
-        const targetPitchX = THREE.MathUtils.clamp(ballVel.z * 0.38, -0.4, 0.4);
-        const targetFaceYaw = -currentRotY * 0.45 + THREE.MathUtils.clamp(ballVel.x * 0.45, -0.48, 0.48);
-
-        ballRotGroup.rotation.z += (targetRollZ - ballRotGroup.rotation.z) * 0.14;
-        ballRotGroup.rotation.x += (targetPitchX - ballRotGroup.rotation.x) * 0.14;
-        ballRotGroup.rotation.y += (targetFaceYaw - ballRotGroup.rotation.y) * 0.08;
 
         renderer?.render(scene, camera);
       };
@@ -818,6 +1023,7 @@ export function Cart3D() {
 
       return () => {
         cancelAnimationFrame(animationFrameId);
+        cleanupJumpOverlay?.();
         resizeObserver.disconnect();
         dom.removeEventListener("pointerdown", onPointerDown);
         dom.removeEventListener("pointermove", onPointerMove);

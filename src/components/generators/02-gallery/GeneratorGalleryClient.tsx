@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { GENERATOR_IMAGES } from "@/constants";
+import { resolveGeneratorImage } from "@/lib/generatorImages";
 import { SectionHeading } from "@/components/common";
 import Image from "next/image";
 import { useFullscreen } from "@/lib/FullscreenContext";
@@ -87,21 +87,7 @@ const getCategoryFromSlug = (
 };
 
 // Get image based on kVA rating
-const getGeneratorImage = (
-  kva: number,
-  primaryImageUrl: string | null
-): string => {
-  // Use primary image from backend if available
-  if (primaryImageUrl) return primaryImageUrl;
-
-  // Fallback to local images based on kVA
-  if (kva <= 10) return GENERATOR_IMAGES.entry_5kva;
-  if (kva <= 40) return GENERATOR_IMAGES.midRange_30kva;
-  if (kva <= 80) return GENERATOR_IMAGES.commercial_65kva;
-  if (kva <= 150) return GENERATOR_IMAGES.industrial_125kva;
-  if (kva <= 280) return GENERATOR_IMAGES.heavyIndustrial_250kva;
-  return GENERATOR_IMAGES.enterprise_300kva;
-};
+const getGeneratorImage = resolveGeneratorImage;
 
 // Transform API product to display format
 const transformProduct = (product: PublicProduct): ProcessedGenerator => {
@@ -454,7 +440,7 @@ export default function GeneratorGallery() {
   }, [selectedGenerator]);
 
   const handleCardClick = (gen: ProcessedGenerator) => {
-    setSelectedGenerator(gen);
+    router.push(`/generators/${encodeURIComponent(gen.slug || gen.id)}`);
   };
 
   const handleClose = () => {

@@ -3,12 +3,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { 
-  Zap, 
   Droplet, 
   Volume2, 
   Clock, 
   Gauge, 
-  CheckCircle2, 
   Info,
   MessageSquare,
   ArrowRight,
@@ -29,8 +27,6 @@ export function GeneratorCard({
   onAddToQuote,
   onCompare 
 }: GeneratorCardProps) {
-  const isAvailable = generator.status === "available";
-
   return (
     <motion.div
       layout
@@ -46,20 +42,6 @@ export function GeneratorCard({
           alt={generator.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        
-        {/* Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-2">
-          <div className="px-3 py-1 bg-[#111315]/85 backdrop-blur-md border border-white/20 rounded-full text-[12px] font-bold text-white uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
-            <Zap className="w-3 h-3 text-[#FF5500] fill-[#FF5500]" />
-            {generator.power_output_kva} kVA
-          </div>
-          {isAvailable && (
-            <div className="px-3 py-1 bg-[#FF5500]/15 backdrop-blur-md border border-[#FF5500]/30 rounded-full text-[12px] font-bold text-[#FF5500] uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
-              <CheckCircle2 className="w-3 h-3" />
-              Available Now
-            </div>
-          )}
-        </div>
 
         {/* Brand Logo Overlay */}
         {generator.brand_logo && (
@@ -71,16 +53,20 @@ export function GeneratorCard({
         {/* Action Overlay */}
         <div className="absolute inset-0 bg-[#111315]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
           <button 
+            type="button"
             onClick={() => onViewDetails(generator.id)}
-            className="p-3 bg-white text-[#111315] rounded-full hover:bg-[#FF5500] hover:text-white transition-colors shadow-lg"
+            className="p-3 bg-white text-[#111315] rounded-full hover:bg-[#FF5500] hover:text-white transition-colors shadow-lg cursor-pointer"
             title="View Details"
+            aria-label="View Details"
           >
             <Info className="w-6 h-6" />
           </button>
           <button 
+            type="button"
             onClick={() => onCompare(generator.id)}
-            className="p-3 bg-white/90 text-[#111315] border border-white/20 rounded-full hover:bg-[#FF5500] hover:text-white transition-colors shadow-lg"
+            className="p-3 bg-white/90 text-[#111315] border border-white/20 rounded-full hover:bg-[#FF5500] hover:text-white transition-colors shadow-lg cursor-pointer"
             title="Compare"
+            aria-label="Compare"
           >
             <ArrowRight className="w-6 h-6" />
           </button>

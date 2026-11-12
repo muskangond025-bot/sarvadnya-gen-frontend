@@ -4,6 +4,7 @@ import {
   ForgeContactChannels,
   ForgeSpecificationForm,
   ForgeProcessCards,
+  MapSection,
 } from "@/components/contact";
 
 export const metadata: Metadata = {
@@ -24,8 +25,11 @@ export default function ContactPage() {
       {/* 3. Interactive Specification: Define Your Specification Form */}
       <ForgeSpecificationForm />
 
-      {/* 4. Process: A considered process built around you (3 Cards) - Strict End Section */}
+      {/* 4. Process: A considered process built around you (3 Cards) */}
       <ForgeProcessCards />
+
+      {/* 5. Interactive Location Map: Nashik Central Depot */}
+      <MapSection />
     </main>
   );
 }
