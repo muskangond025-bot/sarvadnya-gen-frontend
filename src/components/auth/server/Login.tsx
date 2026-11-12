@@ -1,91 +1,111 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { LoginClient } from "../client/LoginClient";
-import { CheckCircle2, ShieldCheck, Zap } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Zap, ArrowLeft } from "lucide-react";
 
 /**
- * Login Server Component
+ * Login Server Component (Full-Screen Non-Scrolling Free-Space Layout)
  *
- * High-fidelity split layout:
- * - Left side: Full-bleed background image with brand content overlay.
- * - Right side: Login form card.
+ * Full-bleed bright atmospheric background with balanced 2-column open typography
+ * and card-free floating pill controls sized cleanly for zero scrolling on desktop.
  */
 export function Login() {
   const features = [
-    { icon: <ShieldCheck className="text-[#00ff8f]" size={16} />, label: "Verified Rentals" },
-    { icon: <Zap className="text-[#00ff8f]" size={16} />, label: "Fast Booking" },
-    { icon: <CheckCircle2 className="text-[#00ff8f]" size={16} />, label: "24/7 Support" },
+    {
+      icon: <ShieldCheck className="text-[#FF5500]" size={15} />,
+      label: "Verified Rentals",
+    },
+    {
+      icon: <Zap className="text-[#FF5500]" size={15} />,
+      label: "Fast Booking",
+    },
+    {
+      icon: <CheckCircle2 className="text-[#FF5500]" size={15} />,
+      label: "24/7 Support",
+    },
   ];
 
   return (
-    <section className="relative w-full min-h-screen bg-black flex">
-      
-      {/* Left Column: Background Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center px-16 xl:px-24">
-        {/* The Background Image */}
-        <div 
-          className="absolute inset-0 bg-[url('/images/auth_bg.png')] bg-cover bg-center transition-transform duration-[10s] hover:scale-110"
-          style={{ backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%), url('/images/auth_bg.png')" }}
-        />
-        
-        {/* Content Overlay */}
-        <div className="relative z-10 space-y-10">
-          <div className="space-y-6">
-            <h1 className="text-6xl xl:text-7xl font-bold text-white font-['Poppins',sans-serif] leading-tight">
-              Empower Your <br />
-              <span className="text-[#00ff8f]">Business</span>
+    <section className="relative w-full min-h-screen lg:h-screen lg:overflow-hidden bg-[#FAF8F5] text-[#111315] flex flex-col px-5 sm:px-10 lg:px-16 py-5 sm:py-7">
+      {/* Full-Screen Scenic Atmospheric Background Image + Bright Wash */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 bg-cover bg-center pointer-events-none"
+        style={{
+          backgroundImage: "url('/images/auth_bg.png')",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(115deg, rgba(250,248,245,0.86) 0%, rgba(250,248,245,0.68) 52%, rgba(247,239,229,0.82) 100%)",
+        }}
+      />
+
+      {/* Minimal Top Navigation */}
+      <div className="relative z-10 max-w-6xl w-full mx-auto shrink-0">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.16em] font-bold text-[#403C36] hover:text-[#FF5500] transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
+      {/* Balanced 2-Column Free-Space Canvas (No Cards, Fits 100vh Cleanly) */}
+      <div className="relative z-10 flex-1 max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center py-6 lg:py-0">
+        {/* Left Zone: Open Brand Narrative & Editorial Highlights */}
+        <div className="lg:col-span-6 flex flex-col items-start text-left space-y-5 sm:space-y-6">
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-5xl xl:text-[54px] font-extrabold text-[#111315] tracking-tight leading-[1.06]">
+              Empower Your <br className="hidden sm:block" />
+              <span className="text-[#FF5500]">Business</span>
             </h1>
-            <p className="text-white/70 text-xl font-['Outfit',sans-serif] max-w-lg leading-relaxed">
-              Manage bookings, rental requests, and support from one premium dashboard.
+            <p className="text-[#2D2A26] text-sm sm:text-base xl:text-lg max-w-md leading-relaxed">
+              Manage bookings, rental requests, and support from one premium
+              dashboard.
             </p>
           </div>
 
-          {/* Feature Badges */}
-          <div className="flex flex-wrap gap-4">
+          {/* Sleek Editorial Feature Highlights Strip */}
+          <div className="flex flex-wrap items-center gap-y-2 pt-1">
             {features.map((feature, index) => (
-              <div 
-                key={index}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/10"
-              >
-                {feature.icon}
-                <span className="text-white/80 font-['Outfit',sans-serif] text-xs font-bold uppercase tracking-widest">
-                  {feature.label}
-                </span>
+              <div key={index} className="flex items-center">
+                <div className="inline-flex items-center gap-2 pr-4">
+                  <span className="size-6 rounded-full bg-white/85 backdrop-blur-sm shadow-2xs flex items-center justify-center shrink-0">
+                    {feature.icon}
+                  </span>
+                  <span className="text-[#111315] text-xs sm:text-[13px] font-semibold tracking-tight whitespace-nowrap">
+                    {feature.label}
+                  </span>
+                </div>
+                {index < features.length - 1 && (
+                  <span
+                    aria-hidden="true"
+                    className="hidden sm:inline-block w-px h-3.5 bg-[#111315]/20 mr-4"
+                  />
+                )}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Subtle Bottom Accent */}
-        <div className="absolute bottom-12 left-16 xl:left-24 flex items-center gap-4 text-white/40 text-sm">
-          <div className="w-12 h-px bg-white/20" />
-          <span className="font-['Outfit',sans-serif]">Premium Power Solutions</span>
-        </div>
-      </div>
-
-      {/* Right Column: Login Form Section */}
-      <div className="flex-1 flex items-center justify-center relative p-6">
-        {/* Background Atmosphere for Right Side */}
-        <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#00ff8f]/[0.05] blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#00ff8f]/[0.02] blur-[120px] rounded-full" />
-          <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-[0.02]" />
-        </div>
-
-        <div className="w-full max-w-lg">
-          <div className="lg:hidden text-center mb-10">
-            <h1 className="text-4xl font-bold text-white font-['Poppins',sans-serif] mb-2">Welcome Back</h1>
-            <p className="text-white/40">Manage your generator rentals easily</p>
+        {/* Right Zone: Card-Free Open Login Stack in Free Space */}
+        <div className="lg:col-span-6 flex justify-center lg:justify-end">
+          <div className="w-full max-w-sm">
+            <Suspense
+              fallback={
+                <div className="flex justify-center py-12">
+                  <div className="w-9 h-9 border-4 border-white/50 border-t-[#FF5500] rounded-full animate-spin" />
+                </div>
+              }
+            >
+              <LoginClient />
+            </Suspense>
           </div>
-
-          <Suspense
-            fallback={
-              <div className="flex justify-center py-20">
-                <div className="w-12 h-12 border-4 border-white/10 border-t-[#00ff8f] rounded-full animate-spin" />
-              </div>
-            }
-          >
-            <LoginClient />
-          </Suspense>
         </div>
       </div>
     </section>

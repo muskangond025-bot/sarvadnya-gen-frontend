@@ -1,24 +1,38 @@
+"use client";
+
 import React from "react";
-import Link from "next/link";
-import { BookmarkX, ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, LogIn } from "lucide-react";
 import { Button } from "@/components/common";
+import { useAuth } from "@/lib/AuthContext";
+import { Cart3D } from "./Cart3D";
 
 export function WishlistEmpty() {
+  const { user, loading } = useAuth();
+  const isLoggedIn = !loading && Boolean(user);
+
   return (
-    <section className="px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto py-24 text-center">
-      <div className="size-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6 text-white/40">
-        <BookmarkX className="size-10" />
-      </div>
-      <h2 className="text-2xl md:text-3xl font-bold text-white font-['Poppins',sans-serif]">
-        Your Wishlist is Empty
+    <section className="px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto pt-4 pb-16 sm:pb-20 text-center">
+      <Cart3D />
+
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#111315] font-sans tracking-tight mt-2">
+        Your Cart is Empty
       </h2>
-      <p className="text-[#bfbfbf] font-['Outfit',sans-serif] mt-2 max-w-md mx-auto">
-        You haven't saved any silent DG sets yet. Explore our fleet from 5kVA to 250kVA and shortlist the best fit for your project.
+      <p className="text-[#403C36] font-sans mt-2.5 max-w-md mx-auto leading-relaxed text-sm sm:text-base">
+        {isLoggedIn
+          ? "Your cart has no generator sets yet. Head straight to our fleet to add silent DG sets for your project."
+          : "Sign in to manage your shortlisted silent DG sets or add generators from our fleet."}
       </p>
-      <div className="mt-8 flex justify-center gap-4">
-        <Button href="/generators" variant="primary" size="md">
-          Explore Fleet <ArrowRight className="size-4 ml-2" />
-        </Button>
+
+      <div className="mt-7 flex justify-center">
+        {isLoggedIn ? (
+          <Button href="/generators" variant="primary" size="md">
+            Explore Products <ArrowRight className="size-4 ml-2" />
+          </Button>
+        ) : (
+          <Button href="/login?next=/generators" variant="primary" size="md">
+            <LogIn className="size-4 mr-2" /> Login
+          </Button>
+        )}
       </div>
     </section>
   );

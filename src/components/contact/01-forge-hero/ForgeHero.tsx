@@ -4,17 +4,17 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { RollingText } from "../common/RollingText";
+import { useLanguage } from "@/lib/LanguageContext";
 
 /**
  * ForgeHero Component (Bright Luxury Theme)
- * 
- * Exact Forge Automotive contact hero architecture:
- * - Architectural bright luxury canvas (#FAF8F5)
- * - Large editorial display serif title with word-by-word masked reveal
- * - Signature Forge Staggered Character Rolling action button
- * - Smooth scroll anchor down to #form
+ *
+ * Architectural bright luxury contact hero with word-by-word masked reveal
+ * and localized headline words for English, Hindi, and Marathi.
  */
 export function ForgeHero() {
+  const { language } = useLanguage();
+
   const scrollToForm = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const formElement = document.getElementById("form");
@@ -23,13 +23,19 @@ export function ForgeHero() {
     }
   };
 
-  const headlineWords = ["Every", "deployment", "starts", "with", "a", "conversation"];
+  const headlineWords =
+    language === "hi"
+      ? ["हर", "तैनाती", "एक", "बातचीत", "से", "शुरू", "होती", "है"]
+      : language === "mr"
+        ? ["प्रत्येक", "तैनाती", "एका", "संवादातून", "सुरू", "होते"]
+        : ["Every", "deployment", "starts", "with", "a", "conversation"];
+
+  const accentWords = new Set(["conversation", "बातचीत", "संवादातून"]);
 
   return (
     <section className="relative min-h-[85vh] sm:min-h-[92vh] flex flex-col justify-end bg-[#FAF8F5] text-[#111315] overflow-hidden select-none pb-16 sm:pb-24 px-4 sm:px-10 lg:px-20 pt-32 sm:pt-36 border-b border-[#E8E2D9]">
-      
       {/* High-Resolution Engineering Background Image with Bright Architectural Wash */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-20"
         style={{
           backgroundImage: "url('/images/services/generator_engine_bg.jpg')",
@@ -43,9 +49,12 @@ export function ForgeHero() {
       {/* Main Foreground Editorial Content */}
       <div className="relative z-10 max-w-6xl w-full">
         {/* Display Title with Word-by-Word Masked Reveal Animation */}
-        <h1 className="font-serif text-3xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.08] mb-10 sm:mb-12 flex flex-wrap gap-x-3 sm:gap-x-5 gap-y-1 sm:gap-y-2">
+        <h1
+          data-no-translate="true"
+          className="font-serif text-3xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.08] mb-10 sm:mb-12 flex flex-wrap gap-x-3 sm:gap-x-5 gap-y-1 sm:gap-y-2"
+        >
           {headlineWords.map((word, index) => (
-            <span key={index} className="inline-block overflow-hidden py-1">
+            <span key={`${language}-${index}`} className="inline-block overflow-hidden py-1">
               <motion.span
                 initial={{ y: "115%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}
@@ -55,7 +64,7 @@ export function ForgeHero() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className={`inline-block ${
-                  word === "conversation"
+                  accentWords.has(word)
                     ? "text-[#FF5500] italic font-serif"
                     : "text-[#111315]"
                 }`}
@@ -87,9 +96,7 @@ export function ForgeHero() {
             <ArrowDown className="size-4 text-[#FF5500] group-hover:text-[#FF5500] group-hover:translate-y-1 transition-transform duration-300" />
           </a>
         </motion.div>
-
       </div>
-
     </section>
   );
 }

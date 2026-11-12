@@ -1,6 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { translateTextForDOM } from "./autoTranslations";
 
 export type Language = "en" | "hi" | "mr";
 
@@ -711,9 +713,67 @@ const LanguageContext = createContext<LanguageContextType>({
   t: (key: string, fallback?: string) => fallback || key,
 });
 
+const SKIP_TAGS = new Set([
+  "SCRIPT",
+  "STYLE",
+  "NOSCRIPT",
+  "TEXTAREA",
+  "CODE",
+  "PRE",
+  "SVG",
+]);
+
+const TRANSLATABLE_ATTRS = ["placeholder", "title", "aria-label"] as const;
+
+// Build fast reverse lookup from existing TRANSLATIONS.en values -> target language
+const KEY_REVERSE_MAP: Record<"hi" | "mr", Map<string, string>> = {
+  hi: new Map(),
+  mr: new Map(),
+};
+for (const [key, enVal] of Object.entries(TRANSLATIONS.en)) {
+  const norm = enVal.replace(/\s+/g, " ").trim();
+  if (!norm) continue;
+  if (TRANSLATIONS.hi[key]) KEY_REVERSE_MAP.hi.set(norm, TRANSLATIONS.hi[key]);
+  if (TRANSLATIONS.mr[key]) KEY_REVERSE_MAP.mr.set(norm, TRANSLATIONS.mr[key]);
+}
+
+function translateAnyString(raw: string, lang: Language): string | null {
+  if (lang === "en") return null;
+
+  const match = raw.match(/^(\s*)([\s\S]*?)(\s*)$/);
+  if (!match) return null;
+  const [, lead, body, trail] = match;
+  const norm = body.replace(/\s+/g, " ").trim();
+  if (!norm) return null;
+
+  const reverseHit = KEY_REVERSE_MAP[lang].get(norm);
+  if (reverseHit) return `${lead}${reverseHit}${trail}`;
+
+  return translateTextForDOM(raw, lang);
+}
+
+function shouldSkipElement(el: Element | null): boolean {
+  let cur: Element | null = el;
+  while (cur) {
+    if (SKIP_TAGS.has(cur.tagName)) return true;
+    if (cur.getAttribute("data-no-translate") === "true") return true;
+    cur = cur.parentElement;
+  }
+  return false;
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+
+  const originalTextMap = useRef(new WeakMap<Text, string>());
+  const appliedTextMap = useRef(new WeakMap<Text, string>());
+  const originalAttrMap = useRef(new WeakMap<Element, Record<string, string>>());
+  const appliedAttrMap = useRef(new WeakMap<Element, Record<string, string>>());
+  const originalTitleRef = useRef<string | null>(null);
+  const appliedTitleRef = useRef<string | null>(null);
+  const isMutatingRef = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -729,6 +789,214 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("sarvadnya_lang", lang);
     }
   };
+
+  // Global DOM Translator: translates all pages, Server Components, tabs, modals & placeholders
+  useEffect(() => {
+    if (!mounted || typeof document === "undefined") return;
+
+    document.documentElement.lang = language;
+
+    const translateNodeList = (roots: Node[]) => {
+      if (isMutatingRef.current) return;
+      isMutatingRef.current = true;
+      try {
+        // Sync document <title>
+        if (document.title !== appliedTitleRef.current) {
+          originalTitleRef.current = document.title;
+        }
+        if (originalTitleRef.current) {
+          if (language === "en") {
+            if (document.title !== originalTitleRef.current) {
+              document.title = originalTitleRef.current;
+            }
+            appliedTitleRef.current = null;
+          } else {
+            const nextTitle = translateAnyString(originalTitleRef.current, language);
+            if (nextTitle) {
+              appliedTitleRef.current = nextTitle;
+              if (document.title !== nextTitle) document.title = nextTitle;
+            } else {
+              appliedTitleRef.current = null;
+              if (document.title !== originalTitleRef.current) {
+                document.title = originalTitleRef.current;
+              }
+            }
+          }
+        }
+
+        for (const root of roots) {
+          // 1. Walk Text nodes
+          if (root.nodeType === Node.TEXT_NODE) {
+            const textNode = root as Text;
+            if (!shouldSkipElement(textNode.parentElement)) {
+              const current = textNode.nodeValue ?? "";
+              if (current !== appliedTextMap.current.get(textNode)) {
+                originalTextMap.current.set(textNode, current);
+              }
+              const orig = originalTextMap.current.get(textNode);
+              if (orig !== undefined) {
+                if (language === "en") {
+                  if (current !== orig) textNode.nodeValue = orig;
+                  appliedTextMap.current.delete(textNode);
+                } else {
+                  const next = translateAnyString(orig, language);
+                  if (next) {
+                    if (current !== next) {
+                      appliedTextMap.current.set(textNode, next);
+                      textNode.nodeValue = next;
+                    }
+                  } else {
+                    if (current !== orig) textNode.nodeValue = orig;
+                    appliedTextMap.current.delete(textNode);
+                  }
+                }
+              }
+            }
+            continue;
+          }
+
+          if (root.nodeType !== Node.ELEMENT_NODE && root !== document.body) {
+            continue;
+          }
+
+          const rootEl = root as Element;
+          if (shouldSkipElement(rootEl)) continue;
+
+          // 2. Translate attributes on rootEl + descendants
+          const processAttrs = (el: Element) => {
+            if (shouldSkipElement(el)) return;
+            for (const attr of TRANSLATABLE_ATTRS) {
+              const val = el.getAttribute(attr);
+              if (!val) continue;
+
+              const appliedRec = appliedAttrMap.current.get(el) || {};
+              let origRec = originalAttrMap.current.get(el);
+              if (val !== appliedRec[attr]) {
+                origRec = { ...(origRec || {}), [attr]: val };
+                originalAttrMap.current.set(el, origRec);
+              }
+              const origVal = origRec?.[attr];
+              if (!origVal) continue;
+
+              if (language === "en") {
+                if (val !== origVal) el.setAttribute(attr, origVal);
+                delete appliedRec[attr];
+                appliedAttrMap.current.set(el, appliedRec);
+              } else {
+                const nextAttr = translateAnyString(origVal, language);
+                if (nextAttr) {
+                  if (val !== nextAttr) {
+                    appliedRec[attr] = nextAttr;
+                    appliedAttrMap.current.set(el, appliedRec);
+                    el.setAttribute(attr, nextAttr);
+                  }
+                } else {
+                  if (val !== origVal) el.setAttribute(attr, origVal);
+                  delete appliedRec[attr];
+                  appliedAttrMap.current.set(el, appliedRec);
+                }
+              }
+            }
+          };
+
+          processAttrs(rootEl);
+          const descendants = rootEl.querySelectorAll(
+            "input[placeholder], textarea[placeholder], [title], [aria-label]"
+          );
+          descendants.forEach(processAttrs);
+
+          // 3. Walk descendant Text nodes safely
+          const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT);
+          let node = walker.nextNode() as Text | null;
+          while (node) {
+            if (!shouldSkipElement(node.parentElement)) {
+              const current = node.nodeValue ?? "";
+              if (current !== appliedTextMap.current.get(node)) {
+                originalTextMap.current.set(node, current);
+              }
+              const orig = originalTextMap.current.get(node);
+              if (orig !== undefined) {
+                if (language === "en") {
+                  if (current !== orig) node.nodeValue = orig;
+                  appliedTextMap.current.delete(node);
+                } else {
+                  const next = translateAnyString(orig, language);
+                  if (next) {
+                    if (current !== next) {
+                      appliedTextMap.current.set(node, next);
+                      node.nodeValue = next;
+                    }
+                  } else {
+                    if (current !== orig) node.nodeValue = orig;
+                    appliedTextMap.current.delete(node);
+                  }
+                }
+              }
+            }
+            node = walker.nextNode() as Text | null;
+          }
+        }
+      } finally {
+        isMutatingRef.current = false;
+      }
+    };
+
+    // Initial pass + follow-up sweeps after route/language transition settles
+    const runFullSweep = () => {
+      if (document.body) translateNodeList([document.body]);
+    };
+    const rafInitial = requestAnimationFrame(runFullSweep);
+    const t1 = setTimeout(runFullSweep, 80);
+    const t2 = setTimeout(runFullSweep, 300);
+    const t3 = setTimeout(runFullSweep, 750);
+
+    // Observe dynamic route transitions, modals, drawers, dropdowns, and React state changes
+    const pending = new Set<Node>();
+    let rafId = 0;
+
+    const flush = () => {
+      rafId = 0;
+      if (pending.size === 0) return;
+      const batch = Array.from(pending);
+      pending.clear();
+      translateNodeList(batch);
+    };
+
+    const observer = new MutationObserver((mutations) => {
+      if (isMutatingRef.current) return;
+      for (const m of mutations) {
+        if (m.type === "characterData") {
+          pending.add(m.target);
+        } else if (m.type === "attributes") {
+          pending.add(m.target);
+        } else if (m.type === "childList") {
+          m.addedNodes.forEach((n) => pending.add(n));
+        }
+      }
+      if (pending.size > 0 && !rafId) {
+        rafId = requestAnimationFrame(flush);
+      }
+    });
+
+    if (document.body) {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ["placeholder", "title", "aria-label"],
+      });
+    }
+
+    return () => {
+      cancelAnimationFrame(rafInitial);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      if (rafId) cancelAnimationFrame(rafId);
+      observer.disconnect();
+    };
+  }, [language, mounted, pathname]);
 
   const t = (key: string, fallback?: string): string => {
     const langDict = TRANSLATIONS[language] || TRANSLATIONS.en;

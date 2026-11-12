@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Bookmark, Sparkles } from "lucide-react";
-import { FloatingGlow } from "@/components/shared/client";
+import { Bookmark } from "lucide-react";
 
 interface WishlistHeroProps {
   itemCount: number;
@@ -10,29 +9,28 @@ interface WishlistHeroProps {
 
 export function WishlistHero({ itemCount }: WishlistHeroProps) {
   return (
-    <section className="relative pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto overflow-hidden">
-      <FloatingGlow color="#00ff8f" size="xl" className="-top-1/4 -right-1/4 opacity-10" />
-      
-      <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 border-b border-white/10 pb-8 sm:pb-12">
+    <section className="relative pt-24 sm:pt-28 pb-6 sm:pb-8 px-4 sm:px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E8E2D9] pb-6 sm:pb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00ff8f]/10 border border-[#00ff8f]/20 text-[#00ff8f] text-xs font-semibold uppercase tracking-wider mb-4">
-            <Sparkles className="size-3.5" />
-            <span>Saved Equipment</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white font-['Poppins',sans-serif] tracking-tight">
-            Generator <span className="text-transparent bg-clip-text bg-linear-to-r from-white via-[#00ff8f] to-white bg-[length:200%_auto] animate-shimmer">Wishlist</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#111315] font-sans tracking-tight">
+            Generator <span className="text-[#FF5500]">Cart</span>
           </h1>
-          <p className="mt-3 text-base md:text-lg text-[#bfbfbf] font-['Outfit',sans-serif] max-w-xl">
-            Compare your shortlisted silent DG sets, review power specifications, and quickly request bulk or single deployment quotes.
+          <p className="mt-2.5 text-sm sm:text-base md:text-lg text-[#403C36] font-sans max-w-xl leading-relaxed">
+            Compare your shortlisted silent DG sets, review power specifications,
+            and quickly request bulk or single deployment quotes.
           </p>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="px-5 py-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-3">
-            <Bookmark className="size-5 text-[#00ff8f]" />
+          <div className="px-5 py-3 rounded-2xl bg-white border border-[#E8E2D9] shadow-xs flex items-center gap-3.5">
+            <Bookmark className="size-5 text-[#FF5500]" />
             <div>
-              <p className="text-xs text-white/50 font-['Outfit',sans-serif]">Shortlisted Units</p>
-              <p className="text-xl font-bold text-white font-['Poppins',sans-serif]">{itemCount} Generators</p>
+              <p className="text-xs font-medium text-[#524E48] font-sans">
+                Shortlisted Units
+              </p>
+              <p className="text-xl font-bold text-[#111315] font-sans">
+                {itemCount} Generators
+              </p>
             </div>
           </div>
         </div>

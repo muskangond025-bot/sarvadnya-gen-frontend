@@ -2,9 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { Zap, ShieldCheck, Trash2, ArrowRight } from "lucide-react";
+import { Zap, ShieldCheck, Trash2 } from "lucide-react";
 import { Button } from "@/components/common";
 
 export interface WishlistItem {
@@ -31,25 +30,23 @@ export function WishlistCard({ item, onRemove }: WishlistCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="group relative rounded-3xl bg-[#111] border border-white/10 hover:border-[#00ff8f]/40 p-6 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+      className="group relative rounded-3xl bg-white border border-[#E8E2D9] hover:border-[#FF5500]/45 hover:shadow-[0_12px_36px_-12px_rgba(17,19,21,0.1)] p-6 transition-all duration-300 flex flex-col justify-between overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff8f]/5 blur-3xl rounded-full pointer-events-none group-hover:bg-[#00ff8f]/10 transition-colors" />
-
       <div>
         <div className="flex items-start justify-between gap-4 mb-4">
-          <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-[#00ff8f]">
+          <span className="px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D9] text-xs font-medium text-[#FF5500]">
             {item.category}
           </span>
           <button
             onClick={() => onRemove(item.id)}
-            className="p-2 rounded-xl text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            className="p-2 rounded-xl text-[#524E48] hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
             title="Remove from wishlist"
           >
             <Trash2 className="size-4" />
           </button>
         </div>
 
-        <div className="relative h-44 w-full mb-6 rounded-2xl bg-black/40 overflow-hidden flex items-center justify-center border border-white/5">
+        <div className="relative h-44 w-full mb-6 rounded-2xl bg-[#FAF8F5] overflow-hidden flex items-center justify-center border border-[#E8E2D9]">
           <Image
             src={item.image}
             alt={item.name}
@@ -58,33 +55,42 @@ export function WishlistCard({ item, onRemove }: WishlistCardProps) {
           />
         </div>
 
-        <h3 className="text-xl font-bold text-white font-['Poppins',sans-serif] group-hover:text-[#00ff8f] transition-colors">
+        <h3 className="text-xl font-bold text-[#111315] font-sans group-hover:text-[#FF5500] transition-colors">
           {item.name}
         </h3>
-        <p className="text-sm text-white/50 font-['Outfit',sans-serif] mt-1">{item.brand} • {item.fuelType}</p>
+        <p className="text-sm text-[#524E48] font-sans mt-1">
+          {item.brand} • {item.fuelType}
+        </p>
 
-        <div className="grid grid-cols-2 gap-3 my-6 p-3 rounded-2xl bg-white/[0.03] border border-white/5">
+        <div className="grid grid-cols-2 gap-3 my-6 p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D9]">
           <div className="flex items-center gap-2">
-            <Zap className="size-4 text-[#00ff8f]" />
+            <Zap className="size-4 text-[#FF5500]" />
             <div>
-              <p className="text-[10px] text-white/40">OUTPUT</p>
-              <p className="text-sm font-semibold text-white">{item.kva}</p>
+              <p className="text-[10px] font-mono tracking-wider text-[#524E48]">
+                OUTPUT
+              </p>
+              <p className="text-sm font-semibold text-[#111315]">{item.kva}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="size-4 text-[#00ff8f]" />
+            <ShieldCheck className="size-4 text-[#FF5500]" />
             <div>
-              <p className="text-[10px] text-white/40">COMPLIANCE</p>
-              <p className="text-sm font-semibold text-white">CPCB II</p>
+              <p className="text-[10px] font-mono tracking-wider text-[#524E48]">
+                COMPLIANCE
+              </p>
+              <p className="text-sm font-semibold text-[#111315]">CPCB II</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-[#E8E2D9] flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs text-white/40 font-['Outfit',sans-serif]">Daily Rental</p>
-          <p className="text-xl font-bold text-[#00ff8f] font-['Poppins',sans-serif]">₹{item.dailyRate}<span className="text-xs text-white/60 font-normal">/day</span></p>
+          <p className="text-xs text-[#524E48] font-sans">Daily Rental</p>
+          <p className="text-xl font-bold text-[#FF5500] font-sans">
+            ₹{item.dailyRate}
+            <span className="text-xs text-[#524E48] font-normal">/day</span>
+          </p>
         </div>
         <Button href={`/book?generator=${item.id}`} variant="primary" size="sm">
           Book Now

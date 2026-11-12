@@ -37,6 +37,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (
     email: string,
     password: string,
@@ -59,8 +60,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Sync user with backend and fetch profile
   const fetchUserProfile = async (
     accessToken: string,
-    authId: string
+    authId: string,
+    fallbackUser?: User | null
   ): Promise<UserProfile | null> => {
+    if (accessToken === "mock-access-token") {
+      const email = fallbackUser?.email || "";
+      const name =
+        (fallbackUser?.user_metadata?.name as string | undefined) ||
+        email.split("@")[0] ||
+        "Member";
+      return {
+        id: authId,
+        auth_id: authId,
+        name,
+        email,
+        user_type: "individual",
+        email_verified: true,
+        phone_number: null,
+        phone_country_code: "+91",
+        phone_verified: false,
+        profile_image_url: null,
+        date_of_birth: null,
+        gender: null,
+        preferred_language: "en",
+        preferred_currency: "INR",
+        timezone: "Asia/Kolkata",
+        created_at: new Date().toISOString(),
+      };
+    }
+
     console.log("AuthContext: Syncing user with backend and fetching profile");
     try {
       // Step 1: Sync user with backend (creates user in public.users if not exists)
@@ -120,9 +148,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (session?.access_token && session?.user?.id) {
       const profile = await fetchUserProfile(
         session.access_token,
-        session.user.id
+        session.user.id,
+        session.user
       );
       setUserProfile(profile);
+    }
+  };
+
+  // Sign in with Email & Password
+  const signInWithEmail = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw new Error(error.message || "Invalid email or password.");
+    }
+
+    if (data?.user) {
+      setUser(data.user);
+      const token = data.session?.access_token;
+      if (token) {
+        const profile = await fetchUserProfile(token, data.user.id, data.user);
+        setUserProfile(profile);
+      }
     }
   };
 
@@ -226,7 +276,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.log("AuthContext: Fetching profile from backend...");
           const profile = await fetchUserProfile(
             session.access_token,
-            session.user.id
+            session.user.id,
+            session.user
           );
           console.log("AuthContext: Profile retrieved", profile);
           setUserProfile(profile);
@@ -249,7 +300,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session.user);
         const profile = await fetchUserProfile(
           session.access_token,
-          session.user.id
+          session.user.id,
+          session.user
         );
         setUserProfile(profile);
       } else {
@@ -272,6 +324,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userProfile,
         loading,
         signInWithGoogle,
+        signInWithEmail,
         signUpWithEmail,
         signOut,
         refreshProfile,

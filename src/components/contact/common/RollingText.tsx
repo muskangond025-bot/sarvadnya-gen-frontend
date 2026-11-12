@@ -2,6 +2,8 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translateTextForDOM } from "@/lib/autoTranslations";
 
 interface RollingTextProps {
   text: string;
@@ -13,8 +15,9 @@ interface RollingTextProps {
 /**
  * RollingText Component
  *
- * Signature staggered character rolling animation.
- * Keeps words intact (no mid-word breaking) and supports single-line mode.
+ * Signature staggered character/word rolling animation with full language support.
+ * Uses word-level animation for Devanagari scripts (hi/mr) so matras & ligatures
+ * remain intact while animating cleanly.
  */
 export function RollingText({
   text,
@@ -22,11 +25,16 @@ export function RollingText({
   charClassName,
   singleLine = false,
 }: RollingTextProps) {
-  const words = text.split(" ");
+  const { language } = useLanguage();
+  const displayText =
+    language !== "en" ? translateTextForDOM(text, language) || text : text;
+  const isIndic = /[\u0900-\u097F]/.test(displayText);
+  const words = displayText.split(" ");
   let globalIndex = 0;
 
   return (
     <span
+      data-no-translate="true"
       className={cn(
         "inline-flex overflow-hidden leading-tight",
         singleLine ? "flex-nowrap whitespace-nowrap" : "flex-wrap",
@@ -34,37 +42,38 @@ export function RollingText({
       )}
     >
       {words.map((word, wordIdx) => {
-        const chars = word.split("");
+        const units = isIndic ? [word] : word.split("");
         const wordEl = (
           <span key={wordIdx} className="inline-flex whitespace-nowrap">
-            {chars.map((char, charIdx) => {
+            {units.map((unit, unitIdx) => {
               const idx = globalIndex++;
+              const delayMs = isIndic ? idx * 65 : idx * 16;
               return (
                 <span
-                  key={charIdx}
-                  className="relative inline-block overflow-hidden h-[1.15em] align-middle"
+                  key={unitIdx}
+                  className="relative inline-block overflow-hidden h-[1.2em] align-middle"
                 >
-                  {/* Primary Character sliding up */}
+                  {/* Primary Unit sliding up */}
                   <span
-                    style={{ transitionDelay: `${idx * 16}ms` }}
+                    style={{ transitionDelay: `${delayMs}ms` }}
                     className={cn(
                       "inline-block transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full will-change-transform",
                       charClassName
                     )}
                   >
-                    {char}
+                    {unit}
                   </span>
 
-                  {/* Secondary Character sliding in from below */}
+                  {/* Secondary Unit sliding in from below */}
                   <span
                     aria-hidden="true"
-                    style={{ transitionDelay: `${idx * 16}ms` }}
+                    style={{ transitionDelay: `${delayMs}ms` }}
                     className={cn(
                       "absolute left-0 top-full inline-block transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full text-[#FF5500] will-change-transform",
                       charClassName
                     )}
                   >
-                    {char}
+                    {unit}
                   </span>
                 </span>
               );

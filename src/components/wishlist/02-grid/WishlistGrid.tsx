@@ -19,12 +19,13 @@ export function WishlistGrid({ items, onRemove, onClearAll }: WishlistGridProps)
   return (
     <section className="px-4 sm:px-6 md:px-10 lg:px-[60px] max-w-[1440px] mx-auto pb-16 sm:pb-24">
       <div className="flex justify-between items-center mb-8">
-        <p className="text-sm text-white/60 font-['Outfit',sans-serif]">
-          Showing <span className="text-white font-semibold">{items.length}</span> shortlisted generator models
+        <p className="text-sm text-[#403C36] font-sans">
+          Showing <span className="text-[#111315] font-semibold">{items.length}</span>{" "}
+          shortlisted generator models
         </p>
         <button
           onClick={onClearAll}
-          className="text-xs text-white/50 hover:text-red-400 transition-colors uppercase tracking-wider font-semibold"
+          className="text-xs text-[#524E48] hover:text-red-600 transition-colors uppercase tracking-wider font-semibold cursor-pointer"
         >
           Clear All Items
         </button>

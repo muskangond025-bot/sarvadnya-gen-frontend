@@ -78,6 +78,7 @@ interface LanguageSwitcherProps {
   className?: string;
   variant?: "dropdown" | "drawer" | "pill";
   theme?: "light" | "dark" | "glass";
+  dropDirection?: "down" | "up";
 }
 
 /**
@@ -92,6 +93,7 @@ export function LanguageSwitcher({
   className,
   variant = "dropdown",
   theme = "light",
+  dropDirection = "down",
 }: LanguageSwitcherProps) {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -139,7 +141,7 @@ export function LanguageSwitcher({
   // Drawer / Mobile layout format
   if (variant === "drawer") {
     return (
-      <div className={cn("flex flex-col gap-2 w-full", className)}>
+      <div className={cn("flex flex-col gap-2 w-full", className)} data-no-translate="true">
         <span
           className={cn(
             "text-[11px] font-mono uppercase tracking-wider",
@@ -178,7 +180,7 @@ export function LanguageSwitcher({
 
   // Exact Match to Screenshot: Floating Pill Trigger + Dropdown Card
   return (
-    <div ref={containerRef} className={cn("relative inline-block text-left shrink-0", className)}>
+    <div ref={containerRef} data-no-translate="true" className={cn("relative inline-block text-left shrink-0", className)}>
       {/* Pill Trigger */}
       <button
         type="button"
@@ -224,7 +226,10 @@ export function LanguageSwitcher({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.96 }}
             transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-full mt-2 right-0 z-[100] min-w-[155px] bg-white border border-[#E8E2D9] rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.25)] p-1.5 overflow-hidden text-[#1F1F1E]"
+            className={cn(
+              "absolute right-0 z-[100] min-w-[155px] bg-white border border-[#E8E2D9] rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.25)] p-1.5 overflow-hidden text-[#1F1F1E]",
+              dropDirection === "up" ? "bottom-full mb-2" : "top-full mt-2"
+            )}
           >
             <div className="flex flex-col gap-0.5">
               {LANGUAGES.map((opt) => {
