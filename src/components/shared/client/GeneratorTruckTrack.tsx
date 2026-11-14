@@ -29,6 +29,107 @@ interface GeneratorTruckTrackProps {
 }
 
 /**
+ * Bespoke Photorealistic Vintage ST64 Edison Light Bulb SVG
+ * - Threaded brass socket with screw ridges
+ * - Authentic teardrop pear glass envelope
+ * - Glowing squirrel-cage tungsten filament wire with incandescent halo
+ * - Specular reflection gloss curve
+ */
+function EdisonBulbSvg({ isLit }: { isLit: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 28 42"
+      className={cn(
+        "w-3 sm:w-4 lg:w-4.5 h-auto transition-transform duration-300 drop-shadow-xs",
+        isLit ? "scale-110" : "scale-100"
+      )}
+      fill="none"
+      aria-hidden="true"
+    >
+      {/* Top Threaded Brass Socket Base with Screws & Insulator */}
+      <rect
+        x="10.5"
+        y="0"
+        width="7"
+        height="3"
+        rx="0.5"
+        fill="url(#edison-brass)"
+        stroke="#4A3B18"
+        strokeWidth="0.5"
+      />
+      <rect
+        x="11"
+        y="3"
+        width="6"
+        height="2"
+        rx="0.5"
+        fill="url(#edison-brass)"
+        stroke="#4A3B18"
+        strokeWidth="0.5"
+      />
+      <rect
+        x="11.5"
+        y="5"
+        width="5"
+        height="1.8"
+        rx="0.5"
+        fill="url(#edison-brass)"
+        stroke="#4A3B18"
+        strokeWidth="0.5"
+      />
+
+      {/* Classic ST64 Pear / Teardrop Glass Envelope */}
+      <path
+        d="M11.5 6.8 C11.5 6.8 7.5 13 6 18.5 C4.5 24 7 32 14 32 C21 32 23.5 24 22 18.5 C20.5 13 16.5 6.8 16.5 6.8 Z"
+        fill={isLit ? "url(#edison-glass-lit)" : "url(#edison-glass-off)"}
+        stroke={isLit ? "#FFB703" : "rgba(31,31,30,0.35)"}
+        strokeWidth={isLit ? "1.2" : "0.85"}
+      />
+
+      {/* Inner Central Glass Mount Stem */}
+      <path
+        d="M13 7 L13 15 L15 15 L15 7"
+        fill="none"
+        stroke={isLit ? "rgba(255,220,130,0.8)" : "rgba(80,80,80,0.35)"}
+        strokeWidth="0.75"
+      />
+      <circle cx="14" cy="15" r="1.2" fill={isLit ? "#FFC44D" : "#4A4A4A"} />
+
+      {/* Realistic Squirrel-Cage / Hairpin Tungsten Filament Wire */}
+      <path
+        d="M12.5 15 L11.5 22 Q12.75 25 14 22 Q15.25 25 16.5 22 L15.5 15"
+        fill="none"
+        stroke={isLit ? "#FFFFFF" : "#524E48"}
+        strokeWidth={isLit ? "1.4" : "0.75"}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Intense Amber Incandescent Glow when Lit */}
+      {isLit && (
+        <path
+          d="M12.5 15 L11.5 22 Q12.75 25 14 22 Q15.25 25 16.5 22 L15.5 15"
+          fill="none"
+          stroke="#FF7A00"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity="0.8"
+        />
+      )}
+
+      {/* Specular Curved Highlight on Outer Glass Surface (Gloss Specular) */}
+      <path
+        d="M8.5 17 C7.5 21 9 27 11.5 29"
+        fill="none"
+        stroke={isLit ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)"}
+        strokeWidth="0.9"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/**
  * GeneratorTruckTrack Component
  * 
  * Hyper-Realistic 3D Generator Truck & Dynamic Lighting Stage:
@@ -100,25 +201,51 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       <div className="absolute top-0 right-1/4 w-[450px] h-32 bg-amber-500/[0.05] blur-3xl pointer-events-none" />
 
       {/* 
-        1. OVERHEAD ELECTRICAL CATENARY WIRE & BULBS (Chain Reaction Lighting)
-        Compact height: h-8 sm:h-10
+        1. OVERHEAD ELECTRICAL CATENARY WIRE & VINTAGE EDISON BULBS (Chain Reaction Lighting)
+        Height: h-10 sm:h-12
       */}
-      <div className="relative w-full h-8 sm:h-10 flex items-center justify-between px-2 sm:px-6 z-20 shrink-0">
-        {/* Electrical Cable Wire */}
+      <div className="relative w-full h-10 sm:h-12 flex items-center justify-between px-2 sm:px-6 z-20 shrink-0">
+        {/* Electrical Cable Wire & Shared SVG Gradients */}
         <svg
-          className="absolute inset-x-0 top-1.5 w-full h-4 pointer-events-none opacity-40"
+          className="absolute inset-x-0 top-1 w-full h-5 pointer-events-none opacity-50"
           preserveAspectRatio="none"
           viewBox="0 0 1200 20"
         >
+          <defs>
+            {/* Metallic Polished Brass Socket Cap */}
+            <linearGradient id="edison-brass" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#8A6E3E" />
+              <stop offset="35%" stopColor="#D4AF37" />
+              <stop offset="70%" stopColor="#8A6E3E" />
+              <stop offset="100%" stopColor="#5A4522" />
+            </linearGradient>
+
+            {/* Lit Glass Incandescent Glow */}
+            <radialGradient id="edison-glass-lit" cx="50%" cy="55%" r="50%">
+              <stop offset="0%" stopColor="#FFF4D6" stopOpacity="0.95" />
+              <stop offset="35%" stopColor="#FFB326" stopOpacity="0.85" />
+              <stop offset="75%" stopColor="#FF7A00" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#FF5500" stopOpacity="0.1" />
+            </radialGradient>
+
+            {/* Unlit Glass Clear Smoky Gradient */}
+            <linearGradient id="edison-glass-off" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
+              <stop offset="45%" stopColor="rgba(255,255,255,0.12)" />
+              <stop offset="100%" stopColor="rgba(0,0,0,0.06)" />
+            </linearGradient>
+          </defs>
+
+          {/* Catenary Droop Wire Path */}
           <path
             d="M0,6 Q300,15 600,6 T1200,6"
             fill="none"
-            stroke="rgba(31,31,30,0.35)"
+            stroke="rgba(31,31,30,0.4)"
             strokeWidth="1.5"
           />
         </svg>
 
-        {/* The 14 Industrial Power Bulbs */}
+        {/* The 14 Industrial Edison Power Bulbs */}
         <div className="relative w-full flex items-center justify-between">
           {BULBS.map((bulb) => {
             const isLit = activeBulbs.has(bulb.id);
@@ -133,47 +260,43 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                   transform: "translateX(-50%)",
                 }}
               >
-                {/* Brass Socket Cap */}
-                <div className="w-1.5 h-1.5 bg-[#8E7958] rounded-xs border border-black/30 shadow-xs" />
+                {/* Vintage Edison Bulb Body */}
+                <div className="relative z-10 flex flex-col items-center">
+                  <EdisonBulbSvg isLit={isLit} />
 
-                {/* Glass Bulb Body */}
-                <div
-                  className={cn(
-                    "relative size-2.5 sm:size-3.5 rounded-full border transition-all duration-500 flex items-center justify-center",
-                    isLit
-                      ? "bg-amber-100 border-amber-400 shadow-[0_0_16px_#FF9900,0_0_36px_rgba(255,153,0,0.7)] scale-110"
-                      : "bg-black/5 border-black/20 shadow-none scale-100"
-                  )}
-                >
-                  {/* Tungsten Filament Wire */}
-                  <div
-                    className={cn(
-                      "w-0.5 sm:w-1 h-0.5 sm:h-1 rounded-xs transition-all duration-300",
-                      isLit
-                        ? "bg-amber-500 shadow-[0_0_6px_#FF9900] animate-pulse"
-                        : "bg-black/25"
-                    )}
-                  />
-
-                  {/* Spark Burst Effect on Ignition */}
+                  {/* Micro Ignition Spark on initial contact */}
                   {isLit && (
                     <motion.div
-                      initial={{ scale: 0, opacity: 1 }}
-                      animate={{ scale: 2.2, opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute inset-0 rounded-full bg-amber-400 pointer-events-none blur-xs"
+                      initial={{ scale: 0.2, opacity: 1 }}
+                      animate={{ scale: 2.4, opacity: 0 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                      className="absolute top-3 left-1/2 -translate-x-1/2 size-4 rounded-full bg-[#FFE5A3] pointer-events-none blur-xs"
                     />
                   )}
                 </div>
 
-                {/* Radial Amber Floor Wash when lit */}
+                {/* Soft Radial Ambient Amber Halo */}
                 <div
                   className={cn(
-                    "absolute top-3 w-10 sm:w-16 h-16 rounded-full pointer-events-none transition-opacity duration-700 blur-xl",
+                    "absolute -top-1 w-10 sm:w-14 h-10 sm:h-14 rounded-full pointer-events-none transition-all duration-500 blur-md",
                     isLit
-                      ? "bg-[#FF9900]/25 opacity-100"
-                      : "bg-transparent opacity-0"
+                      ? "bg-[#FF9900]/30 opacity-100 scale-125"
+                      : "bg-transparent opacity-0 scale-75"
                   )}
+                />
+
+                {/* Volumetric Downward Golden Spotlight Beam */}
+                <div
+                  className={cn(
+                    "absolute top-5 w-16 sm:w-24 h-24 sm:h-32 pointer-events-none transition-opacity duration-600",
+                    isLit ? "opacity-100" : "opacity-0"
+                  )}
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at top center, rgba(255, 175, 20, 0.4) 0%, rgba(255, 120, 0, 0.15) 45%, transparent 75%)",
+                    clipPath: "polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)",
+                    filter: "blur(5px)",
+                  }}
                 />
               </div>
             );
@@ -277,9 +400,9 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             <div
               className="absolute pointer-events-none rounded-full bg-black/75 blur-[2.5px] z-10"
               style={{
-                left: "31.66%",
+                left: "26.49%",
                 bottom: "1px",
-                width: "12%",
+                width: "15.28%",
                 height: "5px",
                 transform: "translateX(-50%)",
               }}
@@ -287,9 +410,9 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             <div
               className="absolute pointer-events-none rounded-full bg-black/75 blur-[2.5px] z-10"
               style={{
-                left: "81.9%",
+                left: "80.88%",
                 bottom: "1px",
-                width: "13.5%",
+                width: "17.71%",
                 height: "5px",
                 transform: "translateX(-50%)",
               }}
@@ -299,9 +422,9 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             <div
               className="absolute pointer-events-none select-none z-10"
               style={{
-                left: "31.66%",
-                top: "88.32%",
-                width: "11.6%",
+                left: "26.49%",
+                top: "88.47%",
+                width: "15.28%",
                 aspectRatio: "1/1",
                 transform: "translate(-50%, -50%)",
               }}
@@ -321,8 +444,8 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 <img
                   src="/images/generators/truck_wheel_rear_3d.png"
                   alt="Tata 1109 Rotating Rear Wheel"
-                  width={148}
-                  height={148}
+                  width={195}
+                  height={195}
                   className="w-full h-full object-contain pointer-events-none select-none block"
                   draggable={false}
                 />
@@ -333,9 +456,9 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             <div
               className="absolute pointer-events-none select-none z-10"
               style={{
-                left: "81.9%",
-                top: "86.76%",
-                width: "13.17%",
+                left: "80.88%",
+                top: "86.29%",
+                width: "17.71%",
                 aspectRatio: "1/1",
                 transform: "translate(-50%, -50%)",
               }}
@@ -355,8 +478,8 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 <img
                   src="/images/generators/truck_wheel_front_3d.png"
                   alt="Tata 1109 Rotating Front Wheel"
-                  width={168}
-                  height={168}
+                  width={226}
+                  height={226}
                   className="w-full h-full object-contain pointer-events-none select-none block"
                   draggable={false}
                 />
