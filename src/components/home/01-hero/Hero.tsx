@@ -3,18 +3,18 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/common";
+import { SlicedWavesBackground } from "@/components/common/SlicedWavesBackground";
 import { useLanguage } from "@/lib/LanguageContext";
 import { HeroClient } from "./HeroClient";
 
 /**
  * Hero Component (Client Component with Multi-Language Support)
  * 
- * Re-architected to Awwwards Site of the Day / Luxury Marque standard:
- * - Full-screen / full-bleed immersive photographic stage
- * - Light luminous overlay (NOT dark/pitch-black) preserving the natural warmth
- * - Zero unwanted text pills, zero decorative badges
- * - Exact data and operational facts strictly preserved
- * - Realtime multi-language support (English, Hindi, Marathi)
+ * Re-architected with React Bits SlicedWaves interactive WebGL stage:
+ * - Dynamic SlicedWaves ribbon light canvas reacting in realtime to mouse interaction
+ * - Bright luxury ivory scrim (#FAF8F5) ensuring effortless contrast & legibility
+ * - Verified operational facts strictly preserved with multi-language support
+ * - Zero unwanted text pills or decorative badges
  */
 export function Hero() {
   const { t } = useLanguage();
@@ -22,30 +22,45 @@ export function Hero() {
   return (
     <section className="relative w-full min-h-[92vh] lg:min-h-screen flex items-center justify-center overflow-hidden bg-[#FAF8F5] border-b border-[#E8E2D9]">
       {/* 
-        Full-Screen Photographic Background
-        Provides cinematic depth across the entire viewport
+        Interactive SlicedWaves WebGL Canvas Stage
+        Reacts to pointer motion with glowing depth ribbons
       */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/about/story-main.png"
-          alt="Sarvadnya Industrial & Event Power Operations"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center filter saturate-[0.8] contrast-[1.05]"
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-auto">
+        <SlicedWavesBackground
+          color1="#ff9d4d"
+          color2="#ff2d78"
+          color3="#3060ff"
+          ribbons={3}
+          spacing={28}
+          perspective={0.45}
+          blur={0.6}
+          glow={1}
+          position={0.78}
+          mouseInteraction
+          barWidth={0.5}
+          ribbonHeight={0.26}
+          spread={0.1}
+          amplitude={0.1}
+          frequency={1}
+          curve={0.5}
+          slices={0}
+          speed={1}
+          brightness={1.25}
+          rotation={0}
+          grain={0.08}
+          fade={0}
+          opacity={1}
+          intro
+          lightMode
         />
 
         {/* 
-          LIGHT OVERLAY (NOT DARK OVERLAY)
-          Refined luminous ivory scrim & directional gradient:
-          - High opacity ivory on the left behind the text for perfect contrast and readability
-          - Gentle luminous gradient across the right letting the full-screen photo show through with clarity
+          Luminous Scrim Gradients:
+          Guarantees 100% typography contrast while allowing the waves to illuminate the stage
         */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FAF8F5] via-[#FAF8F5]/80 to-[#FAF8F5]/35 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF8F5]/70 via-transparent to-[#FAF8F5] pointer-events-none" />
-
-        {/* Subtle ambient amber warmth */}
-        <div className="absolute top-1/4 right-1/4 w-[600px] h-[400px] bg-[#FF5500]/[0.06] blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#FAF8F5]/95 via-[#FAF8F5]/75 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#FAF8F5] via-transparent to-[#FAF8F5]/50 pointer-events-none" />
+        <div className="absolute top-1/4 right-1/4 w-[500px] h-[350px] bg-[#FF5500]/[0.05] blur-[120px] rounded-full pointer-events-none" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full pt-28 pb-16 lg:pt-36 lg:pb-20">

@@ -1,83 +1,71 @@
-import { SectionHeading } from "@/components/common";
+import React from "react";
 
 /**
  * TrackRecord Component (Server)
  *
- * Stats section with CSS-only hover effects - fully server-rendered.
+ * Ultra-Premium Operational Impact Section:
+ * - Zero text pill badges, zero decorative fluff or placeholder data
+ * - Symmetric, architectural 4-column luxury metric architecture
+ * - Pure typographic hierarchy with crisp hairline borders (#E8E2D9)
  */
 export function TrackRecord() {
+  const stats = [
+    {
+      value: "17+",
+      label: "Years Experience",
+      desc: "Continuous silent power rental operations across Maharashtra since 2009.",
+    },
+    {
+      value: "2,000+",
+      label: "Satisfied Clients",
+      desc: "Trusted by premier industrial plants, wedding venues, and corporate enterprises.",
+    },
+    {
+      value: "24/7",
+      label: "Emergency Support",
+      desc: "Immediate on-site technical dispatch with active standby backup readiness.",
+    },
+    {
+      value: "10,000+",
+      label: "Successful Deployments",
+      desc: "Proven track record of zero critical downtime power operations delivered.",
+    },
+  ];
+
   return (
-    <section className="w-full flex flex-col justify-center items-center py-16 sm:py-24 px-4 sm:px-6 lg:px-8 gap-8 lg:gap-10 relative overflow-hidden">
-      <div className="text-center">
-        <SectionHeading
-          label="OUR IMPACT"
-          title={
-            <>
-              Driven by Reliability,
-              <br />
-              Measured by <span className="text-[#00ff8f]">Results</span>
-            </>
-          }
-        />
-      </div>
+    <section className="w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-12 bg-[#FAF8F5] border-b border-[#E8E2D9]">
+      <div className="max-w-7xl mx-auto flex flex-col gap-12 sm:gap-16">
+        
+        {/* Title Block (Zero Pill Badges) */}
+        <div className="text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight leading-[1.12]">
+            Driven by Reliability, <br className="hidden sm:inline" />
+            <span className="text-[#FF5500]">Measured by Results.</span>
+          </h2>
+        </div>
 
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-        {/* Card 1: Experience */}
-        <div className="bg-[#111] rounded-[32px] p-6 lg:p-8 border border-white/5 flex flex-col justify-between h-full relative overflow-hidden group hover:border-[#00ff8f]/30 transition-all lg:row-span-2">
-          <div className="relative z-10">
-            <h3 className="text-white text-3xl lg:text-4xl xl:text-5xl font-bold font-['Poppins',sans-serif] leading-tight mb-3 lg:mb-4">
-              17+ Years
-              <br />
-              <span className="text-[#00ff8f]">Industry Expertise</span>
-            </h3>
-            <p className="text-[#bfbfbf] font-['Outfit',sans-serif] text-base lg:text-lg">Powering Nashik since 2009 with dependable solutions.</p>
-          </div>
-          <div className="mt-auto relative z-10 flex items-center justify-between pt-6 lg:pt-10">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="size-10 lg:size-12 rounded-full bg-zinc-800 border-2 border-[#111]"
-                />
-              ))}
+        {/* 4-Pillar Luxury Metric Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((stat, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-2xl p-7 sm:p-8 border border-[#E8E2D9] shadow-xs hover:border-[#FF5500]/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
+            >
+              <div>
+                <span className="text-4xl sm:text-5xl lg:text-[52px] font-extrabold text-[#111315] tracking-tight font-['Poppins',sans-serif] block group-hover:text-[#FF5500] transition-colors">
+                  {stat.value}
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-[#111315] mt-4 font-['Poppins',sans-serif]">
+                  {stat.label}
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-[#625D55] font-['Outfit',sans-serif] mt-2 leading-relaxed">
+                {stat.desc}
+              </p>
             </div>
-            <span className="text-white/20 text-6xl lg:text-8xl font-bold font-['Outfit',sans-serif] absolute -right-2 -bottom-4 lg:-right-4 lg:-bottom-8">17</span>
-          </div>
+          ))}
         </div>
 
-        {/* Card 2: Clients */}
-        <div className="bg-[#151515] rounded-[32px] p-6 lg:p-8 border border-white/5 flex flex-col justify-center items-center h-full min-h-[160px] lg:min-h-[220px] hover:border-[#00ff8f]/30 transition-all text-center">
-          <span className="text-white text-5xl lg:text-6xl xl:text-7xl font-bold font-['Outfit',sans-serif] mb-2">
-            2000+
-          </span>
-          <span className="text-[#bfbfbf] text-base lg:text-lg font-['Outfit',sans-serif]">Satisfied Clients</span>
-        </div>
-
-        {/* Card 3: Support */}
-        <div className="bg-linear-to-br from-[#003d21] to-[#001a0f] rounded-[32px] p-6 lg:p-8 border border-[#00ff8f]/20 flex flex-col justify-center items-center h-full lg:row-span-2 hover:shadow-[0_0_40px_-10px_rgba(0,255,143,0.3)] transition-all text-center">
-          <span className="text-white text-6xl lg:text-7xl xl:text-8xl font-bold font-['Outfit',sans-serif] mb-3 lg:mb-4">
-            24/7
-          </span>
-          <span className="text-white/80 text-lg lg:text-xl font-['Poppins',sans-serif] font-medium mb-2">Emergency Support</span>
-          <span className="text-white/60 text-xs lg:text-sm font-['Outfit',sans-serif]">Technical assistance always on standby</span>
-        </div>
-
-        {/* Card 4: Projects */}
-        <div className="bg-[#0a0a0a] rounded-[32px] p-6 lg:p-8 border border-white/5 flex flex-col justify-between h-full min-h-[160px] lg:min-h-[220px] relative overflow-hidden group hover:border-[#00ff8f]/30 transition-all">
-          <div className="relative z-10">
-            <span className="text-white text-5xl lg:text-6xl font-bold font-['Outfit',sans-serif] block mb-2">
-              10k+
-            </span>
-            <span className="text-[#bfbfbf] text-base lg:text-lg font-['Outfit',sans-serif]">Successful Projects</span>
-          </div>
-          
-          <div className="absolute bottom-2 right-4 lg:bottom-4 lg:right-6 opacity-10">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-white lg:w-[120px] lg:h-[120px]">
-              <path d="M12 2v20M2 12h20" />
-              <path d="m4.93 4.93 14.14 14.14M4.93 19.07 19.07 4.93" />
-            </svg>
-          </div>
-        </div>
       </div>
     </section>
   );

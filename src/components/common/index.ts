@@ -13,4 +13,5 @@ export * from "@/components/common/Button";
 export * from "@/components/common/RentalCalendar";
 export * from "@/components/common/DateTimePicker";
 export * from "@/components/common/LanguageSwitcher";
+export * from "@/components/common/SlicedWavesBackground";
 export { default as Logo } from "@/components/common/Logo";
