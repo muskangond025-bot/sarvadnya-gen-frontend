@@ -183,8 +183,9 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       {/* 
         1. VINTAGE EDISON BULB CHAIN LIGHTING (Catenary Wire & Bulbs)
         Warm amber glow drops cleanly down onto the floating content
+        100% UNCLIPPED: overflow-visible with proper top clearance so bulbs and wires never cut off!
       */}
-      <div className="absolute inset-x-0 top-0 pointer-events-none z-20 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 pointer-events-none z-20 overflow-visible pt-1 sm:pt-2">
         {/* Overhead Sagging Electrical Catenary Cable Wire */}
         <svg
           className="w-full h-8 sm:h-10 opacity-70"
@@ -192,7 +193,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
           viewBox="0 0 1000 40"
         >
           <path
-            d="M0 8 Q 250 22 500 12 T 1000 8"
+            d="M0 10 Q 250 24 500 14 T 1000 10"
             fill="none"
             stroke="#2A241C"
             strokeWidth="1.2"
@@ -200,7 +201,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         </svg>
 
         {/* Vintage Edison Bulb Sockets hanging along the catenary line */}
-        <div className="absolute inset-x-0 top-0 flex justify-between px-3 sm:px-6 lg:px-10">
+        <div className="absolute inset-x-0 top-1 sm:top-2 flex justify-between px-3 sm:px-6 lg:px-10">
           {BULBS.map((bulb) => {
             const isLit = activeBulbs.has(bulb.id);
             return (

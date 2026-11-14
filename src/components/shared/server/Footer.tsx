@@ -39,7 +39,8 @@ export function Footer() {
     <footer className="w-full bg-[#FAF8F5] text-[#111315] relative overflow-x-clip border-t border-[#E8E2D9] select-none flex flex-col">
       {/* Driving 3D Generator Truck & Roadway Stage */}
       <GeneratorTruckTrack>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-11 pb-8 sm:pb-10 w-full z-30">
+        {/* Generous top clearance (pt-16 sm:pt-20 lg:pt-24) ensures overhead bulbs never clip or overlap headings */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-10 w-full z-30">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
             {/* Column 1: Brand & Glassmorphic Socials (4 cols) */}
             <div className="lg:col-span-4 space-y-5">
