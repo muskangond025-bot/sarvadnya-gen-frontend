@@ -25,34 +25,16 @@ interface GeneratorTruckTrackProps {
  */
 export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
   const [cycleKey, setCycleKey] = useState<number>(0);
-  const [headlightsOn, setHeadlightsOn] = useState<boolean>(false);
 
-  // Synchronized cycle controller for truck headlights and drive loop
+  // Synchronized cycle controller for truck drive loop
   useEffect(() => {
-    const timers: NodeJS.Timeout[] = [];
-
-    setHeadlightsOn(false);
-
-    // Turn headlights ON shortly after truck enters from left edge
-    const headTimer = setTimeout(() => {
-      setHeadlightsOn(true);
-    }, 800);
-    timers.push(headTimer);
-
-    // When truck exits at right (20s), turn headlights off
-    const exitTimer = setTimeout(() => {
-      setHeadlightsOn(false);
-    }, DRIVE_DURATION * 1000);
-    timers.push(exitTimer);
-
     // Restart cycle after 21.5 seconds (20s drive + 1.5s seamless reset)
     const restartTimer = setTimeout(() => {
       setCycleKey((prev) => prev + 1);
     }, (DRIVE_DURATION + 1.5) * 1000);
-    timers.push(restartTimer);
 
     return () => {
-      timers.forEach(clearTimeout);
+      clearTimeout(restartTimer);
     };
   }, [cycleKey]);
 
@@ -116,37 +98,6 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             transformStyle: "preserve-3d",
           }}
         >
-          {/* 
-            VOLUMETRIC HIGH-BEAM HEADLIGHT CONE
-            Physically aligned with the Tata 1109 front bumper headlight:
-            left: 97%, bottom: 20% of the truck height!
-          */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: headlightsOn ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            className="absolute left-[97%] bottom-[18%] sm:bottom-[20%] pointer-events-none z-30"
-            style={{
-              width: "350px",
-              height: "90px",
-              transform: "translateY(15%)",
-            }}
-          >
-            {/* Volumetric High-beam Light Cone */}
-            <div
-              className="w-full h-full opacity-90"
-              style={{
-                background:
-                  "radial-gradient(ellipse at left center, rgba(255, 245, 205, 0.98) 0%, rgba(255, 180, 20, 0.6) 26%, rgba(255, 140, 0, 0.22) 65%, transparent 88%)",
-                clipPath: "polygon(0% 42%, 100% 0%, 100% 100%, 0% 58%)",
-                filter: "blur(4px)",
-              }}
-            />
-
-            {/* Intense Bumper Headlight Flare Spot */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 size-4 rounded-full bg-white shadow-[0_0_24px_#FFFFFF,0_0_50px_#FFB800] blur-[0.8px]" />
-          </motion.div>
-
           {/* 
             HYPER-REALISTIC 3D TATA 1109 GENERATOR TRUCK WITH 360° SPINNING WHEELS
             - Layer 1: Contact Drop Shadows grounding the tires directly on the asphalt
