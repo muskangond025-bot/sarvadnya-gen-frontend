@@ -2,39 +2,173 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
+const TOTAL_BULBS = 14;
 const DRIVE_DURATION = 20; // 20s steady commercial drive speed
+
+interface BulbData {
+  id: number;
+  percent: number;
+  triggerTime: number; // in seconds
+}
+
+// Staggered trigger timestamps based on truck drive speed across the stage
+const BULBS: BulbData[] = Array.from({ length: TOTAL_BULBS }, (_, i) => {
+  const percent = (i + 0.5) * (100 / TOTAL_BULBS);
+  const triggerTime = Math.max(0.5, (percent - 6) * (17 / 100) + 1.0);
+  return {
+    id: i,
+    percent,
+    triggerTime,
+  };
+});
 
 interface GeneratorTruckTrackProps {
   children?: React.ReactNode;
 }
 
 /**
+ * Bespoke Photorealistic Vintage ST64 Edison Light Bulb SVG
+ * - Threaded brass socket with screw ridges
+ * - Authentic teardrop pear glass envelope
+ * - Glowing squirrel-cage tungsten filament wire with incandescent halo
+ * - Specular reflection gloss curve
+ */
+function EdisonBulbSvg({ isLit }: { isLit: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 28 42"
+      className={cn(
+        "w-3 sm:w-4 lg:w-4.5 h-auto transition-transform duration-300 drop-shadow-xs",
+        isLit ? "scale-110" : "scale-100"
+      )}
+      fill="none"
+      aria-hidden="true"
+    >
+      {/* Top Threaded Brass Socket Base with Screws & Insulator */}
+      <rect
+        x="10.5"
+        y="0"
+        width="7"
+        height="3"
+        rx="0.5"
+        fill="url(#edison-brass)"
+        stroke="#4A3B18"
+        strokeWidth="0.5"
+      />
+      <rect
+        x="11"
+        y="3"
+        width="6"
+        height="2"
+        rx="0.5"
+        fill="url(#edison-brass)"
+        stroke="#4A3B18"
+        strokeWidth="0.5"
+      />
+      <rect
+        x="11.5"
+        y="5"
+        width="5"
+        height="1.8"
+        rx="0.5"
+        fill="url(#edison-brass)"
+        stroke="#4A3B18"
+        strokeWidth="0.5"
+      />
+
+      {/* Classic ST64 Pear / Teardrop Glass Envelope */}
+      <path
+        d="M11.5 6.8 C11.5 6.8 7.5 13 6 18.5 C4.5 24 7 32 14 32 C21 32 23.5 24 22 18.5 C20.5 13 16.5 6.8 16.5 6.8 Z"
+        fill={isLit ? "url(#edison-glass-lit)" : "url(#edison-glass-off)"}
+        stroke={isLit ? "#FFB703" : "rgba(31,31,30,0.35)"}
+        strokeWidth={isLit ? "1.2" : "0.85"}
+      />
+
+      {/* Inner Central Glass Mount Stem */}
+      <path
+        d="M13 7 L13 15 L15 15 L15 7"
+        fill="none"
+        stroke={isLit ? "rgba(255,220,130,0.8)" : "rgba(80,80,80,0.35)"}
+        strokeWidth="0.75"
+      />
+      <circle cx="14" cy="15" r="1.2" fill={isLit ? "#FFC44D" : "#4A4A4A"} />
+
+      {/* Realistic Squirrel-Cage / Hairpin Tungsten Filament Wire */}
+      <path
+        d="M12.5 15 L11.5 22 Q12.75 25 14 22 Q15.25 25 16.5 22 L15.5 15"
+        fill="none"
+        stroke={isLit ? "#FFFFFF" : "#524E48"}
+        strokeWidth={isLit ? "1.4" : "0.75"}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Intense Amber Incandescent Glow when Lit */}
+      {isLit && (
+        <path
+          d="M12.5 15 L11.5 22 Q12.75 25 14 22 Q15.25 25 16.5 22 L15.5 15"
+          fill="none"
+          stroke="#FF7A00"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity="0.8"
+        />
+      )}
+
+      {/* Specular Curved Highlight on Outer Glass Surface (Gloss Specular) */}
+      <path
+        d="M8.5 17 C7.5 21 9 27 11.5 29"
+        fill="none"
+        stroke={isLit ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)"}
+        strokeWidth="0.9"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/**
  * GeneratorTruckTrack Component
  * 
- * Hyper-Realistic 3D Generator Truck Driving on Roadway:
- * - 100% UNCLIPPED & FULL HEADROOM: The entire chrome silencer exhaust barrel, 
- *   rain flap, lifting gantry frame, and cab roof are completely visible with generous clearance!
+ * Hyper-Realistic 3D Generator Truck & Dynamic Lighting Stage:
+ * - 100% UNCLIPPED & FULL HEADROOM: Exhaust silencer barrel, lifting gantry frame, and cab roof are completely visible!
  * - Proportioned cleanly to fit within a single screen view (100vh / ~640px) without vertical bloat!
  * - Authentic 3D Render of Tata 1109 Ochre-Brown Truck + Sarvadnya Energy Orange Generator (#FF5500)
  * - Razor-sharp Devanagari lettering: "सर्वज्ञ जनरेटर" + Cummins Power Generation logo
- * - Dual high-beam headlights with volumetric light cone sweeping forward along the road
+ * - Overhead Edison bulbs chain-reaction ignite with warm amber glow as the generator truck drives across
+ * - Ultra-Premium 3D Commercial Truck Tyres: radial tread shoulder grooves, satin rubber finish, steel lug hubcaps
  * - GPU-accelerated butter-smooth translate3d motion (zero stutter/glitch)
  * - Tires resting squarely on the asphalt road baseline
- * - Zero unwanted text badges on the road
  */
 export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
   const [cycleKey, setCycleKey] = useState<number>(0);
+  const [activeBulbs, setActiveBulbs] = useState<Set<number>>(new Set());
 
-  // Synchronized cycle controller for truck drive loop
+  // Synchronized cycle controller for bulbs and truck drive loop
   useEffect(() => {
+    const timers: NodeJS.Timeout[] = [];
+
+    // Clear active bulbs at cycle start
+    setActiveBulbs(new Set());
+
+    // Schedule progressive bulb ignition as truck approaches each bulb
+    BULBS.forEach((bulb) => {
+      const timer = setTimeout(() => {
+        setActiveBulbs((prev) => new Set(prev).add(bulb.id));
+      }, bulb.triggerTime * 1000);
+      timers.push(timer);
+    });
+
     // Restart cycle after 21.5 seconds (20s drive + 1.5s seamless reset)
     const restartTimer = setTimeout(() => {
       setCycleKey((prev) => prev + 1);
     }, (DRIVE_DURATION + 1.5) * 1000);
+    timers.push(restartTimer);
 
     return () => {
-      clearTimeout(restartTimer);
+      timers.forEach(clearTimeout);
     };
   }, [cycleKey]);
 
@@ -47,7 +181,69 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       aria-label="Interactive Generator Delivery Stage"
     >
       {/* 
-        1. FOREGROUND FLOATING ARCHITECTURAL FOOTER CONTENT
+        1. VINTAGE EDISON BULB CHAIN LIGHTING (Catenary Wire & Bulbs)
+        Warm amber glow drops cleanly down onto the floating content
+      */}
+      <div className="absolute inset-x-0 top-0 pointer-events-none z-20 overflow-hidden">
+        {/* Overhead Sagging Electrical Catenary Cable Wire */}
+        <svg
+          className="w-full h-8 sm:h-10 opacity-70"
+          preserveAspectRatio="none"
+          viewBox="0 0 1000 40"
+        >
+          <path
+            d="M0 8 Q 250 22 500 12 T 1000 8"
+            fill="none"
+            stroke="#2A241C"
+            strokeWidth="1.2"
+          />
+        </svg>
+
+        {/* Vintage Edison Bulb Sockets hanging along the catenary line */}
+        <div className="absolute inset-x-0 top-0 flex justify-between px-3 sm:px-6 lg:px-10">
+          {BULBS.map((bulb) => {
+            const isLit = activeBulbs.has(bulb.id);
+            return (
+              <div
+                key={bulb.id}
+                className="relative flex flex-col items-center"
+                style={{
+                  transform: `translateY(${
+                    Math.sin((bulb.percent / 100) * Math.PI) * 12
+                  }px)`,
+                }}
+              >
+                {/* Short drop wire from catenary cord */}
+                <span className="w-[1px] h-2 sm:h-3.5 bg-[#2A241C] block" />
+
+                {/* Photorealistic ST64 Edison Bulb SVG */}
+                <EdisonBulbSvg isLit={isLit} />
+
+                {/* Warm Volumetric Ambient Glow Beneath Bulb */}
+                {isLit && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute -top-1 pointer-events-none -z-10"
+                    style={{
+                      width: "120px",
+                      height: "180px",
+                      background:
+                        "radial-gradient(ellipse at 50% 15%, rgba(255, 160, 20, 0.45) 0%, rgba(255, 120, 0, 0.15) 45%, transparent 75%)",
+                      clipPath: "polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)",
+                      filter: "blur(6px)",
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 
+        2. FOREGROUND FLOATING ARCHITECTURAL FOOTER CONTENT
         (Text and links layer cleanly on top of the stage)
       */}
       {children && (
@@ -57,10 +253,10 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       )}
 
       {/* 
-        2. ASPHALT ROADWAY & VEHICLE STAGE
+        3. ASPHALT ROADWAY & VEHICLE STAGE
         Guaranteed 100% UNCLIPPED & FULL HEADROOM:
         - overflow-x-clip prevents horizontal scrollbars
-        - overflow-y-visible guarantees truck cabin roof, sun visor, and exhaust silencer NEVER clip!
+        - overflow-y-visible guarantees truck cabin roof and exhaust silencer NEVER clip!
         - Roadway sits tightly and directly beneath the content with ZERO dead gap!
         - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
@@ -210,6 +406,28 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         </motion.div>
 
       </div>
+
+      {/* Shared SVG Defs for Photorealistic Edison Materials */}
+      <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true">
+        <defs>
+          <linearGradient id="edison-brass" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#C9A050" />
+            <stop offset="40%" stopColor="#8C6A28" />
+            <stop offset="70%" stopColor="#E2BE73" />
+            <stop offset="100%" stopColor="#6E5018" />
+          </linearGradient>
+          <linearGradient id="edison-glass-lit" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="rgba(255, 230, 150, 0.55)" />
+            <stop offset="50%" stopColor="rgba(255, 170, 40, 0.4)" />
+            <stop offset="100%" stopColor="rgba(255, 120, 0, 0.35)" />
+          </linearGradient>
+          <linearGradient id="edison-glass-off" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.35)" />
+            <stop offset="50%" stopColor="rgba(200, 200, 190, 0.18)" />
+            <stop offset="100%" stopColor="rgba(100, 100, 100, 0.15)" />
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   );
 }
