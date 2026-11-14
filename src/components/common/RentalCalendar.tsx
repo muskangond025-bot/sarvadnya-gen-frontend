@@ -142,14 +142,29 @@ export function RentalCalendar({
     if (maxDate && date > maxDate) return;
 
     if (selectionMode === "individual") {
-      // Individual mode: select/deselect immediately
-      const isSelected = isDateSelectedIndividually(date);
-      if (isSelected) {
-        onDatesChange?.(
-          selectedDates.filter((d) => d.toDateString() !== date.toDateString())
-        );
+      // Smart 2-Click Range Selection:
+      // - First click selects Start Date
+      // - Second click selects End Date & automatically fills all days between them
+      // - Clicking when range is already selected starts fresh from the new date
+      if (selectedDates.length === 1 && !isDateSelectedIndividually(date)) {
+        const start = selectedDates[0] < date ? selectedDates[0] : date;
+        const end = selectedDates[0] < date ? date : selectedDates[0];
+        const rangeDates: Date[] = [];
+        const cur = new Date(start);
+        while (cur <= end) {
+          rangeDates.push(new Date(cur));
+          cur.setDate(cur.getDate() + 1);
+        }
+        onDatesChange?.(rangeDates);
+      } else if (selectedDates.length > 1) {
+        onDatesChange?.([date]);
       } else {
-        onDatesChange?.([...selectedDates, date]);
+        const isSelected = isDateSelectedIndividually(date);
+        if (isSelected) {
+          onDatesChange?.([]);
+        } else {
+          onDatesChange?.([date]);
+        }
       }
     } else {
       // Range mode: Start dragging
@@ -399,6 +414,7 @@ export function RentalCalendar({
                 key={idx}
                 type="button"
                 data-date={date.toISOString()}
+                onClick={() => handleMouseDown(date)}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   handleMouseDown(date);
@@ -627,6 +643,7 @@ export function RentalCalendar({
               key={idx}
               type="button"
               data-date={date.toISOString()}
+              onClick={() => handleMouseDown(date)}
               onMouseDown={(e) => {
                 e.preventDefault();
                 handleMouseDown(date);

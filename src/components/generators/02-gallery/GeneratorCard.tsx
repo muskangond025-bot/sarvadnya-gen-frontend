@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Droplet, 
@@ -10,9 +10,11 @@ import {
   Info,
   MessageSquare,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Check
 } from "lucide-react";
 import { Generator } from "@/types/generator";
+import { cn } from "@/lib/utils";
 
 interface GeneratorCardProps {
   generator: Generator;
@@ -27,6 +29,13 @@ export function GeneratorCard({
   onAddToQuote,
   onCompare 
 }: GeneratorCardProps) {
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAdd = () => {
+    onAddToQuote(generator.id);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1800);
+  };
   return (
     <motion.div
       layout
@@ -151,10 +160,23 @@ export function GeneratorCard({
           {/* Action Buttons */}
           <div className="flex gap-2">
             <button 
-              onClick={() => onAddToQuote(generator.id)}
-              className="flex-1 py-3 bg-[#FF5500] text-white text-xs font-bold rounded-xl hover:bg-[#E04400] transition-all flex items-center justify-center gap-2 shadow-sm"
+              type="button"
+              onClick={handleAdd}
+              className={cn(
+                "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer active:scale-[0.98]",
+                isAdded
+                  ? "bg-[#111315] text-white"
+                  : "bg-[#FF5500] hover:bg-[#E04B00] text-white"
+              )}
             >
-              Add to Quote
+              {isAdded ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-[#FF5500]" />
+                  <span>Added to Quote</span>
+                </>
+              ) : (
+                <span>Add to Quote</span>
+              )}
             </button>
             <a 
               href="https://wa.me/916262629944" 

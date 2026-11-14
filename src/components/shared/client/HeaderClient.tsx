@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button, LanguageSwitcher } from "@/components/common";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useQuote } from "@/lib/QuoteContext";
 import Image from "next/image";
 
 /**
@@ -497,15 +498,23 @@ export default function Header({ children }: { children?: React.ReactNode }) {
  * Saved Fleet & Wishlist Cart Button
  */
 function CartButton() {
+  const { openDrawer, totalItems } = useQuote();
+
   return (
-    <Link
-      href="/wishlist"
-      className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] hover:bg-[#F4EDE2] transition-all shadow-2xs text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 shrink-0"
-      aria-label="Wishlist & Inquiries"
-      title="Saved Fleet Inquiries"
+    <button
+      type="button"
+      onClick={openDrawer}
+      className="relative flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] hover:bg-[#F4EDE2] transition-all shadow-2xs text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 shrink-0 cursor-pointer"
+      aria-label="Fleet Quote Drawer"
+      title="View Shortlisted Fleet Quote"
     >
       <ShoppingCart className="w-3.5 h-3.5" />
-    </Link>
+      {totalItems > 0 && (
+        <span className="absolute -top-1 -right-1 size-4 rounded-full bg-[#FF5500] text-white text-[9.5px] font-bold flex items-center justify-center tabular-nums shadow-xs">
+          {totalItems}
+        </span>
+      )}
+    </button>
   );
 }
 

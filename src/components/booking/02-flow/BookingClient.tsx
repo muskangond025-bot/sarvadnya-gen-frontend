@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Plus, ArrowRight, Receipt } from "lucide-react";
+import { Check, Plus, Minus, ArrowRight, Receipt, Clock, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RentalCalendar } from "@/components/common";
 
@@ -23,6 +23,37 @@ interface BookingClientProps {
   generators: Generator[];
   initialKvaRaw?: string | null;
 }
+
+const SHIFT_OPTIONS = [
+  {
+    hours: 4,
+    label: "4 Hours",
+    sublabel: "Short Event / Standby",
+    multiplier: 0.75,
+    tag: "0.75x Base",
+  },
+  {
+    hours: 8,
+    label: "8 Hours",
+    sublabel: "Standard Single Shift",
+    multiplier: 1.0,
+    tag: "1.0x Base",
+  },
+  {
+    hours: 12,
+    label: "12 Hours",
+    sublabel: "Extended Industrial",
+    multiplier: 1.35,
+    tag: "1.35x Extended",
+  },
+  {
+    hours: 24,
+    label: "24 Hours",
+    sublabel: "Continuous 24/7 Run",
+    multiplier: 1.8,
+    tag: "1.80x Continuous",
+  },
+] as const;
 
 function parseKvaParam(raw: string | null | undefined): number | null {
   if (!raw) return null;
@@ -216,7 +247,7 @@ function GeneratorOptionCard({
             {generator.features.slice(0, 3).map((feature) => (
               <span
                 key={feature}
-                className="font-sans text-[11px] font-semibold text-[#403C36] px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D9]"
+                className="font-sans text-[11px] font-semibold text-[#403C36] px-2 py-0.5 rounded-md bg-[#FAF8F5] border border-[#E8E2D9]"
               >
                 {feature}
               </span>
@@ -242,6 +273,8 @@ export function BookingClient({
   const [selectedGeneratorId, setSelectedGeneratorId] = useState<string | null>(
     null
   );
+  const [operatingHours, setOperatingHours] = useState<number>(8);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const filteredGenerators = useMemo(() => {
     return generators
@@ -292,14 +325,70 @@ export function BookingClient({
   const INSURANCE_PER_DAY = 200;
   const DELIVERY_COST = 1500;
 
+  const selectedShift = useMemo(() => {
+    return (
+      SHIFT_OPTIONS.find((s) => s.hours === operatingHours) ?? SHIFT_OPTIONS[1]
+    );
+  }, [operatingHours]);
+
+  const baseDailyRate = useMemo(() => {
+    if (!selectedGenerator) return 0;
+    return parseFloat(selectedGenerator.daily_rate) || 0;
+  }, [selectedGenerator]);
+
+  const adjustedDailyRate = useMemo(() => {
+    return Math.round(baseDailyRate * selectedShift.multiplier);
+  }, [baseDailyRate, selectedShift]);
+
+  const rentalSubtotal = useMemo(() => {
+    return totalDays * adjustedDailyRate * quantity;
+  }, [totalDays, adjustedDailyRate, quantity]);
+
+  const insuranceSubtotal = useMemo(() => {
+    return totalDays * INSURANCE_PER_DAY * quantity;
+  }, [totalDays, quantity]);
+
   const totalPrice = useMemo(() => {
     if (!selectedGenerator || totalDays === 0) return 0;
-    const rentalCost = totalDays * parseFloat(selectedGenerator.daily_rate);
-    const insuranceCost = totalDays * INSURANCE_PER_DAY;
-    return rentalCost + insuranceCost + DELIVERY_COST;
-  }, [totalDays, selectedGenerator]);
+    return rentalSubtotal + insuranceSubtotal + DELIVERY_COST;
+  }, [totalDays, selectedGenerator, rentalSubtotal, insuranceSubtotal]);
 
   const canCheckout = Boolean(selectedGenerator && totalDays > 0);
+
+  const handleProceedToCheckout = () => {
+    if (!canCheckout || !selectedGenerator || sortedDates.length === 0) return;
+
+    if (typeof window !== "undefined") {
+      const rangeId = `range-${Date.now()}`;
+      const checkoutPayload = {
+        selectedRanges: [
+          {
+            id: rangeId,
+            start: sortedDates[0].toISOString(),
+            end: sortedDates[sortedDates.length - 1].toISOString(),
+          },
+        ],
+        generatorConfigs: [
+          {
+            dateRangeId: rangeId,
+            quantity: quantity,
+            numberOfShifts:
+              operatingHours <= 8 ? 1 : operatingHours <= 16 ? 2 : 3,
+            operatingHours: operatingHours,
+            generatorId: selectedGenerator.id,
+            generatorName: selectedGenerator.name,
+            powerOutputKva: selectedGenerator.power_output_kva,
+            dailyRate: adjustedDailyRate,
+            totalPrice: totalPrice,
+            siteLocation: "Direct Delivery",
+          },
+        ],
+      };
+      localStorage.setItem("checkoutData", JSON.stringify(checkoutPayload));
+    }
+
+    router.push("/payments");
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -396,9 +485,14 @@ export function BookingClient({
               Available Generators
             </h2>
 
-            <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white border border-[#E8E2D9] font-mono text-xs font-bold text-[#111315]">
-              {filteredGenerators.length} found
-            </span>
+            <div className="w-full pt-4 border-t border-[#E8E2D9] flex justify-between items-baseline text-sm">
+              <span className="text-[#403C36] font-semibold">
+                Available Fleet
+              </span>
+              <span className="font-mono text-base font-bold text-[#111315] tabular-nums">
+                {filteredGenerators.length} {filteredGenerators.length === 1 ? "Unit" : "Units"}
+              </span>
+            </div>
           </div>
 
           <div className="lg:col-span-8">
@@ -427,13 +521,188 @@ export function BookingClient({
         </div>
       </section>
 
-      {/* SECTION 04: RENTAL SUMMARY RECEIPT SLIP + BULK ORDER */}
+      {/* SECTION 04: OPERATING HOURS & QUANTITY (Clean Architectural Selector) */}
+      <section className="py-12 sm:py-16 border-b border-[#E8E2D9]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+          <div className="lg:col-span-4 flex flex-col items-start">
+            <span className="font-mono text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF5500] mb-2">
+              04
+            </span>
+            <h2 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111315] tracking-tight mb-4">
+              Shift &amp; Quantity
+            </h2>
+
+            <div className="w-full pt-4 border-t border-[#E8E2D9] space-y-2.5 text-sm">
+              <div className="flex justify-between items-baseline">
+                <span className="text-[#403C36] font-semibold">Daily Run Time</span>
+                <span className="font-mono text-[#111315] font-bold">
+                  {operatingHours} Hours / day
+                </span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-[#403C36] font-semibold">Shift Profile</span>
+                <span className="font-mono text-[#FF5500] font-bold">
+                  {selectedShift.label}
+                </span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-[#403C36] font-semibold">Fleet Count</span>
+                <span className="font-mono text-[#111315] font-extrabold">
+                  {quantity} {quantity === 1 ? "Unit" : "Units"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-8 space-y-8">
+            {/* 1. Operating Hours Selection */}
+            <div className="bg-white border border-[#E8E2D9] rounded-2xl p-6 sm:p-7 shadow-xs">
+              <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-[#E8E2D9]">
+                <Clock className="w-4 h-4 text-[#FF5500]" />
+                <h3 className="font-sans text-base sm:text-lg font-extrabold text-[#111315] tracking-tight">
+                  Daily Operating Hours
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                {SHIFT_OPTIONS.map((option) => {
+                  const isSelected = operatingHours === option.hours;
+                  return (
+                    <button
+                      key={option.hours}
+                      type="button"
+                      onClick={() => setOperatingHours(option.hours)}
+                      className={cn(
+                        "p-4 sm:p-5 rounded-xl border text-left transition-all duration-150 cursor-pointer flex flex-col justify-between h-full",
+                        isSelected
+                          ? "bg-[#FFF9F5] border-2 border-[#FF5500] shadow-[0_8px_24px_rgba(255,85,0,0.12)]"
+                          : "bg-white border-[#E8E2D9] hover:border-[#111315]/40 hover:bg-[#FAF8F5]"
+                      )}
+                    >
+                      <div>
+                        <div className="flex items-baseline justify-between gap-1 mb-1.5">
+                          <span
+                            className={cn(
+                              "font-sans text-2xl font-black tracking-tight tabular-nums",
+                              isSelected ? "text-[#FF5500]" : "text-[#111315]"
+                            )}
+                          >
+                            {option.hours}
+                          </span>
+                          <span className="font-mono text-xs font-bold text-[#524E48] uppercase">
+                            Hours
+                          </span>
+                        </div>
+                        <p className="font-sans text-xs font-semibold text-[#111315] mb-1">
+                          {option.sublabel}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-[#E8E2D9]/70 mt-3 flex items-center justify-between">
+                        <span className="font-mono text-[11px] font-bold text-[#FF5500]">
+                          {option.tag}
+                        </span>
+                        {isSelected && (
+                          <div className="size-4 rounded-md bg-[#FF5500] text-white flex items-center justify-center">
+                            <Check className="w-3 h-3 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 2. Fleet Quantity Selection */}
+            <div className="bg-white border border-[#E8E2D9] rounded-2xl p-6 sm:p-7 shadow-xs">
+              <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-[#E8E2D9]">
+                <Layers className="w-4 h-4 text-[#FF5500]" />
+                <h3 className="font-sans text-base sm:text-lg font-extrabold text-[#111315] tracking-tight">
+                  Fleet Quantity Required
+                </h3>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6">
+                {/* Stepper Control */}
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    aria-label="Decrease quantity"
+                    disabled={quantity <= 1}
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className={cn(
+                      "size-12 rounded-xl flex items-center justify-center border transition-all duration-150 cursor-pointer",
+                      quantity <= 1
+                        ? "bg-[#FAF8F5] border-[#E8E2D9] text-[#A19D95] cursor-not-allowed opacity-50"
+                        : "bg-white border-[#E8E2D9] text-[#111315] hover:border-[#111315] hover:bg-[#FAF8F5] active:scale-95"
+                    )}
+                  >
+                    <Minus className="w-5 h-5 stroke-[2.25]" />
+                  </button>
+
+                  <div className="min-w-28 text-center px-4 py-2 rounded-xl bg-[#FAF8F5] border border-[#E8E2D9]">
+                    <span className="font-sans text-3xl font-black text-[#111315] tabular-nums leading-none">
+                      {quantity}
+                    </span>
+                    <span className="block font-mono text-[11px] font-bold uppercase tracking-wider text-[#524E48] mt-0.5">
+                      {quantity === 1 ? "Unit" : "Units"}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-label="Increase quantity"
+                    disabled={quantity >= 20}
+                    onClick={() => setQuantity((q) => Math.min(20, q + 1))}
+                    className={cn(
+                      "size-12 rounded-xl flex items-center justify-center border transition-all duration-150 cursor-pointer",
+                      quantity >= 20
+                        ? "bg-[#FAF8F5] border-[#E8E2D9] text-[#A19D95] cursor-not-allowed opacity-50"
+                        : "bg-[#FF5500] border-[#FF5500] text-white hover:bg-[#E04B00] shadow-sm shadow-[#FF5500]/25 active:scale-95"
+                    )}
+                  >
+                    <Plus className="w-5 h-5 stroke-[2.25]" />
+                  </button>
+                </div>
+
+                {/* Preset Quick Selectors */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-xs font-bold text-[#524E48] uppercase tracking-wider mr-1 hidden sm:inline">
+                    Presets:
+                  </span>
+                  {[1, 2, 3, 5].map((preset) => {
+                    const isCurrent = quantity === preset;
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setQuantity(preset)}
+                        className={cn(
+                          "px-3.5 py-2 rounded-xl font-mono text-xs font-extrabold transition-all cursor-pointer border text-center",
+                          isCurrent
+                            ? "bg-[#111315] border-[#111315] text-white shadow-xs"
+                            : "bg-[#FAF8F5] border-[#E8E2D9] text-[#111315] hover:border-[#111315]/50 hover:bg-white"
+                        )}
+                      >
+                        {preset} {preset === 1 ? "Unit" : "Units"}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 05: RENTAL SUMMARY RECEIPT SLIP + BULK ORDER */}
       <section className="py-12 sm:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
           <div className="lg:col-span-5 flex flex-col items-start space-y-6">
             <div>
               <span className="font-mono text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF5500] mb-2 block">
-                04
+                05
               </span>
               <h2 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111315] tracking-tight">
                 Rental Summary
@@ -489,16 +758,16 @@ export function BookingClient({
 
                 <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
                   <span className="text-[#403C36] font-semibold">
-                    Rental Days
+                    Rental Duration
                   </span>
                   <span className="font-mono text-[#111315] font-extrabold">
-                    {totalDays || "—"}
+                    {totalDays ? `${totalDays} ${totalDays === 1 ? "Day" : "Days"}` : "—"}
                   </span>
                 </div>
 
                 <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
                   <span className="text-[#403C36] font-semibold">
-                    Power Needed
+                    Power Requirement
                   </span>
                   <span className="font-mono text-[#FF5500] font-extrabold">
                     {powerRequirement} kVA
@@ -507,7 +776,7 @@ export function BookingClient({
 
                 <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
                   <span className="text-[#403C36] font-semibold shrink-0">
-                    Generator Type
+                    Generator Model
                   </span>
                   <span className="text-[#111315] font-bold text-right">
                     {selectedGenerator?.name || "Not selected"}
@@ -516,34 +785,58 @@ export function BookingClient({
 
                 <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
                   <span className="text-[#403C36] font-semibold">
-                    Price/Day
+                    Daily Operating Shift
+                  </span>
+                  <span className="font-mono text-[#111315] font-bold">
+                    {operatingHours} Hours / day ({selectedShift.label})
+                  </span>
+                </div>
+
+                <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
+                  <span className="text-[#403C36] font-semibold">
+                    Fleet Quantity
+                  </span>
+                  <span className="font-mono text-[#111315] font-extrabold">
+                    {quantity} {quantity === 1 ? "Unit" : "Units"}
+                  </span>
+                </div>
+
+                <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
+                  <span className="text-[#403C36] font-semibold">
+                    Rate per Unit/Day
                   </span>
                   <span className="font-mono text-[#111315] font-bold">
                     {selectedGenerator
-                      ? `₹${parseInt(
-                          selectedGenerator.daily_rate,
-                          10
-                        ).toLocaleString("en-IN")}`
+                      ? `₹${adjustedDailyRate.toLocaleString("en-IN")}`
                       : "—"}
                   </span>
                 </div>
 
                 <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
                   <span className="text-[#403C36] font-semibold">
-                    Insurance (₹{INSURANCE_PER_DAY}/day)
+                    Rental Subtotal ({quantity} {quantity === 1 ? "unit" : "units"} × {totalDays || 0}d)
+                  </span>
+                  <span className="font-mono text-[#111315] font-bold">
+                    {selectedGenerator && totalDays > 0
+                      ? `₹${rentalSubtotal.toLocaleString("en-IN")}`
+                      : "—"}
+                  </span>
+                </div>
+
+                <div className="flex justify-between gap-4 pb-2.5 border-b border-dotted border-[#D6CFC4]">
+                  <span className="text-[#403C36] font-semibold">
+                    Insurance (₹{INSURANCE_PER_DAY}/unit/day)
                   </span>
                   <span className="font-mono text-[#111315] font-bold">
                     {totalDays > 0
-                      ? `₹${(totalDays * INSURANCE_PER_DAY).toLocaleString(
-                          "en-IN"
-                        )}`
+                      ? `₹${insuranceSubtotal.toLocaleString("en-IN")}`
                       : "—"}
                   </span>
                 </div>
 
                 <div className="flex justify-between gap-4">
                   <span className="text-[#403C36] font-semibold">
-                    Delivery Cost
+                    Logistics &amp; Delivery
                   </span>
                   <span className="font-mono text-[#111315] font-bold">
                     ₹{DELIVERY_COST.toLocaleString("en-IN")}
@@ -562,7 +855,7 @@ export function BookingClient({
               <div className="bg-white border border-t-0 border-[#E8E2D9] rounded-b-2xl px-6 sm:px-8 pt-2 pb-6 sm:pb-8">
                 <div className="flex justify-between items-baseline mb-6">
                   <span className="font-sans text-lg font-extrabold text-[#111315]">
-                    Total
+                    Total Amount
                   </span>
                   <span className="font-sans text-3xl sm:text-4xl font-black text-[#FF5500] tabular-nums tracking-tight">
                     {totalPrice > 0
@@ -574,7 +867,7 @@ export function BookingClient({
                 <button
                   type="button"
                   disabled={!canCheckout}
-                  onClick={() => router.push("/payments")}
+                  onClick={handleProceedToCheckout}
                   className={cn(
                     "w-full py-4 px-6 rounded-xl font-sans font-bold text-base transition-all duration-200 flex items-center justify-center gap-2",
                     canCheckout

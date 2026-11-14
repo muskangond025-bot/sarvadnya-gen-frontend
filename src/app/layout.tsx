@@ -6,6 +6,8 @@ import { Chatbot, FooterClient, GlobalLoader, AgentationToolbar } from "@/compon
 import { FullscreenProvider } from "@/lib/FullscreenContext";
 import { AuthProvider } from "@/lib/AuthContext";
 import { LanguageProvider } from "@/lib/LanguageContext";
+import { QuoteProvider } from "@/lib/QuoteContext";
+import { QuoteDrawer } from "@/components/common";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -40,16 +42,19 @@ export default function RootLayout({
       >
         <AuthProvider>
           <LanguageProvider>
-            <GlobalLoader />
-            <FullscreenProvider>
-              <Header />
-              <main className="overflow-x-hidden min-h-screen">{children}</main>
-              <Chatbot />
-              <FooterClient>
-                <Footer />
-              </FooterClient>
-              <AgentationToolbar />
-            </FullscreenProvider>
+            <QuoteProvider>
+              <GlobalLoader />
+              <FullscreenProvider>
+                <Header />
+                <main className="overflow-x-hidden min-h-screen">{children}</main>
+                <QuoteDrawer />
+                <Chatbot />
+                <FooterClient>
+                  <Footer />
+                </FooterClient>
+                <AgentationToolbar />
+              </FullscreenProvider>
+            </QuoteProvider>
           </LanguageProvider>
         </AuthProvider>
       </body>

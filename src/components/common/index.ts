@@ -15,4 +15,5 @@ export * from "@/components/common/DateTimePicker";
 export * from "@/components/common/LanguageSwitcher";
 export * from "@/components/common/SlicedWavesBackground";
 export * from "@/components/common/SplashCursorBackground";
+export * from "@/components/common/QuoteDrawer";
 export { default as Logo } from "@/components/common/Logo";

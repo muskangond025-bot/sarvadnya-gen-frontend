@@ -13,6 +13,7 @@ import { Filter, Star, Loader2, AlertCircle, X, MapPin, Clock, Zap } from "lucid
 import { useProducts } from "@/hooks/useProducts";
 import { GeneratorCard } from "./GeneratorCard";
 import { Generator as GeneratorType } from "@/types/generator";
+import { useQuote } from "@/lib/QuoteContext";
 import {
   GENERATOR_HERO_FILTER_EVENT,
   GeneratorHeroFilterDetail,
@@ -286,6 +287,7 @@ const matchesUsageFilter = (
 
 export default function GeneratorGallery() {
   const router = useRouter();
+  const { addItem } = useQuote();
   const [activeGroup, setActiveGroup] = useState<FilterGroup>("power");
   const [activeSubFilter, setActiveSubFilter] = useState("all");
   const [heroFilter, setHeroFilter] = useState<GeneratorHeroFilterDetail | null>(
@@ -613,9 +615,20 @@ export default function GeneratorGallery() {
                     key={gen.id}
                     generator={gen as unknown as GeneratorType}
                     onViewDetails={() => handleCardClick(gen)}
-                    onAddToQuote={() =>
-                      router.push(`/book?kVA=${encodeURIComponent(gen.kva)}`)
-                    }
+                    onAddToQuote={() => {
+                      const g = gen as unknown as GeneratorType;
+                      addItem({
+                        id: gen.id,
+                        name: gen.name,
+                        brand: gen.brand,
+                        power_output_kva: gen.kva,
+                        daily_rate: g.daily_rate,
+                        fuel_consumption_per_hour: g.fuel_consumption_per_hour,
+                        noise_level_db: g.noise_level_db,
+                        phase: g.phase,
+                        primary_image_url: g.primary_image_url,
+                      });
+                    }}
                     onCompare={() =>
                       document
                         .getElementById("compare")

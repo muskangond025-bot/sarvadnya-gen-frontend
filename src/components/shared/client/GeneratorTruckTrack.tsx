@@ -199,7 +199,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         - Roadway sits tightly and directly beneath the content with ZERO dead gap!
         - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
-      <div className="relative w-full h-[88px] sm:h-[100px] lg:h-[114px] overflow-x-clip overflow-y-visible shrink-0 mt-0">
+      <div className="relative w-full h-[105px] sm:h-[120px] lg:h-[135px] overflow-x-clip overflow-y-visible shrink-0 mt-0">
         
         {/* Asphalt Road Surface with Centerline & Shoulder */}
         <div className="absolute inset-x-0 bottom-0 h-10 sm:h-12 lg:h-14 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
@@ -265,22 +265,111 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
           </motion.div>
 
           {/* 
-            HYPER-REALISTIC 3D TATA 1109 GENERATOR TRUCK
-            - 100% Full Uncut Headroom: Complete chrome silencer barrel, exhaust elbow pipe, 
-              rain flap, crane-lifting rails, and curved aerodynamic cabin roof with sun visor!
-            - Tata 1109 Ochre-Brown Finish (#B86A28) + Sarvadnya Energy Orange Canopy (#FF5500)
-            - Authentic Devanagari "सर्वज्ञ जनरेटर" + Cummins Power Generation logo
-            - Zero floating blur smudge: Rubber tires sit squarely and flush on the asphalt road!
-            - Pristine, single unified 3D truck render with zero overlay artifacts or double wheels!
+            HYPER-REALISTIC 3D TATA 1109 GENERATOR TRUCK WITH 360° SPINNING WHEELS
+            - Layer 1: Contact Drop Shadows grounding the tires directly on the asphalt
+            - Layer 2: 360° Rotating Rear Wheel (axle: 31.66%, 88.32%, width: 11.6%)
+            - Layer 3: 360° Rotating Front Wheel (axle: 81.9%, 86.76%, width: 13.17%)
+            - Layer 4: 3D Truck Body with Open Wheel Arches ON TOP (fenders overlap top of tires naturally)
+            - ZERO double wheels, ZERO ghosting, completely photorealistic and grounded!
           */}
           <div className="relative group cursor-default select-none">
-            {/* 3D Mobile DG Delivery Truck Body with Grounded Tires */}
+            {/* Soft Ambient Contact Shadows Under Tires */}
+            <div
+              className="absolute pointer-events-none rounded-full bg-black/75 blur-[2.5px] z-10"
+              style={{
+                left: "31.66%",
+                bottom: "1px",
+                width: "12%",
+                height: "5px",
+                transform: "translateX(-50%)",
+              }}
+            />
+            <div
+              className="absolute pointer-events-none rounded-full bg-black/75 blur-[2.5px] z-10"
+              style={{
+                left: "81.9%",
+                bottom: "1px",
+                width: "13.5%",
+                height: "5px",
+                transform: "translateX(-50%)",
+              }}
+            />
+
+            {/* 360-DEGREE CONTINUOUS ROTATING REAR WHEEL */}
+            <div
+              className="absolute pointer-events-none select-none z-10"
+              style={{
+                left: "31.66%",
+                top: "88.32%",
+                width: "11.6%",
+                aspectRatio: "1/1",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 0.9,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="w-full h-full will-change-transform"
+                style={{
+                  transformOrigin: "center center",
+                }}
+              >
+                <img
+                  src="/images/generators/truck_wheel_rear_3d.png"
+                  alt="Tata 1109 Rotating Rear Wheel"
+                  width={148}
+                  height={148}
+                  className="w-full h-full object-contain pointer-events-none select-none block"
+                  draggable={false}
+                />
+              </motion.div>
+            </div>
+
+            {/* 360-DEGREE CONTINUOUS ROTATING FRONT WHEEL */}
+            <div
+              className="absolute pointer-events-none select-none z-10"
+              style={{
+                left: "81.9%",
+                top: "86.76%",
+                width: "13.17%",
+                aspectRatio: "1/1",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 0.9,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="w-full h-full will-change-transform"
+                style={{
+                  transformOrigin: "center center",
+                }}
+              >
+                <img
+                  src="/images/generators/truck_wheel_front_3d.png"
+                  alt="Tata 1109 Rotating Front Wheel"
+                  width={168}
+                  height={168}
+                  className="w-full h-full object-contain pointer-events-none select-none block"
+                  draggable={false}
+                />
+              </motion.div>
+            </div>
+
+            {/* 3D Truck Body with Open Wheel Arches ON TOP (fenders cover top of wheels) */}
             <img
-              src="/images/generators/truck_3d_realistic.png"
+              src="/images/generators/truck_body_hollow.png"
               alt="Sarvadnya Tata 1109 Mobile Silent DG Delivery Truck"
               width={1276}
-              height={638}
-              className="w-[200px] sm:w-[245px] lg:w-[280px] h-auto object-contain pointer-events-none select-none block"
+              height={642}
+              className="relative z-20 w-[240px] sm:w-[285px] lg:w-[325px] h-auto object-contain pointer-events-none select-none block drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]"
               draggable={false}
             />
           </div>
