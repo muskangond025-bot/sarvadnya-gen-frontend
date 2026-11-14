@@ -11,16 +11,19 @@ interface BulbData {
   id: number;
   percent: number;
   triggerTime: number; // in seconds
+  yOffset: number; // Exact integer for 100% deterministic SSR/Client hydration
 }
 
 // Staggered trigger timestamps based on truck drive speed across the stage
 const BULBS: BulbData[] = Array.from({ length: TOTAL_BULBS }, (_, i) => {
-  const percent = (i + 0.5) * (100 / TOTAL_BULBS);
-  const triggerTime = Math.max(0.5, (percent - 6) * (17 / 100) + 1.0);
+  const percent = Number(((i + 0.5) * (100 / TOTAL_BULBS)).toFixed(2));
+  const triggerTime = Number((Math.max(0.5, (percent - 6) * (17 / 100) + 1.0)).toFixed(2));
+  const yOffset = Math.round(Math.sin((percent / 100) * Math.PI) * 10);
   return {
     id: i,
     percent,
     triggerTime,
+    yOffset,
   };
 });
 
@@ -209,9 +212,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 key={bulb.id}
                 className="relative flex flex-col items-center"
                 style={{
-                  transform: `translateY(${
-                    Math.sin((bulb.percent / 100) * Math.PI) * 12
-                  }px)`,
+                  transform: `translateY(${bulb.yOffset}px)`,
                 }}
               >
                 {/* Short drop wire from catenary cord */}
@@ -271,17 +272,17 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         - Roadway sits tightly and directly beneath the content with ZERO dead gap!
         - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
-      <div className="relative w-full h-[105px] sm:h-[120px] lg:h-[135px] overflow-x-clip overflow-y-visible shrink-0 mt-0">
+      <div className="relative w-full h-[80px] sm:h-[120px] lg:h-[135px] overflow-x-clip overflow-y-visible shrink-0 mt-0">
         
         {/* Asphalt Road Surface with Centerline & Shoulder */}
-        <div className="absolute inset-x-0 bottom-0 h-10 sm:h-12 lg:h-14 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
+        <div className="absolute inset-x-0 bottom-0 h-8 sm:h-12 lg:h-14 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
           {/* Road Asphalt Reflection & Wet Sheen */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-white/5 pointer-events-none" />
 
           {/* Dashed Center Road Line running along the driving lane */}
-          <div className="absolute inset-x-0 bottom-[8px] sm:bottom-[10px] lg:bottom-[11px] flex justify-between gap-3 sm:gap-4 px-2 opacity-40 pointer-events-none">
+          <div className="absolute inset-x-0 bottom-[6px] sm:bottom-[10px] lg:bottom-[11px] flex justify-between gap-2.5 sm:gap-4 px-2 opacity-40 pointer-events-none">
             {Array.from({ length: 32 }).map((_, i) => (
-              <span key={i} className="inline-block w-5 sm:w-8 lg:w-10 h-0.5 sm:h-1 bg-amber-400 shrink-0 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.3)]" />
+              <span key={i} className="inline-block w-4 sm:w-8 lg:w-10 h-0.5 sm:h-1 bg-amber-400 shrink-0 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.3)]" />
             ))}
           </div>
         </div>
@@ -300,7 +301,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             duration: DRIVE_DURATION,
             ease: "linear",
           }}
-          className="absolute bottom-[4px] sm:bottom-[6px] lg:bottom-[7px] left-0 z-20 flex items-end will-change-transform pointer-events-none"
+          className="absolute bottom-[3px] sm:bottom-[6px] lg:bottom-[7px] left-0 z-20 flex items-end will-change-transform pointer-events-none"
           style={{
             transformStyle: "preserve-3d",
           }}
@@ -410,7 +411,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
               alt="Sarvadnya Tata 1109 Mobile Silent DG Delivery Truck"
               width={1276}
               height={642}
-              className="relative z-20 w-[240px] sm:w-[285px] lg:w-[325px] h-auto object-contain pointer-events-none select-none block drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]"
+              className="relative z-20 w-[200px] sm:w-[285px] lg:w-[325px] h-auto object-contain pointer-events-none select-none block drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]"
               draggable={false}
             />
           </div>
