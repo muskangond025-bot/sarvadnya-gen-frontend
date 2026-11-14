@@ -217,26 +217,36 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                 {/* Short drop wire from catenary cord */}
                 <span className="w-[1px] h-2 sm:h-3.5 bg-[#2A241C] block" />
 
-                {/* Photorealistic ST64 Edison Bulb SVG */}
-                <EdisonBulbSvg isLit={isLit} />
+                {/* Photorealistic ST64 Edison Bulb with downward light emission */}
+                <div className="relative flex flex-col items-center">
+                  <EdisonBulbSvg isLit={isLit} />
 
-                {/* Warm Volumetric Ambient Glow Beneath Bulb */}
-                {isLit && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.6 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute -top-1 pointer-events-none -z-10"
-                    style={{
-                      width: "120px",
-                      height: "180px",
-                      background:
-                        "radial-gradient(ellipse at 50% 15%, rgba(255, 160, 20, 0.45) 0%, rgba(255, 120, 0, 0.15) 45%, transparent 75%)",
-                      clipPath: "polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)",
-                      filter: "blur(6px)",
-                    }}
-                  />
-                )}
+                  {/* Warm Volumetric Ambient Spotlight Cone originating purely from bulb glass */}
+                  {isLit && (
+                    <>
+                      {/* Filament Core Radiance */}
+                      <div
+                        className="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 size-5 rounded-full pointer-events-none -z-10 bg-[#FFB703]/35 blur-[3px]"
+                      />
+
+                      {/* Downward Light Cone (Originates strictly from bulb bottom, NOT from wire/socket above) */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.35 }}
+                        className="absolute top-[68%] left-1/2 -translate-x-1/2 pointer-events-none -z-10"
+                        style={{
+                          width: "135px",
+                          height: "170px",
+                          background:
+                            "radial-gradient(ellipse at 50% 0%, rgba(255, 175, 30, 0.42) 0%, rgba(255, 130, 0, 0.16) 42%, transparent 75%)",
+                          clipPath: "polygon(44% 0%, 56% 0%, 100% 100%, 0% 100%)",
+                          filter: "blur(5px)",
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               </div>
             );
           })}
