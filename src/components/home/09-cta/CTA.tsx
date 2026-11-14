@@ -1,11 +1,14 @@
 import React from "react";
 import { CTAClient, CTAData } from "./CTAClient";
-import { SlicedWavesBackground } from "@/components/common/SlicedWavesBackground";
+import { SplashCursorBackground } from "@/components/common";
 
 /**
  * CTA Component (Server Component)
  * 
- * Luxury pre-footer hero section with interactive SlicedWaves light ribbons.
+ * Luxury pre-footer conversion section with interactive SplashCursor WebGL fluid dynamics:
+ * - Fluid ink ripples reacting to cursor movement and clicks in Sarvadnya Energy Orange (#FF5500)
+ * - Contained strictly within the CTA section bounds
+ * - Zero purple hues, tuned to pure energy orange palette
  */
 const CTA_DATA: CTAData = {
   title: "Get Reliable Silent Power for Your Event or Site",
@@ -20,37 +23,29 @@ const CTA_DATA: CTAData = {
 export function CTA() {
   return (
     <section className="relative w-full py-20 lg:py-28 bg-[#FAF8F5] overflow-hidden border-t border-[#E8E2D9]">
-      {/* Interactive SlicedWaves Background for Footer Hero / Pre-Footer */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-auto opacity-60">
-        <SlicedWavesBackground
-          color1="#ff9d4d"
-          color2="#ff2d78"
-          color3="#3060ff"
-          ribbons={3}
-          spacing={28}
-          perspective={0.45}
-          blur={0.6}
-          glow={1}
-          position={0.78}
-          mouseInteraction
-          barWidth={0.5}
-          ribbonHeight={0.26}
-          spread={0.1}
-          amplitude={0.1}
-          frequency={1}
-          curve={0.5}
-          slices={0}
-          speed={1}
-          brightness={1.25}
-          rotation={0}
-          grain={0.08}
-          fade={0}
-          opacity={1}
-          intro
-          lightMode
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF8F5] via-[#FAF8F5]/40 to-[#FAF8F5] pointer-events-none" />
-      </div>
+      {/* 
+        Interactive SplashCursor WebGL Fluid Canvas
+        Active ONLY within this CTA section with pure Energy Orange fluid dynamics
+      */}
+      <SplashCursorBackground
+        contained={true}
+        rainbow={false}
+        colors={["#FF5500", "#FF6A00", "#FF7F00", "#FF9933", "#FF4000"]}
+        colorSpeed={0.8}
+        intensity={1.2}
+        size={1.1}
+        force={1.1}
+        swirl={3.5}
+        trail={1.4}
+        momentum={1}
+        shading={0.8}
+        glow={0.2}
+        quality="high"
+        clickSplash={true}
+        intro={false}
+        theme="light"
+        zIndex={1}
+      />
 
       <CTAClient data={CTA_DATA} />
     </section>

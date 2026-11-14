@@ -220,8 +220,8 @@ export default function Header({ children }: { children?: React.ReactNode }) {
           className={cn(
             "pointer-events-auto w-full max-w-5xl rounded-full px-2 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-1.5 sm:gap-3 transition-all duration-300 select-none",
             isScrolled || isMenuOpen
-              ? "bg-[#18181B]/95 backdrop-blur-xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-white"
-              : "bg-[#18181B] border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.35)] text-white"
+              ? "bg-white/95 backdrop-blur-xl border border-[#E8E2D9] shadow-[0_12px_36px_rgba(0,0,0,0.08)] text-[#111315]"
+              : "bg-white border border-[#E8E2D9] shadow-[0_8px_24px_rgba(0,0,0,0.06)] text-[#111315]"
           )}
         >
           {/* 
@@ -247,10 +247,10 @@ export default function Header({ children }: { children?: React.ReactNode }) {
               href="/"
               className="hidden xl:flex flex-col text-left leading-none gap-0.5 hover:opacity-90 transition-opacity"
             >
-              <span className="font-sans font-black text-xs tracking-tight text-white uppercase whitespace-nowrap">
+              <span className="font-sans font-black text-xs tracking-tight text-[#111315] uppercase whitespace-nowrap">
                 Sarvadnya Generator
               </span>
-              <span className="font-sans text-[10.5px] text-[#F36805] font-bold whitespace-nowrap">
+              <span className="font-sans text-[10.5px] text-[#FF5500] font-bold whitespace-nowrap">
                 सर्वज्ञ जनरेटर
               </span>
             </Link>
@@ -258,16 +258,16 @@ export default function Header({ children }: { children?: React.ReactNode }) {
 
           {/* 
             RIGHT COLUMN: ACTION CLUSTER
-            Language switcher + Phone + Cart + Profile + Menu toggle + White Capsule CTA
+            Language switcher + Phone + Cart + Profile + Menu toggle
           */}
           <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
-            {/* Language Dropdown matching user screenshot */}
-            <LanguageSwitcher theme="dark" />
+            {/* Language Dropdown with light theme for white navbar */}
+            <LanguageSwitcher theme="light" />
 
             {/* Quick Telephone Dispatch Icon */}
             <a
               href="tel:+916262629944"
-              className="size-7.5 sm:size-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white hover:text-[#FF5500] flex items-center justify-center transition-all shadow-xs shrink-0"
+              className="size-7.5 sm:size-9 rounded-full bg-[#FAF8F5] hover:bg-[#F4EDE2] border border-[#E8E2D9] text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 flex items-center justify-center transition-all shadow-2xs shrink-0"
               title="Direct Fleet Dispatch: +91 62626 29944"
               aria-label="Call Direct Fleet Dispatch"
             >
@@ -280,17 +280,17 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             {/* User Authentication Profile Dropdown */}
             <ProfileDropdown />
 
-            {/* Architectural Full-Screen Menu Drawer Toggle (White Capsule Pill) */}
+            {/* Architectural Full-Screen Menu Drawer Toggle (High-Contrast Capsule Pill) */}
             <button
               type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95 cursor-pointer"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#111315] text-white hover:bg-[#FF5500] hover:text-white px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95 cursor-pointer"
               aria-expanded={isMenuOpen}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               title={isMenuOpen ? "Close Menu" : "Explore All Fleet & Insights"}
             >
               <svg
-                className="w-4 h-3.5 shrink-0 text-[#18181B] group-hover:text-white transition-colors"
+                className="w-4 h-3.5 shrink-0 text-white transition-colors"
                 viewBox="0 0 18 14"
                 fill="none"
                 aria-hidden="true"
@@ -373,7 +373,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                 role="dialog"
                 aria-modal="true"
                 aria-label="Navigation menu"
-                className="pointer-events-auto w-full max-w-5xl max-h-[calc(100vh-6rem)] flex flex-col bg-[#18181B]/98 text-white border border-white/15 rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.65)] overflow-y-auto overscroll-contain"
+                className="pointer-events-auto w-full max-w-5xl max-h-[calc(100vh-6rem)] flex flex-col bg-white text-[#111315] border border-[#E8E2D9] rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.12)] overflow-y-auto overscroll-contain"
               >
                 <div className="w-full px-5 sm:px-8 py-6 sm:py-7 flex flex-col justify-between gap-6">
                   {/* Navigation Grid */}
@@ -399,7 +399,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                             <Link
                               href={item.href}
                               onClick={() => setIsMenuOpen(false)}
-                              className="group relative flex items-center justify-between w-full px-3 py-2.5 rounded-2xl hover:bg-white/[0.04] transition-colors text-left"
+                              className="group relative flex items-center justify-between w-full px-3 py-2.5 rounded-2xl hover:bg-black/[0.03] transition-colors text-left"
                             >
                               <div className="flex items-baseline gap-3.5">
                                 {/* Monospace Index Numeral */}
@@ -413,7 +413,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                                     "font-sans font-extrabold text-xl sm:text-2xl leading-tight tracking-tight transition-all duration-200",
                                     isActive
                                       ? "text-[#FF5500] translate-x-0.5"
-                                      : "text-white/90 group-hover:text-[#FF5500] group-hover:translate-x-1"
+                                      : "text-[#111315] group-hover:text-[#FF5500] group-hover:translate-x-1"
                                   )}
                                 >
                                   {t(item.key, item.fallback)}
@@ -437,24 +437,24 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                   </nav>
 
                   {/* Drawer Language Selector */}
-                  <div className="pt-4 border-t border-white/10">
-                    <LanguageSwitcher variant="drawer" theme="dark" />
+                  <div className="pt-4 border-t border-[#E8E2D9]">
+                    <LanguageSwitcher variant="drawer" theme="light" />
                   </div>
 
                   {/* Bottom Action Strip */}
-                  <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+                  <div className="pt-4 border-t border-[#E8E2D9] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
                     {/* Direct Contact Links */}
                     <div className="flex flex-wrap items-center gap-5">
                       <a
                         href="tel:+916262629944"
-                        className="font-mono font-bold text-white hover:text-[#FF5500] transition-colors flex items-center gap-2"
+                        className="font-mono font-bold text-[#111315] hover:text-[#FF5500] transition-colors flex items-center gap-2"
                       >
                         <Phone className="w-3.5 h-3.5 text-[#FF5500]" />
                         +91 62626 29944
                       </a>
                       <a
                         href="mailto:info@sarvadnyagenerators.com"
-                        className="text-white/70 hover:text-white transition-colors"
+                        className="text-[#524E48] hover:text-[#111315] transition-colors"
                       >
                         info@sarvadnyagenerators.com
                       </a>
@@ -469,7 +469,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={social.label}
-                          className="size-8 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 hover:border-white/30 flex items-center justify-center text-white/80 hover:text-[#FF5500] transition-all shadow-xs"
+                          className="size-8 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] hover:bg-[#FF5500] hover:text-white hover:border-[#FF5500] flex items-center justify-center text-[#524E48] transition-all shadow-2xs"
                         >
                           {social.icon}
                         </a>
@@ -477,7 +477,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                       <Link
                         href="/book"
                         onClick={() => setIsMenuOpen(false)}
-                        className="rounded-full bg-white text-[#18181B] hover:bg-[#FF5500] hover:text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs"
+                        className="rounded-full bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs"
                       >
                         {t("nav.requestQuote", "Request Quote")}
                       </Link>
@@ -500,7 +500,7 @@ function CartButton() {
   return (
     <Link
       href="/wishlist"
-      className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition-all shadow-xs text-white hover:text-[#FF5500] shrink-0"
+      className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] hover:bg-[#F4EDE2] transition-all shadow-2xs text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 shrink-0"
       aria-label="Wishlist & Inquiries"
       title="Saved Fleet Inquiries"
     >
@@ -538,12 +538,12 @@ function ProfileDropdown() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition-all shadow-xs text-white hover:text-[#FF5500] overflow-hidden cursor-pointer"
+        className="flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] hover:bg-[#F4EDE2] transition-all shadow-2xs text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 overflow-hidden cursor-pointer"
         aria-label="User Account"
         aria-expanded={isOpen}
       >
         {loading ? (
-          <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-[#FF5500] rounded-full animate-spin" />
+          <div className="w-3.5 h-3.5 border-2 border-black/20 border-t-[#FF5500] rounded-full animate-spin" />
         ) : user && avatarUrl ? (
           <img
             src={avatarUrl}
@@ -551,9 +551,9 @@ function ProfileDropdown() {
             className="w-full h-full object-cover"
           />
         ) : user ? (
-          <span className="text-white font-bold text-xs">{initial}</span>
+          <span className="text-[#111315] font-bold text-xs">{initial}</span>
         ) : (
-          <User className="w-3.5 h-3.5" />
+          <User className="w-3.5 h-3.5 text-[#111315]" />
         )}
       </button>
 
