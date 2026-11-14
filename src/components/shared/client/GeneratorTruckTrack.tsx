@@ -2,159 +2,35 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 
-const TOTAL_BULBS = 14;
 const DRIVE_DURATION = 20; // 20s steady commercial drive speed
-
-interface BulbData {
-  id: number;
-  percent: number;
-  triggerTime: number; // in seconds
-}
-
-// Staggered trigger timestamps based on truck speed & headlight cone
-const BULBS: BulbData[] = Array.from({ length: TOTAL_BULBS }, (_, i) => {
-  const percent = (i + 0.5) * (100 / TOTAL_BULBS);
-  const triggerTime = Math.max(0.5, (percent - 6) * (17 / 100) + 1.0);
-  return {
-    id: i,
-    percent,
-    triggerTime,
-  };
-});
 
 interface GeneratorTruckTrackProps {
   children?: React.ReactNode;
 }
 
 /**
- * Bespoke Photorealistic Vintage ST64 Edison Light Bulb SVG
- * - Threaded brass socket with screw ridges
- * - Authentic teardrop pear glass envelope
- * - Glowing squirrel-cage tungsten filament wire with incandescent halo
- * - Specular reflection gloss curve
- */
-function EdisonBulbSvg({ isLit }: { isLit: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 28 42"
-      className={cn(
-        "w-3 sm:w-4 lg:w-4.5 h-auto transition-transform duration-300 drop-shadow-xs",
-        isLit ? "scale-110" : "scale-100"
-      )}
-      fill="none"
-      aria-hidden="true"
-    >
-      {/* Top Threaded Brass Socket Base with Screws & Insulator */}
-      <rect
-        x="10.5"
-        y="0"
-        width="7"
-        height="3"
-        rx="0.5"
-        fill="url(#edison-brass)"
-        stroke="#4A3B18"
-        strokeWidth="0.5"
-      />
-      <rect
-        x="11"
-        y="3"
-        width="6"
-        height="2"
-        rx="0.5"
-        fill="url(#edison-brass)"
-        stroke="#4A3B18"
-        strokeWidth="0.5"
-      />
-      <rect
-        x="11.5"
-        y="5"
-        width="5"
-        height="1.8"
-        rx="0.5"
-        fill="url(#edison-brass)"
-        stroke="#4A3B18"
-        strokeWidth="0.5"
-      />
-
-      {/* Classic ST64 Pear / Teardrop Glass Envelope */}
-      <path
-        d="M11.5 6.8 C11.5 6.8 7.5 13 6 18.5 C4.5 24 7 32 14 32 C21 32 23.5 24 22 18.5 C20.5 13 16.5 6.8 16.5 6.8 Z"
-        fill={isLit ? "url(#edison-glass-lit)" : "url(#edison-glass-off)"}
-        stroke={isLit ? "#FFB703" : "rgba(31,31,30,0.35)"}
-        strokeWidth={isLit ? "1.2" : "0.85"}
-      />
-
-      {/* Inner Central Glass Mount Stem */}
-      <path
-        d="M13 7 L13 15 L15 15 L15 7"
-        fill="none"
-        stroke={isLit ? "rgba(255,220,130,0.8)" : "rgba(80,80,80,0.35)"}
-        strokeWidth="0.75"
-      />
-      <circle cx="14" cy="15" r="1.2" fill={isLit ? "#FFC44D" : "#4A4A4A"} />
-
-      {/* Realistic Squirrel-Cage / Hairpin Tungsten Filament Wire */}
-      <path
-        d="M12.5 15 L11.5 22 Q12.75 25 14 22 Q15.25 25 16.5 22 L15.5 15"
-        fill="none"
-        stroke={isLit ? "#FFFFFF" : "#524E48"}
-        strokeWidth={isLit ? "1.4" : "0.75"}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Intense Amber Incandescent Glow when Lit */}
-      {isLit && (
-        <path
-          d="M12.5 15 L11.5 22 Q12.75 25 14 22 Q15.25 25 16.5 22 L15.5 15"
-          fill="none"
-          stroke="#FF7A00"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.8"
-        />
-      )}
-
-      {/* Specular Curved Highlight on Outer Glass Surface (Gloss Specular) */}
-      <path
-        d="M8.5 17 C7.5 21 9 27 11.5 29"
-        fill="none"
-        stroke={isLit ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)"}
-        strokeWidth="0.9"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-/**
  * GeneratorTruckTrack Component
  * 
- * Hyper-Realistic 3D Generator Truck & Dynamic Lighting Stage:
+ * Hyper-Realistic 3D Generator Truck Driving on Roadway:
  * - 100% UNCLIPPED & FULL HEADROOM: The entire chrome silencer exhaust barrel, 
  *   rain flap, lifting gantry frame, and cab roof are completely visible with generous clearance!
  * - Proportioned cleanly to fit within a single screen view (100vh / ~640px) without vertical bloat!
  * - Authentic 3D Render of Tata 1109 Ochre-Brown Truck + Sarvadnya Energy Orange Generator (#FF5500)
  * - Razor-sharp Devanagari lettering: "सर्वज्ञ जनरेटर" + Cummins Power Generation logo
  * - Dual high-beam headlights with volumetric light cone sweeping forward along the road
- * - Overhead Edison bulbs chain-reaction spark and warm amber glow as the truck drives under them
  * - GPU-accelerated butter-smooth translate3d motion (zero stutter/glitch)
  * - Tires resting squarely on the asphalt road baseline
  * - Zero unwanted text badges on the road
  */
 export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
   const [cycleKey, setCycleKey] = useState<number>(0);
-  const [activeBulbs, setActiveBulbs] = useState<Set<number>>(new Set());
   const [headlightsOn, setHeadlightsOn] = useState<boolean>(false);
 
-  // Synchronized cycle controller for headlights and overhead bulbs
+  // Synchronized cycle controller for truck headlights and drive loop
   useEffect(() => {
     const timers: NodeJS.Timeout[] = [];
 
-    // Reset for fresh cycle
-    setActiveBulbs(new Set());
     setHeadlightsOn(false);
 
     // Turn headlights ON shortly after truck enters from left edge
@@ -162,14 +38,6 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       setHeadlightsOn(true);
     }, 800);
     timers.push(headTimer);
-
-    // Sequentially ignite each overhead bulb as truck passes under it
-    BULBS.forEach((bulb) => {
-      const t = setTimeout(() => {
-        setActiveBulbs((prev) => new Set(prev).add(bulb.id));
-      }, bulb.triggerTime * 1000);
-      timers.push(t);
-    });
 
     // When truck exits at right (20s), turn headlights off
     const exitTimer = setTimeout(() => {
@@ -196,116 +64,8 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       }}
       aria-label="Interactive Generator Delivery Stage"
     >
-      {/* Ambient Warm Golden Aurora Glow */}
-      <div className="absolute top-0 left-1/4 w-[450px] h-32 bg-[#FF5500]/[0.05] blur-3xl pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[450px] h-32 bg-amber-500/[0.05] blur-3xl pointer-events-none" />
-
       {/* 
-        1. OVERHEAD ELECTRICAL CATENARY WIRE & VINTAGE EDISON BULBS (Chain Reaction Lighting)
-        Height: h-10 sm:h-12
-      */}
-      <div className="relative w-full h-10 sm:h-12 flex items-center justify-between px-2 sm:px-6 z-20 shrink-0">
-        {/* Electrical Cable Wire & Shared SVG Gradients */}
-        <svg
-          className="absolute inset-x-0 top-1 w-full h-5 pointer-events-none opacity-50"
-          preserveAspectRatio="none"
-          viewBox="0 0 1200 20"
-        >
-          <defs>
-            {/* Metallic Polished Brass Socket Cap */}
-            <linearGradient id="edison-brass" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#8A6E3E" />
-              <stop offset="35%" stopColor="#D4AF37" />
-              <stop offset="70%" stopColor="#8A6E3E" />
-              <stop offset="100%" stopColor="#5A4522" />
-            </linearGradient>
-
-            {/* Lit Glass Incandescent Glow */}
-            <radialGradient id="edison-glass-lit" cx="50%" cy="55%" r="50%">
-              <stop offset="0%" stopColor="#FFF4D6" stopOpacity="0.95" />
-              <stop offset="35%" stopColor="#FFB326" stopOpacity="0.85" />
-              <stop offset="75%" stopColor="#FF7A00" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#FF5500" stopOpacity="0.1" />
-            </radialGradient>
-
-            {/* Unlit Glass Clear Smoky Gradient */}
-            <linearGradient id="edison-glass-off" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
-              <stop offset="45%" stopColor="rgba(255,255,255,0.12)" />
-              <stop offset="100%" stopColor="rgba(0,0,0,0.06)" />
-            </linearGradient>
-          </defs>
-
-          {/* Catenary Droop Wire Path */}
-          <path
-            d="M0,6 Q300,15 600,6 T1200,6"
-            fill="none"
-            stroke="rgba(31,31,30,0.4)"
-            strokeWidth="1.5"
-          />
-        </svg>
-
-        {/* The 14 Industrial Edison Power Bulbs */}
-        <div className="relative w-full flex items-center justify-between">
-          {BULBS.map((bulb) => {
-            const isLit = activeBulbs.has(bulb.id);
-
-            return (
-              <div
-                key={bulb.id}
-                className="relative flex flex-col items-center group cursor-default"
-                style={{
-                  left: `${bulb.percent}%`,
-                  position: "absolute",
-                  transform: "translateX(-50%)",
-                }}
-              >
-                {/* Vintage Edison Bulb Body */}
-                <div className="relative z-10 flex flex-col items-center">
-                  <EdisonBulbSvg isLit={isLit} />
-
-                  {/* Micro Ignition Spark on initial contact */}
-                  {isLit && (
-                    <motion.div
-                      initial={{ scale: 0.2, opacity: 1 }}
-                      animate={{ scale: 2.4, opacity: 0 }}
-                      transition={{ duration: 0.45, ease: "easeOut" }}
-                      className="absolute top-3 left-1/2 -translate-x-1/2 size-4 rounded-full bg-[#FFE5A3] pointer-events-none blur-xs"
-                    />
-                  )}
-                </div>
-
-                {/* Soft Radial Ambient Amber Halo */}
-                <div
-                  className={cn(
-                    "absolute -top-1 w-10 sm:w-14 h-10 sm:h-14 rounded-full pointer-events-none transition-all duration-500 blur-md",
-                    isLit
-                      ? "bg-[#FF9900]/30 opacity-100 scale-125"
-                      : "bg-transparent opacity-0 scale-75"
-                  )}
-                />
-
-                {/* Volumetric Downward Golden Spotlight Beam */}
-                <div
-                  className={cn(
-                    "absolute top-5 w-16 sm:w-24 h-24 sm:h-32 pointer-events-none transition-opacity duration-600",
-                    isLit ? "opacity-100" : "opacity-0"
-                  )}
-                  style={{
-                    background:
-                      "radial-gradient(ellipse at top center, rgba(255, 175, 20, 0.4) 0%, rgba(255, 120, 0, 0.15) 45%, transparent 75%)",
-                    clipPath: "polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)",
-                    filter: "blur(5px)",
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 
-        2. FOREGROUND FLOATING ARCHITECTURAL FOOTER CONTENT
+        1. FOREGROUND FLOATING ARCHITECTURAL FOOTER CONTENT
         (Text and links layer cleanly on top of the stage)
       */}
       {children && (
@@ -315,7 +75,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
       )}
 
       {/* 
-        3. ASPHALT ROADWAY & VEHICLE STAGE
+        2. ASPHALT ROADWAY & VEHICLE STAGE
         Guaranteed 100% UNCLIPPED & FULL HEADROOM:
         - overflow-x-clip prevents horizontal scrollbars
         - overflow-y-visible guarantees truck cabin roof, sun visor, and exhaust silencer NEVER clip!
@@ -390,8 +150,8 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
           {/* 
             HYPER-REALISTIC 3D TATA 1109 GENERATOR TRUCK WITH 360° SPINNING WHEELS
             - Layer 1: Contact Drop Shadows grounding the tires directly on the asphalt
-            - Layer 2: 360° Rotating Rear Wheel (axle: 31.66%, 88.32%, width: 11.6%)
-            - Layer 3: 360° Rotating Front Wheel (axle: 81.9%, 86.76%, width: 13.17%)
+            - Layer 2: 360° Rotating Rear Wheel (axle: 26.49%, 88.47%, width: 15.28%)
+            - Layer 3: 360° Rotating Front Wheel (axle: 80.88%, 86.29%, width: 17.71%)
             - Layer 4: 3D Truck Body with Open Wheel Arches ON TOP (fenders overlap top of tires naturally)
             - ZERO double wheels, ZERO ghosting, completely photorealistic and grounded!
           */}

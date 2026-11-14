@@ -141,16 +141,28 @@ export function QuoteDrawer() {
                   <p className="text-sm text-[#625D55] max-w-xs mt-1.5 leading-relaxed">
                     Select silent diesel generator sets from our fleet to calculate rental rates and initiate booking.
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      closeDrawer();
-                      router.push("/generators");
-                    }}
-                    className="mt-6 px-6 py-2.5 rounded-xl bg-[#111315] text-white font-bold text-xs hover:bg-[#FF5500] transition-colors shadow-xs cursor-pointer"
-                  >
-                    Explore Generator Fleet
-                  </button>
+                  <div className="mt-6 flex flex-col sm:flex-row gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeDrawer();
+                        router.push("/generators");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-[#111315] text-white font-bold text-xs hover:bg-[#FF5500] transition-colors shadow-xs cursor-pointer"
+                    >
+                      Explore Generator Fleet
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeDrawer();
+                        router.push("/cart");
+                      }}
+                      className="px-4 py-2.5 rounded-xl border border-[#E8E2D9] text-[#111315] font-semibold text-xs hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                    >
+                      Go to Cart Page
+                    </button>
+                  </div>
                 </div>
               ) : (
                 /* List of Shortlisted Generators */
@@ -283,8 +295,8 @@ export function QuoteDrawer() {
                   </div>
                 </div>
 
-                {/* Primary Action Button */}
-                <div className="pt-1">
+                {/* Action Buttons */}
+                <div className="pt-1 flex flex-col gap-2">
                   <button
                     type="button"
                     onClick={handleProceedToCheckout}
@@ -292,6 +304,17 @@ export function QuoteDrawer() {
                   >
                     <span>Proceed to Checkout</span>
                     <ArrowRight className="size-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeDrawer();
+                      router.push("/cart");
+                    }}
+                    className="w-full py-2 text-center text-xs font-semibold text-[#625D55] hover:text-[#111315] hover:bg-[#FAF8F5] rounded-lg transition-colors cursor-pointer"
+                  >
+                    View Detailed Cart Page →
                   </button>
                 </div>
               </div>

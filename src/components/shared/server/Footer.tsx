@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/common";
-import { SlicedWavesBackground } from "@/components/common/SlicedWavesBackground";
 import { GeneratorTruckTrack } from "@/components/shared/client";
 import {
   Facebook,
@@ -38,38 +37,7 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[#FAF8F5] text-[#111315] relative overflow-x-clip border-t border-[#E8E2D9] select-none flex flex-col">
-      {/* Sliced Waves Ambient Ribbon Canvas in Footer */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-30">
-        <SlicedWavesBackground
-          color1="#ff9d4d"
-          color2="#ff2d78"
-          color3="#3060ff"
-          ribbons={3}
-          spacing={28}
-          perspective={0.45}
-          blur={0.6}
-          glow={1}
-          position={0.82}
-          mouseInteraction={false}
-          barWidth={0.5}
-          ribbonHeight={0.26}
-          spread={0.1}
-          amplitude={0.1}
-          frequency={1}
-          curve={0.5}
-          slices={0}
-          speed={0.7}
-          brightness={1.15}
-          rotation={0}
-          grain={0.08}
-          fade={0}
-          opacity={0.5}
-          intro
-          lightMode
-        />
-      </div>
-
-      {/* Overhead Edison Bulbs + Driving 3D Generator Truck */}
+      {/* Driving 3D Generator Truck & Roadway Stage */}
       <GeneratorTruckTrack>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-11 pb-8 sm:pb-10 w-full z-30">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 items-start">

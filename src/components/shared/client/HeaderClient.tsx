@@ -498,15 +498,14 @@ export default function Header({ children }: { children?: React.ReactNode }) {
  * Saved Fleet & Wishlist Cart Button
  */
 function CartButton() {
-  const { openDrawer, totalItems } = useQuote();
+  const { totalItems } = useQuote();
 
   return (
-    <button
-      type="button"
-      onClick={openDrawer}
+    <Link
+      href="/cart"
       className="relative flex items-center justify-center size-8 sm:size-9 rounded-full border border-[#E8E2D9] bg-[#FAF8F5] hover:bg-[#F4EDE2] transition-all shadow-2xs text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 shrink-0 cursor-pointer"
-      aria-label="Fleet Quote Drawer"
-      title="View Shortlisted Fleet Quote"
+      aria-label="Generator Cart"
+      title="View Detailed Cart"
     >
       <ShoppingCart className="w-3.5 h-3.5" />
       {totalItems > 0 && (
@@ -514,7 +513,7 @@ function CartButton() {
           {totalItems}
         </span>
       )}
-    </button>
+    </Link>
   );
 }
 
@@ -610,7 +609,7 @@ function ProfileDropdown() {
                     <span>My Account</span>
                   </Link>
                   <Link
-                    href="/wishlist"
+                    href="/cart"
                     className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#1F1F1E] hover:bg-black/5 transition-colors"
                     onClick={() => setIsOpen(false)}
                   >

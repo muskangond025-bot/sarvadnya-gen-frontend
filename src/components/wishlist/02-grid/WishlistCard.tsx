@@ -92,7 +92,11 @@ export function WishlistCard({ item, onRemove }: WishlistCardProps) {
             <span className="text-xs text-[#524E48] font-normal">/day</span>
           </p>
         </div>
-        <Button href={`/book?generator=${item.id}`} variant="primary" size="sm">
+        <Button
+          href={`/book?kVA=${item.kva.replace(/[^0-9.]/g, "") || "30"}&quote=active`}
+          variant="primary"
+          size="sm"
+        >
           Book Now
         </Button>
       </div>
