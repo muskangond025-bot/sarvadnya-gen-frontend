@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Check, Plus, Minus, ArrowRight, Receipt, Clock, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RentalCalendar } from "@/components/common";
+import { useAuth } from "@/lib/AuthContext";
+import { LoginModal } from "@/components/auth/client/LoginModal";
 
 interface Generator {
   id: string;
@@ -264,6 +266,8 @@ export function BookingClient({
   initialKvaRaw = null,
 }: BookingClientProps) {
   const router = useRouter();
+  const { user } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const initialKva = parseKvaParam(initialKvaRaw);
 
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
@@ -296,8 +300,8 @@ export function BookingClient({
       );
       if (explicit) return explicit;
     }
-    return initialKva !== null ? filteredGenerators[0] ?? null : null;
-  }, [selectedGeneratorId, filteredGenerators, initialKva]);
+    return filteredGenerators[0] ?? null;
+  }, [selectedGeneratorId, filteredGenerators]);
 
   const sortedDates = useMemo(() => {
     return [...selectedDates].sort((a, b) => a.getTime() - b.getTime());
@@ -356,7 +360,25 @@ export function BookingClient({
   const canCheckout = Boolean(selectedGenerator && totalDays > 0);
 
   const handleProceedToCheckout = () => {
-    if (!canCheckout || !selectedGenerator || sortedDates.length === 0) return;
+    if (sortedDates.length === 0) {
+      const el = document.getElementById("booking-dates-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      alert("Please select your rental dates on the calendar first.");
+      return;
+    }
+
+    if (!selectedGenerator) {
+      alert("Please select an available generator model.");
+      return;
+    }
+
+    // Strict Checkout Gate: Require Login Before Proceeding to Checkout
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
 
     if (typeof window !== "undefined") {
       const rangeId = `range-${Date.now()}`;
@@ -393,7 +415,7 @@ export function BookingClient({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* SECTION 01: PICK YOUR DATES (Tactile Printed Calendar Design) */}
-      <section className="py-12 sm:py-16 border-b border-[#E8E2D9]">
+      <section id="booking-dates-section" className="py-12 sm:py-16 border-b border-[#E8E2D9]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
           <div className="lg:col-span-4 flex flex-col items-start">
             <span className="font-mono text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF5500] mb-2">
@@ -866,16 +888,17 @@ export function BookingClient({
 
                 <button
                   type="button"
-                  disabled={!canCheckout}
                   onClick={handleProceedToCheckout}
                   className={cn(
-                    "w-full py-4 px-6 rounded-xl font-sans font-bold text-base transition-all duration-200 flex items-center justify-center gap-2",
+                    "w-full py-4 px-6 rounded-xl font-sans font-bold text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] shadow-lg shadow-[#FF5500]/25",
                     canCheckout
-                      ? "bg-[#FF5500] hover:bg-[#E04B00] text-white shadow-lg shadow-[#FF5500]/25 cursor-pointer active:scale-[0.99]"
-                      : "bg-[#EFEAE1] text-[#111315] border border-[#D6CFC4] cursor-not-allowed"
+                      ? "bg-[#FF5500] hover:bg-[#E04B00] text-white"
+                      : "bg-[#FF5500]/80 hover:bg-[#FF5500] text-white"
                   )}
                 >
-                  <span>Proceed to Checkout</span>
+                  <span>
+                    {totalDays === 0 ? "Select Dates to Proceed" : "Proceed to Checkout"}
+                  </span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -883,6 +906,18 @@ export function BookingClient({
           </div>
         </div>
       </section>
+
+      {/* Strict Authentication Gate Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSuccess={() => {
+          setShowLoginModal(false);
+          handleProceedToCheckout();
+        }}
+        title="Welcome Back"
+        subtitle="Sign in to your Sarvadnya Power account to confirm your generator reservation."
+      />
     </div>
   );
 }

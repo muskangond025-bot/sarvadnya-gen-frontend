@@ -32,11 +32,11 @@ export function GeneratorCompare() {
   return (
     <section
       id="compare"
-      className="w-full py-16 sm:py-24 px-4 sm:px-6 md:px-10 lg:px-[60px] bg-[#FAF8F5] border-t border-[#E8E2D9]"
+      className="w-full py-10 sm:py-24 px-4 sm:px-6 md:px-10 lg:px-[60px] bg-[#FAF8F5] border-t border-[#E8E2D9]"
     >
       <div className="max-w-[1440px] mx-auto">
         {/* Editorial Matrix Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-6 mb-10 sm:mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 sm:gap-6 mb-6 sm:mb-12">
           <div>
             <SectionHeading
               title={
@@ -47,7 +47,7 @@ export function GeneratorCompare() {
               }
               align="left"
             />
-            <p className="font-sans text-[#625D55] text-base sm:text-lg leading-relaxed max-w-2xl mt-3">
+            <p className="font-sans text-[#625D55] text-sm sm:text-lg leading-relaxed max-w-2xl mt-2 sm:mt-3">
               Compare our generators side by side. We&apos;ve simplified the specs
               so you can easily choose what fits your needs.
             </p>

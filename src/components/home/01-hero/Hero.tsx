@@ -66,7 +66,7 @@ export function Hero() {
 
             {/* Primary & Secondary Conversion Actions */}
             <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto pt-1">
-              <Button href="/book" variant="primary" size="lg" className="w-full sm:w-auto shadow-md shadow-[#FF5500]/20">
+              <Button href="/contact" variant="primary" size="lg" className="w-full sm:w-auto shadow-md shadow-[#FF5500]/20">
                 {t("hero.ctaPrimary")}
               </Button>
               <Button href="/services" variant="outline" size="lg" className="w-full sm:w-auto bg-white/80 hover:bg-white">

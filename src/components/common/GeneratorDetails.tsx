@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Zap, Clock, CheckCircle2 } from "lucide-react";
 import { GENERATOR_IMAGES } from "@/constants";
@@ -365,9 +366,12 @@ export default function GeneratorDetails() {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-2">
-                <button className="flex-1 bg-[#00ff8f] hover:bg-[#00dd7a] text-black font-semibold py-4 rounded-xl transition-colors font-['Outfit',sans-serif]">
+                <Link
+                  href="/contact"
+                  className="flex-1 bg-[#00ff8f] hover:bg-[#00dd7a] text-black font-semibold py-4 rounded-xl transition-colors font-['Outfit',sans-serif] text-center inline-flex items-center justify-center"
+                >
                   Request Quote
-                </button>
+                </Link>
                 <button
                   onClick={() => setIsExpanded(true)}
                   className="flex-1 bg-transparent border border-[#333] hover:border-[#666] text-white font-medium py-4 rounded-xl transition-colors font-['Outfit',sans-serif]"

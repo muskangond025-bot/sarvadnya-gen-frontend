@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 // Types
@@ -51,19 +51,17 @@ export function RentalCalendar({
   const effectiveMinDate = minDate || today;
 
   // Global mouse up to handle drag end outside cells
-  useState(() => {
-    if (typeof window !== "undefined") {
-      const handleGlobalMouseUp = () => {
-        if (isDragging) {
-          setIsDragging(false);
-          setSelectionStart(null);
-          setHoverDate(null);
-        }
-      };
-      window.addEventListener("mouseup", handleGlobalMouseUp);
-      return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
-    }
-  });
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (isDragging) {
+        setIsDragging(false);
+        setSelectionStart(null);
+        setHoverDate(null);
+      }
+    };
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+  }, [isDragging]);
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -137,37 +135,65 @@ export function RentalCalendar({
 
   // --- Date Interaction Handlers ---
 
-  const handleMouseDown = (date: Date) => {
+  const handleDateClick = (date: Date) => {
     if (date < effectiveMinDate) return;
     if (maxDate && date > maxDate) return;
 
+    // Normalize date to local midnight
+    const cleanDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    // If user clicks a padding day from next or prev month, flip currentMonth
+    if (date.getMonth() !== currentMonth.getMonth()) {
+      setCurrentMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+    }
+
     if (selectionMode === "individual") {
       // Smart 2-Click Range Selection:
-      // - First click selects Start Date
-      // - Second click selects End Date & automatically fills all days between them
-      // - Clicking when range is already selected starts fresh from the new date
-      if (selectedDates.length === 1 && !isDateSelectedIndividually(date)) {
-        const start = selectedDates[0] < date ? selectedDates[0] : date;
-        const end = selectedDates[0] < date ? date : selectedDates[0];
+      // 1. If currently 1 date selected and user clicks a different date -> create range
+      if (selectedDates.length === 1 && !isDateSelectedIndividually(cleanDate)) {
+        const first = selectedDates[0];
+        const start = first < cleanDate ? first : cleanDate;
+        const end = first < cleanDate ? cleanDate : first;
         const rangeDates: Date[] = [];
-        const cur = new Date(start);
-        while (cur <= end) {
+        const cur = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        const targetEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        while (cur <= targetEnd) {
           rangeDates.push(new Date(cur));
           cur.setDate(cur.getDate() + 1);
         }
         onDatesChange?.(rangeDates);
       } else if (selectedDates.length > 1) {
-        onDatesChange?.([date]);
+        // 2. If a range is already selected and user clicks any date -> start fresh selection
+        onDatesChange?.([cleanDate]);
       } else {
-        const isSelected = isDateSelectedIndividually(date);
+        // 3. If 0 dates selected or user re-clicks the same single date:
+        const isSelected = isDateSelectedIndividually(cleanDate);
         if (isSelected) {
           onDatesChange?.([]);
         } else {
-          onDatesChange?.([date]);
+          onDatesChange?.([cleanDate]);
         }
       }
     } else {
-      // Range mode: Start dragging
+      // Range mode (single click when not dragging): create a single-day range
+      if (!isDragging) {
+        const newRange: DateRange = {
+          start: cleanDate,
+          end: cleanDate,
+          id: `${cleanDate.getTime()}-${cleanDate.getTime()}`,
+        };
+        if (!isExactRangeDuplicate(cleanDate, cleanDate)) {
+          onRangesChange?.([...selectedRanges, newRange]);
+        }
+      }
+    }
+  };
+
+  const handleMouseDown = (date: Date) => {
+    if (date < effectiveMinDate) return;
+    if (maxDate && date > maxDate) return;
+
+    if (selectionMode === "range") {
       setIsDragging(true);
       setSelectionStart(date);
       setHoverDate(date); // Init preview
@@ -396,36 +422,72 @@ export function RentalCalendar({
               selectionMode === "range" &&
               selectionStart?.toDateString() === date.toDateString();
 
+            const sortedIndividual =
+              selectionMode === "individual"
+                ? [...selectedDates].sort((a, b) => a.getTime() - b.getTime())
+                : [];
+            const isFirstIndividual =
+              selectionMode === "individual" &&
+              selected &&
+              sortedIndividual[0]?.toDateString() === date.toDateString();
+            const isLastIndividual =
+              selectionMode === "individual" &&
+              selected &&
+              sortedIndividual[sortedIndividual.length - 1]?.toDateString() === date.toDateString();
+            const isMidIndividual =
+              selectionMode === "individual" &&
+              selected &&
+              !isFirstIndividual &&
+              !isLastIndividual;
+
             const isHighlightedEnd =
               isDragStart ||
               rangeStart ||
               rangeEnd ||
-              (selectionMode === "individual" && selected);
+              isFirstIndividual ||
+              isLastIndividual;
 
             const isMidRange =
-              selectionMode === "range" &&
-              (selected || preview) &&
-              !rangeStart &&
-              !rangeEnd &&
-              !isDragStart;
+              (selectionMode === "range" &&
+                (selected || preview) &&
+                !rangeStart &&
+                !rangeEnd &&
+                !isDragStart) ||
+              isMidIndividual;
 
             return (
               <button
                 key={idx}
                 type="button"
                 data-date={date.toISOString()}
-                onClick={() => handleMouseDown(date)}
+                onClick={() => handleDateClick(date)}
                 onMouseDown={(e) => {
-                  e.preventDefault();
-                  handleMouseDown(date);
+                  if (selectionMode === "range") {
+                    e.preventDefault();
+                    handleMouseDown(date);
+                  }
                 }}
                 onMouseEnter={() => handleMouseEnter(date)}
-                onMouseUp={() => handleMouseUp(date)}
-                onTouchStart={(e) => {
-                  handleTouchStart(e, date);
+                onMouseUp={() => {
+                  if (selectionMode === "range") {
+                    handleMouseUp(date);
+                  }
                 }}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+                onTouchStart={(e) => {
+                  if (selectionMode === "range") {
+                    handleTouchStart(e, date);
+                  }
+                }}
+                onTouchMove={(e) => {
+                  if (selectionMode === "range") {
+                    handleTouchMove(e);
+                  }
+                }}
+                onTouchEnd={(e) => {
+                  if (selectionMode === "range") {
+                    handleTouchEnd(e);
+                  }
+                }}
                 disabled={isDisabled}
                 className={cn(
                   "h-12 sm:h-14 md:h-16 flex flex-col items-center justify-center text-sm sm:text-base font-bold transition-colors relative select-none",
@@ -643,18 +705,34 @@ export function RentalCalendar({
               key={idx}
               type="button"
               data-date={date.toISOString()}
-              onClick={() => handleMouseDown(date)}
+              onClick={() => handleDateClick(date)}
               onMouseDown={(e) => {
-                e.preventDefault();
-                handleMouseDown(date);
+                if (selectionMode === "range") {
+                  e.preventDefault();
+                  handleMouseDown(date);
+                }
               }}
               onMouseEnter={() => handleMouseEnter(date)}
-              onMouseUp={() => handleMouseUp(date)}
-              onTouchStart={(e) => {
-                handleTouchStart(e, date);
+              onMouseUp={() => {
+                if (selectionMode === "range") {
+                  handleMouseUp(date);
+                }
               }}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
+              onTouchStart={(e) => {
+                if (selectionMode === "range") {
+                  handleTouchStart(e, date);
+                }
+              }}
+              onTouchMove={(e) => {
+                if (selectionMode === "range") {
+                  handleTouchMove(e);
+                }
+              }}
+              onTouchEnd={(e) => {
+                if (selectionMode === "range") {
+                  handleTouchEnd(e);
+                }
+              }}
               disabled={isDisabled}
               className={cn(
                 "aspect-square flex items-center justify-center transition-all duration-150 relative select-none",

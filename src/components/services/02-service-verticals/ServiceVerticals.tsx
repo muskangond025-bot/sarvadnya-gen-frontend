@@ -16,7 +16,7 @@ import { CrazyServiceDetails } from "./CrazyServiceDetails";
  */
 export function ServiceVerticals() {
   return (
-    <section className="relative py-16 sm:py-28 px-4 sm:px-6 md:px-10 lg:px-[60px] overflow-hidden bg-[#FAF8F5]">
+    <section className="relative py-12 sm:py-28 px-4 sm:px-6 md:px-10 lg:px-[60px] overflow-hidden bg-[#FAF8F5]">
       {/* Full-Bleed Generator Engine Background (Matching User Uploaded Machine) */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-40 sm:opacity-50"
@@ -33,13 +33,13 @@ export function ServiceVerticals() {
 
       <div className="max-w-[1440px] mx-auto relative z-10">
         {/* Section Heading with Smooth Text Reveal Animation */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-24">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-24">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight"
+            className="text-2xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight"
           >
             Specialized Power <span className="text-[#FF5500]">Service Verticals</span>
           </motion.h2>
@@ -48,7 +48,7 @@ export function ServiceVerticals() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-            className="text-[#625D55] font-['Outfit',sans-serif] text-base sm:text-lg mt-4 max-w-2xl mx-auto leading-relaxed"
+            className="text-[#625D55] font-['Outfit',sans-serif] text-sm sm:text-lg mt-3 sm:mt-4 max-w-2xl mx-auto leading-relaxed"
           >
             Turnkey silent generator rentals and mission-critical power solutions engineered for zero downtime across Nashik and Maharashtra.
           </motion.p>

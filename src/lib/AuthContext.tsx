@@ -45,6 +45,7 @@ interface AuthContextType {
   ) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  signInWithDemo?: (customEmail?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -237,6 +238,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Demo Client Instant Sign-in (for checkout testing / offline fallbacks)
+  const signInWithDemo = async (customEmail?: string) => {
+    const demoEmail = customEmail || "rajesh.patil@acmeinfra.com";
+    const demoUser = {
+      id: "demo-client-user-1",
+      app_metadata: { provider: "email" },
+      user_metadata: { name: "Rajesh Patil" },
+      aud: "authenticated",
+      created_at: new Date().toISOString(),
+      email: demoEmail,
+      phone: "+91 98220 54100",
+    } as unknown as User;
+
+    setUser(demoUser);
+    const profile = await fetchUserProfile("mock-access-token", demoUser.id, demoUser);
+    setUserProfile(profile);
+  };
+
   // Sign out
   const signOut = async () => {
     console.log("AuthContext: Starting signOut");
@@ -328,6 +347,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUpWithEmail,
         signOut,
         refreshProfile,
+        signInWithDemo,
       }}
     >
       {children}

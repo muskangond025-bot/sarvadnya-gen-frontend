@@ -47,15 +47,15 @@ const WORKFLOW_STAGES: WorkflowStage[] = [
 
 export function ProcessWorkflow() {
   return (
-    <section className="py-24 sm:py-32 px-6 md:px-10 lg:px-[60px] bg-transparent relative overflow-hidden">
+    <section className="py-12 sm:py-32 px-4 sm:px-6 md:px-10 lg:px-[60px] bg-transparent relative overflow-hidden">
       <div className="max-w-[1440px] mx-auto relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-20">
+          <h2 className="text-2xl sm:text-5xl font-extrabold text-[#111315] font-['Poppins',sans-serif] tracking-tight">
             Precision-Engineered <span className="text-[#FF5500]">Deployment Pipeline</span>
           </h2>
-          <p className="text-[#625D55] font-['Outfit',sans-serif] text-base sm:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[#625D55] font-['Outfit',sans-serif] text-sm sm:text-lg mt-3 sm:mt-4 max-w-2xl mx-auto leading-relaxed">
             From initial site telemetry to active power assurance, every stage is executed with industrial-grade reliability and zero margin for downtime.
           </p>
         </div>

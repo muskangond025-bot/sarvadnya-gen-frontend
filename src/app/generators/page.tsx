@@ -15,10 +15,10 @@ export default function GeneratorsPage() {
   return (
     <div className="relative min-h-screen bg-[#FAF8F5] overflow-hidden">
       {/* Subtle Warm Amber-Orange Ambient Atmosphere */}
-      <FloatingGlow color="#FF5500" size="xl" className="-top-1/4 -right-1/4 opacity-[0.06]" />
-      <FloatingGlow color="#FFAA00" size="lg" className="bottom-1/4 -left-1/4 opacity-[0.05]" delay={2} />
+      <FloatingGlow color="#FF5500" size="xl" className="-top-1/4 -right-1/4 opacity-[0.06] -z-10 pointer-events-none" />
+      <FloatingGlow color="#FFAA00" size="lg" className="bottom-1/4 -left-1/4 opacity-[0.05] -z-10 pointer-events-none" delay={2} />
 
-      <div className="relative z-10">
+      <div className="relative">
         {/* 1. Generator Fleet Hero */}
         <GeneratorHero />
         

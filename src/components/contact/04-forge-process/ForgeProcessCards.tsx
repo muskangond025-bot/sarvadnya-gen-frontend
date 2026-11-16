@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { RollingText } from "../common/RollingText";
+import { cn } from "@/lib/utils";
 
 interface ProcessStep {
   number: string;
@@ -35,16 +36,38 @@ const PROCESS_STEPS: ProcessStep[] = [
 /**
  * ForgeProcessCards Component (Bright Luxury Theme)
  * 
- * Exact Forge Automotive Section 3 ("A considered process built around you"):
- * - Bright luxury architectural backdrop (#FAF8F5)
- * - 3 Crisp white architectural cards with subtle hover beam & border transitions
- * - Monospace numerals + Editorial serif typography with Staggered Character Rolling animation
- * - Clean micro-hover states & diagonal arrow glider
- * - STRICT STOP POINT: No sections rendered after this!
+ * - Desktop: 3 Crisp white architectural cards in symmetric grid
+ * - Mobile: Fluid horizontal touch-snap carousel with dot pagination
  */
 export function ForgeProcessCards() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 16;
+    const index = Math.round(el.scrollLeft / cardWidth);
+    setActiveIndex(Math.min(Math.max(index, 0), PROCESS_STEPS.length - 1));
+  };
+
+  const scrollToIndex = (index: number) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 16;
+    el.scrollTo({
+      left: index * cardWidth,
+      behavior: "smooth",
+    });
+    setActiveIndex(index);
+  };
+
   return (
-    <section className="relative w-full bg-[#FAF8F5] text-[#111315] py-16 sm:py-28 px-4 sm:px-10 lg:px-20 overflow-hidden select-none z-20">
+    <section className="relative w-full bg-[#FAF8F5] text-[#111315] py-14 sm:py-28 px-4 sm:px-10 lg:px-20 overflow-hidden select-none z-20">
       
       {/* Background Architectural Texture with Soft Ambient Wash */}
       <div 
@@ -62,20 +85,94 @@ export function ForgeProcessCards() {
       <div className="max-w-[1500px] mx-auto relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-20">
+        <div className="max-w-3xl mb-8 sm:mb-20">
           <motion.h2
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-3xl sm:text-5xl lg:text-6xl text-[#111315] font-normal leading-[1.1] tracking-tight"
+            className="font-serif text-2xl sm:text-5xl lg:text-6xl text-[#111315] font-normal leading-[1.15] sm:leading-[1.1] tracking-tight"
           >
             A considered process built around you
           </motion.h2>
         </div>
 
-        {/* 3 Process Cards Grid (Exact Forge 3-Card Architecture) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {/* Mobile Horizontal Snap-Swipe Carousel (< md) */}
+        <div className="block md:hidden w-full">
+          <div
+            ref={carouselRef}
+            onScroll={handleScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x -mx-4 px-4 pb-4 pt-1 scroll-smooth"
+          >
+            {PROCESS_STEPS.map((step) => (
+              <div
+                key={`mobile-step-${step.number}`}
+                className="w-[84vw] max-w-[340px] shrink-0 snap-center flex flex-col justify-between p-6 rounded-2xl bg-white border border-[#E8E2D9] shadow-xs"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <span className="font-mono text-xl text-[#FF5500] italic font-bold tracking-tight">
+                      {step.number}
+                    </span>
+                    <ArrowUpRight className="size-4 text-[#FF5500]" />
+                  </div>
+
+                  <h3 className="font-serif text-lg text-[#111315] font-semibold tracking-tight leading-snug mb-2.5">
+                    {step.title}
+                  </h3>
+
+                  <p className="font-sans text-xs text-[#625D55] leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Carousel Indicators & Controls */}
+          <div className="flex items-center justify-between pt-3 px-1">
+            <div className="flex items-center gap-1.5">
+              {PROCESS_STEPS.map((_, i) => (
+                <button
+                  key={`step-dot-${i}`}
+                  type="button"
+                  onClick={() => scrollToIndex(i)}
+                  aria-label={`Go to step ${i + 1}`}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
+                    activeIndex === i
+                      ? "w-6 bg-[#FF5500]"
+                      : "w-1.5 bg-[#DDD6CA] hover:bg-[#B8B0A2]"
+                  )}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
+                disabled={activeIndex === 0}
+                className="p-1.5 rounded-full border border-[#E8E2D9] bg-white text-[#111315] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                aria-label="Previous step"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToIndex(Math.min(PROCESS_STEPS.length - 1, activeIndex + 1))}
+                disabled={activeIndex === PROCESS_STEPS.length - 1}
+                className="p-1.5 rounded-full border border-[#E8E2D9] bg-white text-[#111315] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                aria-label="Next step"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop 3 Process Cards Grid (Exact Forge 3-Card Architecture) - 100% UNCHANGED */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8">
           {PROCESS_STEPS.map((step, index) => (
             <motion.div
               key={step.number}

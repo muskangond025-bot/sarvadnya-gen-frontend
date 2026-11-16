@@ -205,12 +205,18 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
 
         {/* Vintage Edison Bulb Sockets hanging along the catenary line */}
         <div className="absolute inset-x-0 top-1 sm:top-2 flex justify-between px-3 sm:px-6 lg:px-10">
-          {BULBS.map((bulb) => {
+          {BULBS.map((bulb, idx) => {
             const isLit = activeBulbs.has(bulb.id);
+            // On mobile, show every 2nd bulb (7 bulbs total) to eliminate overlap and prevent crowding
+            const isHiddenOnMobile = idx % 2 === 1;
+
             return (
               <div
                 key={bulb.id}
-                className="relative flex flex-col items-center"
+                className={cn(
+                  "relative flex flex-col items-center",
+                  isHiddenOnMobile && "hidden sm:flex"
+                )}
                 style={{
                   transform: `translateY(${bulb.yOffset}px)`,
                 }}
@@ -227,7 +233,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                     <>
                       {/* Filament Core Radiance */}
                       <div
-                        className="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 size-5 rounded-full pointer-events-none -z-10 bg-[#FFB703]/35 blur-[3px]"
+                        className="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 size-3.5 sm:size-5 rounded-full pointer-events-none -z-10 bg-[#FFB703]/35 blur-[2px] sm:blur-[3px]"
                       />
 
                       {/* Downward Light Cone (Originates strictly from bulb bottom, NOT from wire/socket above) */}
@@ -235,14 +241,12 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.35 }}
-                        className="absolute top-[68%] left-1/2 -translate-x-1/2 pointer-events-none -z-10"
+                        className="absolute top-[68%] left-1/2 -translate-x-1/2 pointer-events-none -z-10 w-[48px] sm:w-[135px] h-[90px] sm:h-[170px]"
                         style={{
-                          width: "135px",
-                          height: "170px",
                           background:
                             "radial-gradient(ellipse at 50% 0%, rgba(255, 175, 30, 0.42) 0%, rgba(255, 130, 0, 0.16) 42%, transparent 75%)",
                           clipPath: "polygon(44% 0%, 56% 0%, 100% 100%, 0% 100%)",
-                          filter: "blur(5px)",
+                          filter: "blur(4px)",
                         }}
                       />
                     </>
@@ -273,7 +277,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
         - Truck drives directly ON the asphalt road where the black surface and dashed line are!
       */}
       <div className="relative w-full h-[80px] sm:h-[120px] lg:h-[135px] overflow-x-clip overflow-y-visible shrink-0 mt-0">
-        
+
         {/* Asphalt Road Surface with Centerline & Shoulder */}
         <div className="absolute inset-x-0 bottom-0 h-8 sm:h-12 lg:h-14 bg-gradient-to-b from-[#181B20] via-[#101216] to-[#0A0B0E] border-t-2 border-[#2E333C] z-10">
           {/* Road Asphalt Reflection & Wet Sheen */}
@@ -315,11 +319,23 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             - ZERO double wheels, ZERO ghosting, completely photorealistic and grounded!
           */}
           <div className="relative group cursor-default select-none">
+            {/* Inline keyframe guarantee for butter-smooth 60fps continuous 360-degree rotation */}
+            <style>{`
+              @keyframes truckWheelSpin {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+            `}</style>
+
             {/* Soft Ambient Contact Shadows Under Tires */}
             <div
               className="absolute pointer-events-none rounded-full bg-black/75 blur-[2.5px] z-10"
               style={{
-                left: "26.49%",
+                left: "26.02%",
                 bottom: "1px",
                 width: "15.28%",
                 height: "5px",
@@ -329,7 +345,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
             <div
               className="absolute pointer-events-none rounded-full bg-black/75 blur-[2.5px] z-10"
               style={{
-                left: "80.88%",
+                left: "79.94%",
                 bottom: "1px",
                 width: "17.71%",
                 height: "5px",
@@ -337,60 +353,50 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
               }}
             />
 
-            {/* 360-DEGREE CONTINUOUS ROTATING REAR WHEEL */}
+            {/* 360-DEGREE CONTINUOUS ROTATING REAR WHEEL (GPU Hardware Accelerated) */}
             <div
               className="absolute pointer-events-none select-none z-10"
               style={{
-                left: "26.49%",
-                top: "88.47%",
+                left: "26.02%",
+                top: "89.03%",
                 width: "15.28%",
                 aspectRatio: "1/1",
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 0.9,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                className="w-full h-full will-change-transform"
+              <div
+                className="w-full h-full will-change-transform animate-truck-wheel"
                 style={{
+                  animation: "truckWheelSpin 0.85s linear infinite",
                   transformOrigin: "center center",
                 }}
               >
                 <img
                   src="/images/generators/truck_wheel_rear_3d.png"
                   alt="Tata 1109 Rotating Rear Wheel"
-                  width={195}
-                  height={195}
+                  width={226}
+                  height={226}
                   className="w-full h-full object-contain pointer-events-none select-none block"
                   draggable={false}
                 />
-              </motion.div>
+              </div>
             </div>
 
-            {/* 360-DEGREE CONTINUOUS ROTATING FRONT WHEEL */}
+            {/* 360-DEGREE CONTINUOUS ROTATING FRONT WHEEL (GPU Hardware Accelerated) */}
             <div
               className="absolute pointer-events-none select-none z-10"
               style={{
-                left: "80.88%",
-                top: "86.29%",
+                left: "79.94%",
+                top: "85.89%",
                 width: "17.71%",
                 aspectRatio: "1/1",
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 0.9,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                className="w-full h-full will-change-transform"
+              <div
+                className="w-full h-full will-change-transform animate-truck-wheel"
                 style={{
+                  animation: "truckWheelSpin 0.85s linear infinite",
                   transformOrigin: "center center",
                 }}
               >
@@ -402,7 +408,7 @@ export function GeneratorTruckTrack({ children }: GeneratorTruckTrackProps) {
                   className="w-full h-full object-contain pointer-events-none select-none block"
                   draggable={false}
                 />
-              </motion.div>
+              </div>
             </div>
 
             {/* 3D Truck Body with Open Wheel Arches ON TOP (fenders cover top of wheels) */}

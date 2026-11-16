@@ -186,7 +186,7 @@ export function LanguageSwitcher({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "group flex items-center gap-2 py-1.5 px-3 rounded-full border transition-all shadow-xs cursor-pointer select-none",
+          "group flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-full border transition-all shadow-xs cursor-pointer select-none shrink-0",
           isDark
             ? isOpen
               ? "bg-white/25 border-white/40 text-white"
@@ -201,7 +201,7 @@ export function LanguageSwitcher({
         <ActiveFlag />
         <span
           className={cn(
-            "text-xs font-semibold tracking-tight font-sans whitespace-nowrap",
+            "hidden sm:inline text-xs font-semibold tracking-tight font-sans whitespace-nowrap",
             isDark ? "text-white" : "text-[#1F1F1E]"
           )}
         >
@@ -209,7 +209,7 @@ export function LanguageSwitcher({
         </span>
         <ChevronDown
           className={cn(
-            "w-3.5 h-3.5 transition-transform duration-200 shrink-0",
+            "w-3 h-3 sm:w-3.5 sm:h-3.5 transition-transform duration-200 shrink-0",
             isDark
               ? "text-white/70 group-hover:text-white"
               : "text-[#625D55] group-hover:text-[#1F1F1E]",

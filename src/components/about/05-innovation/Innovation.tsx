@@ -1,18 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Zap, Cpu, Award } from "lucide-react";
+import { Cpu, ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * Innovation Component
  *
  * Ultra-Premium Fleet Technology & OEM Partner Showcase:
- * - Fluid Framer Motion animations with hover physics
- * - Technical OEM partner cards with authentic fleet specifications
- * - Zero pill badges, zero AI slop, pure bright luxury aesthetic
+ * - Desktop: 5-Column technical OEM partner cards
+ * - Mobile: Fluid horizontal touch-snap carousel with dot pagination
  */
 export function Innovation() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const partners = [
     {
       brand: "Cummins",
@@ -46,8 +49,31 @@ export function Innovation() {
     },
   ];
 
+  const handleScroll = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 16;
+    const index = Math.round(el.scrollLeft / cardWidth);
+    setActiveIndex(Math.min(Math.max(index, 0), partners.length - 1));
+  };
+
+  const scrollToIndex = (index: number) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 16;
+    el.scrollTo({
+      left: index * cardWidth,
+      behavior: "smooth",
+    });
+    setActiveIndex(index);
+  };
+
   return (
-    <section className="w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-12 flex flex-col items-center bg-[#FAF8F5] border-b border-[#E8E2D9] relative overflow-hidden">
+    <section className="w-full py-14 sm:py-28 px-4 sm:px-6 lg:px-12 flex flex-col items-center bg-[#FAF8F5] border-b border-[#E8E2D9] relative overflow-hidden">
       {/* Subtle Radial Glow */}
       <div 
         aria-hidden="true" 
@@ -74,8 +100,93 @@ export function Innovation() {
           </p>
         </motion.div>
 
-        {/* 5-Column Animated OEM Partner Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 sm:gap-6 mt-12 sm:mt-16 w-full">
+        {/* Mobile View: Horizontal Touch-Snap Carousel (< sm) */}
+        <div className="block sm:hidden w-full mt-10">
+          <div
+            ref={carouselRef}
+            onScroll={handleScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x -mx-4 px-4 pb-4 pt-1 scroll-smooth"
+          >
+            {partners.map((item, idx) => (
+              <div
+                key={`mobile-${item.brand}`}
+                className="w-[76vw] max-w-[280px] shrink-0 snap-center bg-white rounded-3xl p-6 border border-[#E8E2D9] shadow-xs flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="size-9 rounded-xl bg-[#FAF8F5] border border-[#E8E2D9] flex items-center justify-center text-[#FF5500] shadow-2xs">
+                      <Cpu className="w-4 h-4" />
+                    </div>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#8C8275] font-['Outfit',sans-serif]">
+                      Certified
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-extrabold text-[#111315] font-['Poppins',sans-serif]">
+                    {item.brand}
+                  </h3>
+                  
+                  <p className="text-xs font-semibold text-[#FF5500] mt-1 font-['Outfit',sans-serif]">
+                    {item.type}
+                  </p>
+
+                  <p className="text-xs text-[#524E48] font-['Outfit',sans-serif] mt-2 leading-relaxed">
+                    {item.tech}
+                  </p>
+                </div>
+
+                <div className="pt-4 mt-5 border-t border-[#E8E2D9] flex items-center justify-between">
+                  <span className="text-[10px] uppercase font-bold text-[#8C8275] tracking-tight">Capacity</span>
+                  <span className="text-xs font-bold text-[#111315] font-sans">{item.range}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Dot Indicators & Arrow Navigation */}
+          <div className="flex items-center justify-between pt-3 px-1">
+            <div className="flex items-center gap-1.5">
+              {partners.map((_, i) => (
+                <button
+                  key={`dot-${i}`}
+                  type="button"
+                  onClick={() => scrollToIndex(i)}
+                  aria-label={`Go to OEM partner ${i + 1}`}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
+                    activeIndex === i
+                      ? "w-6 bg-[#FF5500]"
+                      : "w-1.5 bg-[#DDD6CA] hover:bg-[#B8B0A2]"
+                  )}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
+                disabled={activeIndex === 0}
+                className="p-1.5 rounded-full border border-[#E8E2D9] bg-white text-[#111315] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                aria-label="Previous partner"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToIndex(Math.min(partners.length - 1, activeIndex + 1))}
+                disabled={activeIndex === partners.length - 1}
+                className="p-1.5 rounded-full border border-[#E8E2D9] bg-white text-[#111315] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                aria-label="Next partner"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop 5-Column Animated OEM Partner Cards (sm and above) - 100% UNCHANGED */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-5 sm:gap-6 mt-12 sm:mt-16 w-full">
           {partners.map((item, idx) => (
             <motion.div
               key={item.brand}

@@ -136,7 +136,7 @@ export function FullscreenGeneratorModal({
             animate={{ opacity: isExiting ? 0 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-40 bg-[#111315]/35 backdrop-blur-sm"
+            className="fixed inset-0 z-[140] bg-[#111315]/35 backdrop-blur-sm"
             onClick={handleClose}
           />
 
@@ -148,7 +148,7 @@ export function FullscreenGeneratorModal({
                 ? getLayoutId(generator.id, "card")
                 : undefined
             }
-            className="fixed inset-0 z-50 flex flex-col lg:flex-row bg-[#FAF8F5] text-[#111315] font-sans"
+            className="fixed inset-0 z-[150] flex flex-col lg:flex-row bg-[#FAF8F5] text-[#111315] font-sans"
             style={{
               willChange: "transform",
               transform: "translateZ(0)",
@@ -178,7 +178,7 @@ export function FullscreenGeneratorModal({
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ delay: isExiting ? 0 : 0.15, duration: 0.12 }}
               onClick={handleClose}
-              className="fixed top-4 right-4 sm:top-5 sm:right-5 z-50 w-10 h-10 rounded-full bg-white hover:bg-[#FF5500] text-[#111315] hover:text-white flex items-center justify-center transition-colors border border-[#E8E2D9] shadow-sm cursor-pointer"
+              className="fixed top-4 right-4 sm:top-5 sm:right-5 z-[160] w-10 h-10 rounded-full bg-white hover:bg-[#FF5500] text-[#111315] hover:text-white flex items-center justify-center transition-colors border border-[#E8E2D9] shadow-sm cursor-pointer"
             >
               <X className="w-5 h-5" />
             </motion.button>

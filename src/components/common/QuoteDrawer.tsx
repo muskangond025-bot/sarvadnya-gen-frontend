@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { useQuote } from "@/lib/QuoteContext";
+import { useAuth } from "@/lib/AuthContext";
+import { LoginModal } from "@/components/auth/client/LoginModal";
 import Image from "next/image";
 
 /**
@@ -19,6 +21,8 @@ import Image from "next/image";
  */
 export function QuoteDrawer() {
   const router = useRouter();
+  const { user } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const {
     items,
     isDrawerOpen,
@@ -53,6 +57,12 @@ export function QuoteDrawer() {
   }, [isDrawerOpen, closeDrawer]);
 
   const handleProceedToCheckout = () => {
+    // Strict Checkout Gate: Require Login Before Proceeding to Checkout
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+
     closeDrawer();
     // Pass first generator kVA or default to book page
     const primaryKva = items[0]?.kva?.replace(/[^0-9]/g, "") || "";
@@ -64,9 +74,10 @@ export function QuoteDrawer() {
   };
 
   return (
-    <AnimatePresence>
+    <>
+      <AnimatePresence>
       {isDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-[150] flex justify-end">
           {/* Subtle Ambient Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -323,5 +334,24 @@ export function QuoteDrawer() {
         </div>
       )}
     </AnimatePresence>
+
+    {/* Strict Authentication Gate Modal */}
+    <LoginModal
+      isOpen={showLoginModal}
+      onClose={() => setShowLoginModal(false)}
+      onSuccess={() => {
+        setShowLoginModal(false);
+        closeDrawer();
+        const primaryKva = items[0]?.kva?.replace(/[^0-9]/g, "") || "";
+        if (primaryKva) {
+          router.push(`/book?kVA=${encodeURIComponent(primaryKva)}&quote=active`);
+        } else {
+          router.push("/book");
+        }
+      }}
+      title="Welcome Back"
+      subtitle="Sign in to your Sarvadnya Power account to proceed with fleet booking & reservation."
+    />
+    </>
   );
 }

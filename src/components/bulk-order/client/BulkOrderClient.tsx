@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { RentalCalendar, DateTimePicker } from "@/components/common";
 import type { DateRange } from "@/components/common/RentalCalendar";
@@ -15,18 +16,40 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock,
+  CreditCard,
+  Download,
+  FileText,
   Hourglass,
+  Mail,
   MapPin,
   Minus,
+  Phone,
   Plus,
+  Receipt,
   Search,
+  Share2,
+  ShieldCheck,
+  Sparkles,
   Trash2,
+  User,
   X,
   Zap,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/AuthContext";
+import { LoginModal } from "@/components/auth/client/LoginModal";
 
 // Types
+export interface CustomerContactInfo {
+  fullName: string;
+  phone: string;
+  email: string;
+  company: string;
+  siteAddress: string;
+  gstin: string;
+}
+
 interface GeneratorConfig {
   id: string;
   dateRangeId: string;
@@ -75,7 +98,7 @@ const availableGenerators = generatorsData
     type: g.type,
     kva: g.power_output_kva,
     brand: g.brand,
-    dailyRate: g.daily_rate,
+    dailyRate: Number(g.daily_rate) || 4500,
   }));
 
 function createDefaultConfig(dateRangeId: string): GeneratorConfig {
@@ -157,13 +180,12 @@ function StepIndicator({ currentStep }: { currentStep: 1 | 2 | 3 }) {
             <React.Fragment key={step.number}>
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-mono text-sm font-bold border transition-colors shrink-0 ${
-                    isActive
-                      ? "bg-[#FF5500] border-[#FF5500] text-white shadow-sm shadow-[#FF5500]/25"
-                      : isCompleted
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-mono text-sm font-bold border transition-colors shrink-0 ${isActive
+                    ? "bg-[#FF5500] border-[#FF5500] text-white shadow-sm shadow-[#FF5500]/25"
+                    : isCompleted
                       ? "bg-[#18181B] border-[#18181B] text-white"
                       : "bg-[#FAF8F5] border-[#DED8CE] text-[#6E685F]"
-                  }`}
+                    }`}
                 >
                   {isCompleted ? (
                     <Check className="w-4 h-4 text-[#FF5500]" strokeWidth={2.5} />
@@ -174,11 +196,10 @@ function StepIndicator({ currentStep }: { currentStep: 1 | 2 | 3 }) {
 
                 <div className="min-w-0">
                   <p
-                    className={`text-sm sm:text-[15px] font-semibold truncate ${
-                      isActive || isCompleted
-                        ? "text-[#111315]"
-                        : "text-[#6E685F]"
-                    }`}
+                    className={`text-sm sm:text-[15px] font-semibold truncate ${isActive || isCompleted
+                      ? "text-[#111315]"
+                      : "text-[#6E685F]"
+                      }`}
                   >
                     {step.label}
                   </p>
@@ -251,17 +272,15 @@ function SearchableDropdown({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`w-full px-4 py-3.5 rounded-xl border text-left flex items-center justify-between gap-3 transition-colors ${
-          isOpen
-            ? "bg-white border-[#FF5500] ring-2 ring-[#FF5500]/15"
-            : "bg-[#FAF8F5] border-[#DED8CE] hover:border-[#FF5500]"
-        }`}
+        className={`w-full px-4 py-3.5 rounded-xl border text-left flex items-center justify-between gap-3 transition-colors ${isOpen
+          ? "bg-white border-[#FF5500] ring-2 ring-[#FF5500]/15"
+          : "bg-[#FAF8F5] border-[#DED8CE] hover:border-[#FF5500]"
+          }`}
       >
         <div className="min-w-0 flex items-center gap-2.5">
           <Zap
-            className={`w-4 h-4 shrink-0 ${
-              selectedGenerator ? "text-[#FF5500]" : "text-[#6E685F]"
-            }`}
+            className={`w-4 h-4 shrink-0 ${selectedGenerator ? "text-[#FF5500]" : "text-[#6E685F]"
+              }`}
           />
           {selectedGenerator ? (
             <span className="font-medium text-[#111315] truncate">
@@ -275,9 +294,8 @@ function SearchableDropdown({
           )}
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-[#524E48] shrink-0 transition-transform ${
-            isOpen ? "rotate-180 text-[#FF5500]" : ""
-          }`}
+          className={`w-4 h-4 text-[#524E48] shrink-0 transition-transform ${isOpen ? "rotate-180 text-[#FF5500]" : ""
+            }`}
         />
       </button>
 
@@ -322,11 +340,10 @@ function SearchableDropdown({
                         setIsOpen(false);
                         setSearch("");
                       }}
-                      className={`w-full px-4 py-3 text-left flex items-center justify-between gap-3 transition-colors ${
-                        isSelected
-                          ? "bg-[#FFF3EC]"
-                          : "hover:bg-[#FAF8F5]"
-                      }`}
+                      className={`w-full px-4 py-3 text-left flex items-center justify-between gap-3 transition-colors ${isSelected
+                        ? "bg-[#FFF3EC]"
+                        : "hover:bg-[#FAF8F5]"
+                        }`}
                     >
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-[#111315] truncate">
@@ -337,11 +354,10 @@ function SearchableDropdown({
                         </p>
                       </div>
                       <span
-                        className={`shrink-0 px-2.5 py-1 rounded-md font-mono text-xs font-bold ${
-                          isSelected
-                            ? "bg-[#FF5500] text-white"
-                            : "bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315]"
-                        }`}
+                        className={`shrink-0 px-2.5 py-1 rounded-md font-mono text-xs font-bold ${isSelected
+                          ? "bg-[#FF5500] text-white"
+                          : "bg-[#FAF8F5] border border-[#E8E2D9] text-[#111315]"
+                          }`}
                       >
                         {gen.kva} kVA
                       </span>
@@ -374,11 +390,10 @@ function ToggleSwitch({
       type="button"
       onClick={() => onChange(!checked)}
       aria-pressed={checked}
-      className={`w-full flex items-center justify-between gap-3 p-3.5 rounded-xl border text-left transition-colors ${
-        checked
-          ? "bg-[#FFF8F4] border-[#FF5500]/45"
-          : "bg-[#FAF8F5] border-[#E8E2D9] hover:border-[#D6CFC4]"
-      }`}
+      className={`w-full flex items-center justify-between gap-3 p-3.5 rounded-xl border text-left transition-colors ${checked
+        ? "bg-[#FFF8F4] border-[#FF5500]/45"
+        : "bg-[#FAF8F5] border-[#E8E2D9] hover:border-[#D6CFC4]"
+        }`}
     >
       <div className="min-w-0">
         <p className="text-sm font-semibold text-[#111315]">{label}</p>
@@ -388,14 +403,12 @@ function ToggleSwitch({
       </div>
 
       <span
-        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-          checked ? "bg-[#FF5500]" : "bg-[#D6CFC4]"
-        }`}
+        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${checked ? "bg-[#FF5500]" : "bg-[#D6CFC4]"
+          }`}
       >
         <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
-            checked ? "translate-x-6" : "translate-x-1"
-          }`}
+          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${checked ? "translate-x-6" : "translate-x-1"
+            }`}
         />
       </span>
     </button>
@@ -487,11 +500,10 @@ function FleetOverviewRail({
                 return (
                   <div
                     key={range.id}
-                    className={`rounded-xl border transition-colors p-3 ${
-                      isRangeActive
-                        ? "border-[#FF5500] bg-[#FFF8F4]"
-                        : "border-[#E8E2D9] bg-[#FAF8F5]"
-                    }`}
+                    className={`rounded-xl border transition-colors p-3 ${isRangeActive
+                      ? "border-[#FF5500] bg-[#FFF8F4]"
+                      : "border-[#E8E2D9] bg-[#FAF8F5]"
+                      }`}
                   >
                     <button
                       type="button"
@@ -524,11 +536,10 @@ function FleetOverviewRail({
                               key={cfg.id}
                               type="button"
                               onClick={() => onConfigClick(cfg.id)}
-                              className={`w-full px-2.5 py-1.5 rounded-lg text-left text-xs flex items-center justify-between gap-2 transition-colors ${
-                                isCfgActive
-                                  ? "bg-[#FF5500] text-white font-semibold"
-                                  : "bg-white border border-[#E8E2D9] text-[#403C36] hover:border-[#FF5500]"
-                              }`}
+                              className={`w-full px-2.5 py-1.5 rounded-lg text-left text-xs flex items-center justify-between gap-2 transition-colors ${isCfgActive
+                                ? "bg-[#FF5500] text-white font-semibold"
+                                : "bg-white border border-[#E8E2D9] text-[#403C36] hover:border-[#FF5500]"
+                                }`}
                             >
                               <span className="truncate">
                                 {gen ? gen.name : "Select model"}
@@ -670,11 +681,10 @@ function DateSelectionStep({
           whileTap={{ scale: selectedRanges.length > 0 ? 0.99 : 1 }}
           onClick={onContinue}
           disabled={selectedRanges.length === 0}
-          className={`inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-base font-bold transition-colors ${
-            selectedRanges.length > 0
-              ? "bg-[#18181B] hover:bg-[#FF5500] text-white shadow-sm"
-              : "bg-[#ECE6DC] border border-[#DED8CE] text-[#8C847A] cursor-not-allowed"
-          }`}
+          className={`inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-base font-bold transition-colors ${selectedRanges.length > 0
+            ? "bg-[#18181B] hover:bg-[#FF5500] text-white shadow-sm"
+            : "bg-[#ECE6DC] border border-[#DED8CE] text-[#8C847A] cursor-not-allowed"
+            }`}
         >
           <span>Continue</span>
           <ArrowRight className="w-4 h-4" />
@@ -911,18 +921,17 @@ function DateConfirmation({
               {selectedRanges.length === 0
                 ? "Back to Calendar"
                 : isEditing
-                ? "Done Editing"
-                : "Edit Dates"}
+                  ? "Done Editing"
+                  : "Edit Dates"}
             </button>
             <button
               type="button"
               onClick={onConfirm}
               disabled={selectedRanges.length === 0}
-              className={`flex-1 py-3.5 px-4 rounded-xl font-bold transition-colors ${
-                selectedRanges.length > 0
-                  ? "bg-[#18181B] hover:bg-[#FF5500] text-white"
-                  : "bg-[#ECE6DC] text-[#8C847A] cursor-not-allowed"
-              }`}
+              className={`flex-1 py-3.5 px-4 rounded-xl font-bold transition-colors ${selectedRanges.length > 0
+                ? "bg-[#18181B] hover:bg-[#FF5500] text-white"
+                : "bg-[#ECE6DC] text-[#8C847A] cursor-not-allowed"
+                }`}
             >
               Confirm & Continue →
             </button>
@@ -1278,11 +1287,10 @@ function GeneratorAssignmentStep({
               key={range.id}
               id={`range-${range.id}`}
               variants={fadeInUp}
-              className={`bg-white border rounded-3xl overflow-hidden shadow-sm transition-all ${
-                isActiveRange
-                  ? "border-[#FF5500] ring-2 ring-[#FF5500]/25"
-                  : "border-[#E8E2D9]"
-              }`}
+              className={`bg-white border rounded-3xl overflow-hidden shadow-sm transition-all ${isActiveRange
+                ? "border-[#FF5500] ring-2 ring-[#FF5500]/25"
+                : "border-[#E8E2D9]"
+                }`}
             >
               {/* Range Header Bar */}
               <div className="bg-[#18181B] px-5 sm:px-6 py-4 border-b-2 border-[#FF5500] flex flex-wrap items-center justify-between gap-2">
@@ -1308,11 +1316,10 @@ function GeneratorAssignmentStep({
                     <div
                       key={config.id}
                       id={`config-${config.id}`}
-                      className={`rounded-2xl transition-all ${
-                        activeConfigId === config.id
-                          ? "ring-2 ring-[#FF5500] ring-offset-2"
-                          : ""
-                      }`}
+                      className={`rounded-2xl transition-all ${activeConfigId === config.id
+                        ? "ring-2 ring-[#FF5500] ring-offset-2"
+                        : ""
+                        }`}
                     >
                       <GeneratorForm
                         config={config}
@@ -1357,11 +1364,10 @@ function GeneratorAssignmentStep({
           type="button"
           onClick={onContinue}
           disabled={!hasValidConfigs}
-          className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-colors ${
-            hasValidConfigs
-              ? "bg-[#18181B] hover:bg-[#FF5500] text-white shadow-sm"
-              : "bg-[#ECE6DC] border border-[#DED8CE] text-[#8C847A] cursor-not-allowed"
-          }`}
+          className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-colors ${hasValidConfigs
+            ? "bg-[#18181B] hover:bg-[#FF5500] text-white shadow-sm"
+            : "bg-[#ECE6DC] border border-[#DED8CE] text-[#8C847A] cursor-not-allowed"
+            }`}
         >
           <span>Review Order</span>
           <ArrowRight className="w-4 h-4" />
@@ -1372,22 +1378,396 @@ function GeneratorAssignmentStep({
 }
 
 // Step 3: Order Summary Component
+/**
+ * Official Commercial Quotation Modal (B2B Proforma Quote)
+ */
+function QuotationModal({
+  isOpen,
+  onClose,
+  quoteRef,
+  contactInfo,
+  selectedRanges,
+  generatorConfigs,
+  pricingSummary,
+  onProceedToPayment,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  quoteRef: string;
+  contactInfo: CustomerContactInfo;
+  selectedRanges: DateRange[];
+  generatorConfigs: GeneratorConfig[];
+  pricingSummary: {
+    totalEstimated: number;
+    totalUnits: number;
+    totalShifts: number;
+    advanceToken: number;
+    balanceOnSite: number;
+  };
+  onProceedToPayment: () => void;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  if (!mounted || !isOpen) return null;
+
+  const handleDownloadQuotation = () => {
+    const lines = [
+      "================================================================================",
+      "             SARVADNYA POWER & INDUSTRIAL GENERATOR SERVICES",
+      "                   OFFICIAL COMMERCIAL HIRE QUOTATION",
+      "================================================================================",
+      `Quotation Ref   : ${quoteRef}`,
+      `Date Generated  : ${new Date().toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`,
+      `Quotation Status: Approved for Fleet Reservation (Valid 7 Days)`,
+      "--------------------------------------------------------------------------------",
+      "CLIENT & PROCUREMENT DETAILS:",
+      `Contact Person  : ${contactInfo.fullName || "Not Specified"}`,
+      `Company / Entity: ${contactInfo.company || "Direct Enterprise"}`,
+      `Contact Phone   : ${contactInfo.phone || "Not Specified"}`,
+      `Official Email  : ${contactInfo.email || "Not Specified"}`,
+      `Delivery Site   : ${contactInfo.siteAddress || "Site to be confirmed"}`,
+      contactInfo.gstin ? `GSTIN Number    : ${contactInfo.gstin}` : null,
+      "--------------------------------------------------------------------------------",
+      "FLEET DEPLOYMENT SCHEDULE:",
+      ...selectedRanges.map((range, rIdx) => {
+        const days = getRangeDayCount(range);
+        const configs = generatorConfigs.filter((c) => c.dateRangeId === range.id);
+        const configLines = configs.map((c, cIdx) => {
+          const gen = availableGenerators.find((g) => g.id === c.generatorId);
+          return `  [${cIdx + 1}] ${gen?.name || "Generator"} (${gen?.kva || 125} kVA) | Qty: ${c.quantity} | Shifts: ${c.numberOfShifts}/day`;
+        });
+        return `Window ${rIdx + 1}: ${formatRangeShort(range)} (${days} day${days > 1 ? "s" : ""})\n${configLines.join("\n")}`;
+      }),
+      "--------------------------------------------------------------------------------",
+      "COMMERCIAL FINANCIAL SUMMARY:",
+      `Total Equipment Units   : ${pricingSummary.totalUnits} Generator(s)`,
+      `Total Operational Shifts: ${pricingSummary.totalShifts} Shift(s)`,
+      `Total Estimated Rental  : INR ${pricingSummary.totalEstimated.toLocaleString("en-IN")}`,
+      `Initial Booking Token   : INR ${pricingSummary.advanceToken.toLocaleString("en-IN")} (To lock fleet slots)`,
+      `Balance Due on Site     : INR ${pricingSummary.balanceOnSite.toLocaleString("en-IN")} (Payable on delivery & testing)`,
+      "================================================================================",
+      "TERMS & CONDITIONS:",
+      "1. Standard acoustic silent enclosure compliant with CPCB IV+ norms.",
+      "2. Fleet dispatch commences once advance token reservation is acknowledged.",
+      "3. 24/7 on-site technician & standby support included.",
+      "4. Dispatch Hub: MIDC Waluj, Chhatrapati Sambhajinagar / Nashik, Maharashtra.",
+      "5. Helpline: +91 98220 54100 / +91 62626 29944 | info@sarvadnyapower.com",
+      "================================================================================",
+    ].filter(Boolean);
+
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Sarvadnya_Quotation_${quoteRef}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleWhatsAppDispatch = () => {
+    const text = `Hello Sarvadnya Power Team,\n\nI have generated an official Bulk Order Quotation (*${quoteRef}*).\n\n*Client:* ${contactInfo.fullName} (${contactInfo.company || "Individual"})\n*Phone:* ${contactInfo.phone}\n*Site Location:* ${contactInfo.siteAddress}\n*Fleet Units:* ${pricingSummary.totalUnits} Generators\n*Estimated Total:* ₹${pricingSummary.totalEstimated.toLocaleString("en-IN")}\n*Booking Token:* ₹${pricingSummary.advanceToken.toLocaleString("en-IN")}\n\nPlease confirm fleet dispatch feasibility.`;
+    window.open(`https://wa.me/919822054100?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const modalContent = (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5 bg-black/70 backdrop-blur-xs">
+      <div
+        className="fixed inset-0"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-[#E8E2D9] overflow-hidden flex flex-col max-h-[90vh] z-10 animate-in fade-in zoom-in-95 duration-200">
+        {/* Header Strip */}
+        <div className="bg-[#18181B] px-5 sm:px-6 py-4 border-b-2 border-[#FF5500] flex items-center justify-between text-white shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#FF5500]/20 text-[#FF5500] flex items-center justify-center font-bold">
+              <FileText className="size-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-base sm:text-lg">Commercial Quotation</h3>
+                <span className="font-mono text-xs px-2 py-0.5 rounded bg-white/10 text-white/90">
+                  {quoteRef}
+                </span>
+              </div>
+              <p className="text-xs text-white/70">
+                Official Proforma Estimate • Valid for 7 Days
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
+            aria-label="Close quote modal"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="p-5 sm:p-7 overflow-y-auto space-y-5 text-[#111315]">
+          {/* Client & Delivery Site Info */}
+          <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D9] space-y-2.5">
+            <div className="text-xs font-mono uppercase tracking-wider text-[#71695F] font-bold">
+              Procurement & Delivery Information
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+              <div>
+                <span className="text-[#71695F] block text-xs">Client / Person</span>
+                <span className="font-bold text-[#111315]">{contactInfo.fullName}</span>
+                {contactInfo.company && (
+                  <span className="text-[#71695F] block text-xs font-medium">
+                    {contactInfo.company}
+                  </span>
+                )}
+              </div>
+              <div>
+                <span className="text-[#71695F] block text-xs">Contact Phone</span>
+                <span className="font-bold text-[#111315]">{contactInfo.phone}</span>
+              </div>
+              <div className="sm:col-span-2">
+                <span className="text-[#71695F] block text-xs">Site Delivery Location</span>
+                <span className="font-semibold text-[#111315]">{contactInfo.siteAddress}</span>
+              </div>
+              {contactInfo.gstin && (
+                <div>
+                  <span className="text-[#71695F] block text-xs">GSTIN</span>
+                  <span className="font-mono font-bold text-[#111315]">{contactInfo.gstin}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Schedule & Fleet Units */}
+          <div className="space-y-2">
+            <div className="text-xs font-mono uppercase tracking-wider text-[#71695F] font-bold">
+              Fleet Allocation ({pricingSummary.totalUnits} Units • {pricingSummary.totalShifts} Shifts)
+            </div>
+            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+              {selectedRanges.map((range, idx) => {
+                const configs = generatorConfigs.filter((c) => c.dateRangeId === range.id);
+                return (
+                  <div key={range.id} className="p-3 rounded-xl border border-[#E8E2D9] bg-white text-xs">
+                    <div className="font-bold text-[#111315] mb-1.5 flex justify-between">
+                      <span>Window {idx + 1}: {formatRangeShort(range)}</span>
+                      <span className="text-[#FF5500]">{getRangeDayCount(range)} Day(s)</span>
+                    </div>
+                    <div className="space-y-1 pl-2 border-l-2 border-[#FF5500]/40">
+                      {configs.map((c, cIdx) => {
+                        const gen = availableGenerators.find((g) => g.id === c.generatorId);
+                        return (
+                          <div key={cIdx} className="flex justify-between text-[#524E48]">
+                            <span>{gen?.name || "Generator"} ({gen?.kva || 125} kVA) × {c.quantity}</span>
+                            <span className="font-mono">{c.numberOfShifts} Shift(s)</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Financial Breakdown Table */}
+          <div className="p-4 rounded-2xl bg-[#18181B] text-white space-y-3">
+            <div className="text-xs font-mono uppercase tracking-wider text-white/60 font-bold">
+              Commercial Estimate Breakdown
+            </div>
+            <div className="space-y-1.5 text-xs sm:text-sm">
+              <div className="flex justify-between text-white/80">
+                <span>Total Estimated Rental (Fleet + Operations)</span>
+                <span className="font-mono font-bold text-white">
+                  ₹{pricingSummary.totalEstimated.toLocaleString("en-IN")}
+                </span>
+              </div>
+              <div className="flex justify-between text-[#FF8533] font-bold pt-1.5 border-t border-white/10">
+                <span>Initial Booking Advance Token (20%)</span>
+                <span className="font-mono text-base text-[#FF5500]">
+                  ₹{pricingSummary.advanceToken.toLocaleString("en-IN")}
+                </span>
+              </div>
+              <div className="flex justify-between text-white/70 text-xs">
+                <span>Balance Due on Site (After Installation & Load Testing)</span>
+                <span className="font-mono font-semibold">
+                  ₹{pricingSummary.balanceOnSite.toLocaleString("en-IN")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-[#71695F] leading-relaxed">
+            * All equipment includes acoustic canopy, CPCB IV+ compliance certificate, and 24/7 operator backup. Fuel & transport billed per actual logbook.
+          </p>
+        </div>
+
+        {/* Modal Action Footer */}
+        <div className="p-4 sm:p-5 bg-[#FAF8F5] border-t border-[#E8E2D9] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDownloadQuotation}
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#DED8CE] bg-white hover:bg-[#EFEAE1] text-xs font-bold text-[#111315] shadow-2xs transition-colors cursor-pointer"
+            >
+              <Download className="size-3.5 text-[#FF5500]" />
+              <span>Download (.txt)</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleWhatsAppDispatch}
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#DED8CE] bg-white hover:bg-[#EFEAE1] text-xs font-bold text-[#111315] shadow-2xs transition-colors cursor-pointer"
+            >
+              <Share2 className="size-3.5 text-emerald-600" />
+              <span>WhatsApp Desk</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={onProceedToPayment}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FF5500] hover:bg-[#E04B00] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#FF5500]/25 transition-all cursor-pointer"
+          >
+            <CreditCard className="size-4" />
+            <span>Pay Advance Token (₹{pricingSummary.advanceToken.toLocaleString("en-IN")})</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return createPortal(modalContent, document.body);
+}
+
 function OrderSummaryStep({
   selectedRanges,
   generatorConfigs,
+  contactInfo,
+  onContactInfoChange,
   onBack,
   onSubmit,
 }: {
   selectedRanges: DateRange[];
   generatorConfigs: GeneratorConfig[];
+  contactInfo: CustomerContactInfo;
+  onContactInfoChange: React.Dispatch<React.SetStateAction<CustomerContactInfo>>;
   onBack: () => void;
-  onSubmit: () => void;
+  onSubmit: (info: CustomerContactInfo, advanceTokenAmount: number) => void;
 }) {
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [quoteReference, setQuoteReference] = useState("");
+
   const getGeneratorInfo = (id: string) =>
     availableGenerators.find((g) => g.id === id);
 
   const getConfigsForRange = (rangeId: string) =>
     generatorConfigs.filter((c) => c.dateRangeId === rangeId);
+
+  // Accurate Commercial Estimates
+  const pricingSummary = useMemo(() => {
+    let totalEstimated = 0;
+    let totalUnits = 0;
+    let totalShifts = 0;
+
+    selectedRanges.forEach((range) => {
+      const days = getRangeDayCount(range);
+      const configs = generatorConfigs.filter((c) => c.dateRangeId === range.id);
+
+      configs.forEach((config) => {
+        const gen = availableGenerators.find((g) => g.id === config.generatorId);
+        const rate = Number(gen?.dailyRate) || 6500;
+        const shifts = config.numberOfShifts || 1;
+        const qty = config.quantity || 1;
+
+        totalUnits += qty;
+        totalShifts += shifts * qty;
+
+        let configTotal = rate * qty * shifts * days;
+        if (config.options?.standbyGenerator) configTotal += 2000 * qty * days;
+        if (config.options?.includeTransport) configTotal += 1500 * qty;
+        if (config.options?.includeFuel) configTotal += 2500 * qty * shifts * days;
+
+        totalEstimated += configTotal;
+      });
+    });
+
+    const advanceToken = Math.max(5000, Math.round(totalEstimated * 0.2));
+    const balanceOnSite = Math.max(0, totalEstimated - advanceToken);
+
+    return {
+      totalEstimated,
+      totalUnits,
+      totalShifts,
+      advanceToken,
+      balanceOnSite,
+    };
+  }, [selectedRanges, generatorConfigs]);
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!contactInfo.fullName.trim() || contactInfo.fullName.trim().length < 2) {
+      errors.fullName = "Please enter contact person name";
+    }
+    const cleanPhone = contactInfo.phone.replace(/\D/g, "");
+    if (!cleanPhone || cleanPhone.length < 10) {
+      errors.phone = "Please enter a valid 10-digit phone number";
+    }
+    if (
+      !contactInfo.email.trim() ||
+      !contactInfo.email.includes("@") ||
+      !contactInfo.email.includes(".")
+    ) {
+      errors.email = "Please enter a valid work email";
+    }
+    if (!contactInfo.siteAddress.trim() || contactInfo.siteAddress.trim().length < 5) {
+      errors.siteAddress = "Please enter delivery site address & landmark";
+    }
+
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      const el = document.getElementById("bulk-order-contact-form");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      return false;
+    }
+    return true;
+  };
+
+  const handlePayAdvance = () => {
+    if (!validateForm()) return;
+    onSubmit(contactInfo, pricingSummary.advanceToken);
+  };
+
+  const handleRequestQuotation = () => {
+    if (!validateForm()) return;
+    const ref = `SP-QT-${Date.now().toString().slice(-6)}`;
+    setQuoteReference(ref);
+    setShowQuoteModal(true);
+  };
 
   return (
     <motion.div
@@ -1404,9 +1784,11 @@ function OrderSummaryStep({
         <p className="text-sm sm:text-base text-[#524E48] mt-1">
           Verify your date windows, fleet quantities, and site locations before
           proceeding to payment.
+          Verify your date windows, fleet quantities, and site delivery details before proceeding.
         </p>
       </motion.div>
 
+      {/* Date Windows & Equipment Manifest */}
       <div className="space-y-5">
         {selectedRanges.map((range, rangeIdx) => {
           const configs = getConfigsForRange(range.id);
@@ -1460,7 +1842,7 @@ function OrderSummaryStep({
                           <span>
                             {config.siteLocation ||
                               config.googleAddress ||
-                              "Site location to be confirmed"}
+                              "Site location specified below"}
                           </span>
                         </p>
                         <p className="flex items-center gap-2">
@@ -1505,37 +1887,304 @@ function OrderSummaryStep({
         })}
       </div>
 
-      {/* Navigation Footer */}
+      {/* Commercial Pricing Overview Banner */}
       <motion.div
         variants={fadeInUp}
-        className="flex flex-col sm:flex-row justify-between gap-3 pt-2"
+        className="bg-[#18181B] text-white rounded-3xl p-5 sm:p-6 shadow-md border-t-3 border-[#FF5500]"
       >
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 px-7 py-4 border border-[#DED8CE] bg-white text-[#111315] rounded-xl font-bold hover:border-[#18181B] transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Configure</span>
-        </button>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
+          <div className="pt-2 sm:pt-0 sm:pr-4">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-white/60 block">
+              Total Units
+            </span>
+            <span className="text-xl sm:text-2xl font-bold font-mono text-white mt-0.5 block">
+              {pricingSummary.totalUnits} Units
+            </span>
+            <span className="text-[11px] text-white/70">
+              {pricingSummary.totalShifts} total shift(s)
+            </span>
+          </div>
 
-        <motion.button
-          type="button"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-          onClick={onSubmit}
-          className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FF5500] hover:bg-[#E04B00] text-white rounded-xl text-base font-bold shadow-md shadow-[#FF5500]/20 transition-colors"
-        >
-          <CheckCircle2 className="w-5 h-5" />
-          <span>Submit Order & Proceed to Payment</span>
-        </motion.button>
+          <div className="pt-2 sm:pt-0 sm:px-4">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-white/60 block">
+              Total Rental Est.
+            </span>
+            <span className="text-xl sm:text-2xl font-bold font-mono text-white mt-0.5 block">
+              ₹{pricingSummary.totalEstimated.toLocaleString("en-IN")}
+            </span>
+            <span className="text-[11px] text-white/70">
+              Commercial tariff
+            </span>
+          </div>
+
+          <div className="pt-2 sm:pt-0 sm:px-4">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-[#FF8533] block">
+              Advance Token (20%)
+            </span>
+            <span className="text-xl sm:text-2xl font-bold font-mono text-[#FF5500] mt-0.5 block">
+              ₹{pricingSummary.advanceToken.toLocaleString("en-IN")}
+            </span>
+            <span className="text-[11px] text-white/70">
+              To lock fleet slots
+            </span>
+          </div>
+
+          <div className="pt-2 sm:pt-0 sm:pl-4">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-white/60 block">
+              Balance on Site
+            </span>
+            <span className="text-xl sm:text-2xl font-bold font-mono text-white mt-0.5 block">
+              ₹{pricingSummary.balanceOnSite.toLocaleString("en-IN")}
+            </span>
+            <span className="text-[11px] text-white/70">
+              On delivery & testing
+            </span>
+          </div>
+        </div>
       </motion.div>
+
+      {/* NEW: Site Delivery & Procurement Contact Form Card */}
+      <motion.div
+        variants={fadeInUp}
+        id="bulk-order-contact-form"
+        className="bg-white border border-[#E8E2D9] rounded-3xl p-5 sm:p-7 shadow-xs space-y-5"
+      >
+        <div className="flex items-start sm:items-center justify-between gap-3 pb-4 border-b border-[#EFECE6]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#FFF3EC] text-[#FF5500] flex items-center justify-center shrink-0 font-bold">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#111315]">
+                Site Delivery & Procurement Details
+              </h3>
+              <p className="text-xs sm:text-sm text-[#71695F]">
+                Required for fleet dispatch, site engineering & official tax invoice
+              </p>
+            </div>
+          </div>
+          <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E8E2D9] text-[#524E48] shrink-0 hidden sm:inline-block">
+            Required
+          </span>
+        </div>
+
+        {/* Responsive Form Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Contact Person Name */}
+          <div>
+            <label className="block text-xs font-bold text-[#111315] uppercase tracking-wider mb-1.5">
+              Contact Person <span className="text-[#FF5500]">*</span>
+            </label>
+            <div className="relative">
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[#8C8275]" />
+              <input
+                type="text"
+                value={contactInfo.fullName}
+                onChange={(e) => {
+                  onContactInfoChange((prev) => ({ ...prev, fullName: e.target.value }));
+                  if (formErrors.fullName) setFormErrors((prev) => ({ ...prev, fullName: "" }));
+                }}
+                placeholder="e.g. Rajesh Patil"
+                className={cn(
+                  "w-full pl-10 pr-4 py-3 rounded-xl border bg-white text-sm text-[#111315] placeholder:text-[#A0988C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20",
+                  formErrors.fullName ? "border-red-500 bg-red-50/20" : "border-[#DED8CE] focus:border-[#FF5500]"
+                )}
+              />
+            </div>
+            {formErrors.fullName && (
+              <p className="text-xs text-red-500 mt-1 font-medium">{formErrors.fullName}</p>
+            )}
+          </div>
+
+          {/* Phone Number / WhatsApp */}
+          <div>
+            <label className="block text-xs font-bold text-[#111315] uppercase tracking-wider mb-1.5">
+              Phone / WhatsApp <span className="text-[#FF5500]">*</span>
+            </label>
+            <div className="relative">
+              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[#8C8275]" />
+              <input
+                type="tel"
+                value={contactInfo.phone}
+                onChange={(e) => {
+                  onContactInfoChange((prev) => ({ ...prev, phone: e.target.value }));
+                  if (formErrors.phone) setFormErrors((prev) => ({ ...prev, phone: "" }));
+                }}
+                placeholder="e.g. 98220 54100"
+                className={cn(
+                  "w-full pl-10 pr-4 py-3 rounded-xl border bg-white text-sm text-[#111315] placeholder:text-[#A0988C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20",
+                  formErrors.phone ? "border-red-500 bg-red-50/20" : "border-[#DED8CE] focus:border-[#FF5500]"
+                )}
+              />
+            </div>
+            {formErrors.phone && (
+              <p className="text-xs text-red-500 mt-1 font-medium">{formErrors.phone}</p>
+            )}
+          </div>
+
+          {/* Company / Enterprise Name */}
+          <div>
+            <label className="block text-xs font-bold text-[#111315] uppercase tracking-wider mb-1.5">
+              Company / Enterprise Name
+            </label>
+            <div className="relative">
+              <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[#8C8275]" />
+              <input
+                type="text"
+                value={contactInfo.company}
+                onChange={(e) => onContactInfoChange((prev) => ({ ...prev, company: e.target.value }))}
+                placeholder="e.g. Acme Infra & Projects"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#DED8CE] bg-white text-sm text-[#111315] placeholder:text-[#A0988C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500]"
+              />
+            </div>
+          </div>
+
+          {/* Email Address */}
+          <div>
+            <label className="block text-xs font-bold text-[#111315] uppercase tracking-wider mb-1.5">
+              Official Email <span className="text-[#FF5500]">*</span>
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[#8C8275]" />
+              <input
+                type="email"
+                value={contactInfo.email}
+                onChange={(e) => {
+                  onContactInfoChange((prev) => ({ ...prev, email: e.target.value }));
+                  if (formErrors.email) setFormErrors((prev) => ({ ...prev, email: "" }));
+                }}
+                placeholder="e.g. procurement@acme.com"
+                className={cn(
+                  "w-full pl-10 pr-4 py-3 rounded-xl border bg-white text-sm text-[#111315] placeholder:text-[#A0988C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20",
+                  formErrors.email ? "border-red-500 bg-red-50/20" : "border-[#DED8CE] focus:border-[#FF5500]"
+                )}
+              />
+            </div>
+            {formErrors.email && (
+              <p className="text-xs text-red-500 mt-1 font-medium">{formErrors.email}</p>
+            )}
+          </div>
+
+          {/* Delivery Site Address & Landmark (Full Width) */}
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-bold text-[#111315] uppercase tracking-wider mb-1.5">
+              Site Delivery Address & Landmark <span className="text-[#FF5500]">*</span>
+            </label>
+            <div className="relative">
+              <MapPin className="absolute left-3.5 top-3.5 size-4 text-[#8C8275]" />
+              <textarea
+                rows={2}
+                value={contactInfo.siteAddress}
+                onChange={(e) => {
+                  onContactInfoChange((prev) => ({ ...prev, siteAddress: e.target.value }));
+                  if (formErrors.siteAddress) setFormErrors((prev) => ({ ...prev, siteAddress: "" }));
+                }}
+                placeholder="e.g. Plot No. 88, Chakan MIDC Phase 2, Near Bosch Gate, Pune"
+                className={cn(
+                  "w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-sm text-[#111315] placeholder:text-[#A0988C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 resize-none",
+                  formErrors.siteAddress ? "border-red-500 bg-red-50/20" : "border-[#DED8CE] focus:border-[#FF5500]"
+                )}
+              />
+            </div>
+            {formErrors.siteAddress && (
+              <p className="text-xs text-red-500 mt-1 font-medium">{formErrors.siteAddress}</p>
+            )}
+          </div>
+
+          {/* GSTIN (Optional) */}
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-bold text-[#111315] uppercase tracking-wider mb-1.5">
+              GSTIN Number <span className="text-[#8C8275] font-normal lowercase">(optional for B2B input tax credit)</span>
+            </label>
+            <div className="relative">
+              <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[#8C8275]" />
+              <input
+                type="text"
+                value={contactInfo.gstin}
+                onChange={(e) => onContactInfoChange((prev) => ({ ...prev, gstin: e.target.value.toUpperCase() }))}
+                placeholder="e.g. 27AAAAA0000A1Z5"
+                maxLength={15}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#DED8CE] bg-white text-sm text-[#111315] placeholder:text-[#A0988C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] uppercase font-mono"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Advance Token Notice */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D9] flex items-start gap-3">
+          <ShieldCheck className="size-5 text-[#FF5500] shrink-0 mt-0.5" />
+          <div className="text-xs text-[#524E48] leading-relaxed">
+            <strong className="text-[#111315] font-semibold block sm:inline">
+              Transparent Commercial Rental Terms:{" "}
+            </strong>
+            You are only paying an initial <strong>Booking Advance Token (₹{pricingSummary.advanceToken.toLocaleString("en-IN")})</strong> to reserve equipment in our schedule. The remaining balance (₹{pricingSummary.balanceOnSite.toLocaleString("en-IN")}) is payable on-site after diesel generator installation & load testing.
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Dual CTA Responsive Navigation Bar */}
+      <motion.div
+        variants={fadeInUp}
+        className="flex flex-col gap-3 pt-2"
+      >
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          {/* Back button */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 border border-[#DED8CE] bg-white text-[#111315] rounded-xl font-bold hover:border-[#18181B] transition-colors order-3 sm:order-1 text-sm sm:text-base cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Configure</span>
+          </button>
+
+          {/* Dual Action CTAs */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 order-1 sm:order-2 w-full sm:w-auto">
+            {/* Button 1: Request Official Quotation (PDF/PO) */}
+            <button
+              type="button"
+              onClick={handleRequestQuotation}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3.5 sm:py-4 border-2 border-[#18181B] bg-white hover:bg-[#FAF8F5] text-[#111315] rounded-xl text-sm sm:text-base font-bold shadow-2xs transition-all active:scale-[0.99] cursor-pointer"
+            >
+              <FileText className="w-4 h-4 text-[#FF5500]" />
+              <span>Request Official Quote (PDF)</span>
+            </button>
+
+            {/* Button 2: Pay Booking Advance Token */}
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={handlePayAdvance}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 bg-[#FF5500] hover:bg-[#E04B00] text-white rounded-xl text-sm sm:text-base font-bold shadow-md shadow-[#FF5500]/25 transition-all cursor-pointer"
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>Pay Advance Token (₹{pricingSummary.advanceToken.toLocaleString("en-IN")})</span>
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Official Commercial Quotation Modal Portal */}
+      <QuotationModal
+        isOpen={showQuoteModal}
+        onClose={() => setShowQuoteModal(false)}
+        quoteRef={quoteReference}
+        contactInfo={contactInfo}
+        selectedRanges={selectedRanges}
+        generatorConfigs={generatorConfigs}
+        pricingSummary={pricingSummary}
+        onProceedToPayment={handlePayAdvance}
+      />
     </motion.div>
   );
 }
 
 // Main Bulk Order Client Component
 export function BulkOrderClient() {
+  const { user } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [selectedRanges, setSelectedRanges] = useState<DateRange[]>([]);
   const [generatorConfigs, setGeneratorConfigs] = useState<GeneratorConfig[]>(
@@ -1544,10 +2193,22 @@ export function BulkOrderClient() {
   const [showDateConfirmation, setShowDateConfirmation] = useState(false);
   const [activeRangeId, setActiveRangeId] = useState<string | null>(null);
   const [activeConfigId, setActiveConfigId] = useState<string | null>(null);
+  const [contactInfo, setContactInfo] = useState<CustomerContactInfo>({
+    fullName: "",
+    phone: "",
+    email: "",
+    company: "",
+    siteAddress: "",
+    gstin: "",
+  });
 
   const router = useRouter();
 
   const handleDatesContinue = () => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
     setShowDateConfirmation(true);
   };
 
@@ -1577,11 +2238,19 @@ export function BulkOrderClient() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (contactData: CustomerContactInfo, advanceTokenAmount: number) => {
+    // Strict Checkout Gate: Require Login Before Proceeding to Checkout
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+
     if (typeof window !== "undefined") {
       const checkoutData = {
         selectedRanges,
         generatorConfigs,
+        contactInfo: contactData,
+        advanceToken: advanceTokenAmount,
         source: "bulk-order",
       };
       localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
@@ -1663,7 +2332,13 @@ export function BulkOrderClient() {
                     generatorConfigs={generatorConfigs}
                     onConfigsChange={setGeneratorConfigs}
                     onBack={handleBack}
-                    onContinue={() => setCurrentStep(3)}
+                    onContinue={() => {
+                      if (!user) {
+                        setShowLoginModal(true);
+                        return;
+                      }
+                      setCurrentStep(3);
+                    }}
                     activeRangeId={activeRangeId}
                     activeConfigId={activeConfigId}
                   />
@@ -1675,6 +2350,8 @@ export function BulkOrderClient() {
                   <OrderSummaryStep
                     selectedRanges={selectedRanges}
                     generatorConfigs={generatorConfigs}
+                    contactInfo={contactInfo}
+                    onContactInfoChange={setContactInfo}
                     onBack={handleBack}
                     onSubmit={handleSubmit}
                   />
@@ -1695,6 +2372,23 @@ export function BulkOrderClient() {
           </aside>
         </div>
 
+        {/* Strict Authentication Gate Modal */}
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onSuccess={() => {
+            setShowLoginModal(false);
+            if (currentStep === 1) {
+              setShowDateConfirmation(true);
+            } else if (currentStep === 2) {
+              setCurrentStep(3);
+            } else if (currentStep === 3) {
+              handleSubmit(contactInfo, 0);
+            }
+          }}
+          title="Login Required"
+          subtitle="Sign in to your Sarvadnya Power account to continue your bulk booking."
+        />
       </div>
 
       {/* Date Confirmation Modal rendered outside relative z-10 stacking context */}

@@ -125,11 +125,11 @@ export function Footer() {
                     <div className="size-6 sm:size-8 rounded-lg sm:rounded-xl bg-white/45 backdrop-blur-md border border-white/75 shadow-[0_4px_14px_rgba(17,19,21,0.06)] flex items-center justify-center text-[#111315]/75 shrink-0 mt-0.5">
                       <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-[11px] sm:text-xs font-bold text-[#111315]">Email Us</p>
                       <a
                         href="mailto:info@sarvadnyagenerators.com"
-                        className="text-[10px] sm:text-xs text-[#403C36] hover:text-[#111315] transition-colors mt-0.5 block truncate"
+                        className="text-[9.5px] sm:text-xs text-[#403C36] hover:text-[#111315] transition-colors mt-0.5 block break-all leading-tight"
                       >
                         info@sarvadnyagenerators.com
                       </a>
@@ -202,25 +202,29 @@ export function Footer() {
       </GeneratorTruckTrack>
 
       {/* Sub-Footer Legal Bar (Compact & clear on mobile) */}
-      <div className="w-full bg-[#EFEAE1] border-t border-[#E2DDD4] py-2.5 sm:py-4 px-4 sm:px-6 lg:px-8 shrink-0">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-[#524E48] pr-12 sm:pr-24">
-          <p>&copy; 2026 Sarvadnya Generators. All rights reserved.</p>
-          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
+      <div className="w-full bg-[#EFEAE1] border-t border-[#E2DDD4] py-2 sm:py-3.5 px-3 sm:px-6 lg:px-8 shrink-0">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1.5 sm:gap-4 text-[10px] sm:text-xs text-[#524E48] pr-14 sm:pr-0">
+          <p className="text-center sm:text-left text-[9.5px] sm:text-xs whitespace-nowrap">
+            &copy; 2026 Sarvadnya Generators. All rights reserved.
+          </p>
+          <div className="flex items-center justify-center gap-2 sm:gap-6 text-[9.5px] sm:text-xs font-medium">
             <Link
               href="/privacy"
-              className="hover:text-[#111315] transition-colors"
+              className="hover:text-[#111315] transition-colors whitespace-nowrap"
             >
               Privacy Policy
             </Link>
+            <span className="text-[#8C8275]/50 select-none">•</span>
             <Link
               href="/cookies"
-              className="hover:text-[#111315] transition-colors"
+              className="hover:text-[#111315] transition-colors whitespace-nowrap"
             >
               Cookie Policy
             </Link>
+            <span className="text-[#8C8275]/50 select-none">•</span>
             <Link
               href="/terms"
-              className="hover:text-[#111315] transition-colors"
+              className="hover:text-[#111315] transition-colors whitespace-nowrap"
             >
               Terms of Service
             </Link>

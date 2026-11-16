@@ -47,11 +47,11 @@ export default function RootLayout({
               <FullscreenProvider>
                 <Header />
                 <main className="overflow-x-hidden min-h-screen">{children}</main>
-                <QuoteDrawer />
-                <Chatbot />
                 <FooterClient>
                   <Footer />
                 </FooterClient>
+                <QuoteDrawer />
+                <Chatbot />
                 <AgentationToolbar />
               </FullscreenProvider>
             </QuoteProvider>

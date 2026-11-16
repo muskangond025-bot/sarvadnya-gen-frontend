@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ import {
   Phone,
   ArrowRight,
   ShieldCheck,
+  X,
 } from "lucide-react";
 import { Button, LanguageSwitcher } from "@/components/common";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -219,7 +221,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
         <nav
           aria-label="Main Navigation"
           className={cn(
-            "pointer-events-auto w-full max-w-5xl rounded-full px-2 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-1.5 sm:gap-3 transition-all duration-300 select-none",
+            "pointer-events-auto w-full max-w-5xl rounded-full px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-1.5 sm:gap-3 transition-all duration-300 select-none",
             isScrolled || isMenuOpen
               ? "bg-white/95 backdrop-blur-xl border border-[#E8E2D9] shadow-[0_12px_36px_rgba(0,0,0,0.08)] text-[#111315]"
               : "bg-white border border-[#E8E2D9] shadow-[0_8px_24px_rgba(0,0,0,0.06)] text-[#111315]"
@@ -232,7 +234,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <Link
               href="/"
-              className="size-9 sm:size-10 rounded-xl bg-white hover:scale-105 active:scale-95 flex items-center justify-center p-0.5 shrink-0 shadow-md transition-all duration-200 overflow-hidden"
+              className="size-8.5 sm:size-10 rounded-xl bg-white hover:scale-105 active:scale-95 flex items-center justify-center p-0.5 shrink-0 shadow-md transition-all duration-200 overflow-hidden"
               aria-label="Sarvadnya Generator Home"
             >
               <img
@@ -261,14 +263,14 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             RIGHT COLUMN: ACTION CLUSTER
             Language switcher + Phone + Cart + Profile + Menu toggle
           */}
-          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Language Dropdown with light theme for white navbar */}
             <LanguageSwitcher theme="light" />
 
             {/* Quick Telephone Dispatch Icon */}
             <a
               href="tel:+916262629944"
-              className="size-7.5 sm:size-9 rounded-full bg-[#FAF8F5] hover:bg-[#F4EDE2] border border-[#E8E2D9] text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 flex items-center justify-center transition-all shadow-2xs shrink-0"
+              className="size-8 sm:size-9 rounded-full bg-[#FAF8F5] hover:bg-[#F4EDE2] border border-[#E8E2D9] text-[#111315] hover:text-[#FF5500] hover:border-[#FF5500]/40 flex items-center justify-center transition-all shadow-2xs shrink-0"
               title="Direct Fleet Dispatch: +91 62626 29944"
               aria-label="Call Direct Fleet Dispatch"
             >
@@ -285,7 +287,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#111315] text-white hover:bg-[#FF5500] hover:text-white px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95 cursor-pointer"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#111315] text-white hover:bg-[#FF5500] hover:text-white size-8.5 sm:size-auto sm:px-5 sm:py-2 text-xs sm:text-sm font-bold tracking-tight transition-all duration-200 shadow-sm shrink-0 whitespace-nowrap active:scale-95 cursor-pointer"
               aria-expanded={isMenuOpen}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               title={isMenuOpen ? "Close Menu" : "Explore All Fleet & Insights"}
@@ -338,7 +340,7 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                   transition={{ duration: 0.2 }}
                 />
               </svg>
-              <span className="font-sans text-xs sm:text-sm font-bold tracking-tight">
+              <span className="hidden sm:inline font-sans text-xs sm:text-sm font-bold tracking-tight">
                 {isMenuOpen ? t("nav.close", "CLOSE") : t("nav.menu", "MENU")}
               </span>
             </button>
@@ -476,9 +478,9 @@ export default function Header({ children }: { children?: React.ReactNode }) {
                         </a>
                       ))}
                       <Link
-                        href="/book"
+                        href="/contact"
                         onClick={() => setIsMenuOpen(false)}
-                        className="rounded-full bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs"
+                        className="rounded-full bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold px-4 py-1.5 transition-all duration-200 ml-2 shadow-xs cursor-pointer"
                       >
                         {t("nav.requestQuote", "Request Quote")}
                       </Link>
@@ -522,13 +524,47 @@ function CartButton() {
  */
 function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { user, userProfile, loading, signOut } = useAuth();
   const router = useRouter();
 
-  const handleLogout = async () => {
-    await signOut();
-    setIsOpen(false);
-    router.push("/");
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll and listen for Escape key when logout modal is visible
+  useEffect(() => {
+    if (showLogoutModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showLogoutModal && !isLoggingOut) {
+        setShowLogoutModal(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showLogoutModal, isLoggingOut]);
+
+  const handleConfirmLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await signOut();
+      setShowLogoutModal(false);
+      setIsOpen(false);
+      router.push("/");
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const displayName =
@@ -620,7 +656,11 @@ function ProfileDropdown() {
 
                 <div className="border-t border-[#E8E2D9] p-1.5">
                   <button
-                    onClick={handleLogout}
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setShowLogoutModal(true);
+                    }}
                     className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-[#E53935] hover:bg-red-50 transition-colors rounded-lg font-medium cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
@@ -644,6 +684,101 @@ function ProfileDropdown() {
             )}
           </div>
         </>
+      )}
+
+      {/* Clean, Mobile-Responsive Logout Confirmation Modal Portal (Dead-center full screen) */}
+      {mounted && typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {showLogoutModal && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 pointer-events-auto">
+              {/* Fullscreen Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => {
+                  if (!isLoggingOut) setShowLogoutModal(false);
+                }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+                aria-hidden="true"
+              />
+
+              {/* Modal Dialog Card (Dead-centered across all viewports) */}
+              <motion.div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="logout-modal-title"
+                initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94, y: 16 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full max-w-sm sm:max-w-md bg-white border border-[#E8E2D9] rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-[0_24px_70px_rgba(0,0,0,0.30)] overflow-hidden z-10 text-[#111315] mx-auto"
+              >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowLogoutModal(false)}
+                  disabled={isLoggingOut}
+                  className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl text-[#6E685F] hover:text-[#111315] hover:bg-[#FAF8F5] transition-colors cursor-pointer disabled:opacity-40"
+                  aria-label="Close dialog"
+                >
+                  <X className="size-4 sm:size-5" />
+                </button>
+
+                {/* Clean Icon Wrapper */}
+                <div className="size-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 mb-5 shrink-0">
+                  <LogOut className="size-6 stroke-[2.2]" />
+                </div>
+
+                {/* Title & Description - Strictly clean without any pill dot badges */}
+                <h3
+                  id="logout-modal-title"
+                  className="text-xl sm:text-2xl font-extrabold font-sans text-[#111315] tracking-tight"
+                >
+                  Are you sure you want to log out?
+                </h3>
+                <p className="text-xs sm:text-sm text-[#524E48] mt-2.5 leading-relaxed font-sans">
+                  You will need to sign in again to access your generator bookings, active quotations, and saved fleet items.
+                </p>
+
+                {/* Action Buttons with Distinct Colors */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-3.5 mt-7 w-full">
+                  {/* Cancel Button - Clean light neutral styling */}
+                  <button
+                    type="button"
+                    onClick={() => setShowLogoutModal(false)}
+                    disabled={isLoggingOut}
+                    className="w-full py-3 px-4 rounded-xl border border-[#DED8CE] bg-white hover:bg-[#FAF8F5] active:bg-[#F3EFEA] text-[#111315] font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer disabled:opacity-50 text-center"
+                  >
+                    Cancel
+                  </button>
+
+                  {/* Logout Button - Bold red high-contrast action styling */}
+                  <button
+                    type="button"
+                    onClick={handleConfirmLogout}
+                    disabled={isLoggingOut}
+                    className="w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold text-xs sm:text-sm shadow-md shadow-red-600/25 transition-all duration-200 cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2 text-center"
+                  >
+                    {isLoggingOut ? (
+                      <>
+                        <div className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Logging out...</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogOut className="size-3.5 sm:size-4" />
+                        <span>Yes, Logout</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
       )}
     </div>
   );

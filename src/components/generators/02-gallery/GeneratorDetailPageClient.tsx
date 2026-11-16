@@ -6,12 +6,14 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  Check,
   Clock,
   Droplet,
   Fuel,
   Gauge,
   MessageSquare,
   Phone,
+  Plus,
   ShieldCheck,
   Volume2,
   Zap,
@@ -21,6 +23,8 @@ import {
   formatGeneratorSpecValue,
   resolveGeneratorImage,
 } from "@/lib/generatorImages";
+import { useQuote } from "@/lib/QuoteContext";
+import { cn } from "@/lib/utils";
 
 interface GeneratorDetailPageClientProps {
   product: ProductDetailResponse;
@@ -31,6 +35,9 @@ export function GeneratorDetailPageClient({
   product,
   relatedProducts,
 }: GeneratorDetailPageClientProps) {
+  const { addItem } = useQuote();
+  const [isAdded, setIsAdded] = React.useState(false);
+
   const imageSrc = resolveGeneratorImage(
     product.power_output_kva,
     product.primary_image_url
@@ -88,6 +95,22 @@ export function GeneratorDetailPageClient({
           desc: f.description || "",
         }))
       : derivedHighlights;
+
+  const handleAddToQuote = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      brand: brandName,
+      power_output_kva: String(product.power_output_kva),
+      daily_rate: rawDaily,
+      fuel_consumption_per_hour: product.fuel_consumption_per_hour ? String(product.fuel_consumption_per_hour) : undefined,
+      noise_level_db: product.noise_level_db ? String(product.noise_level_db) : undefined,
+      phase: product.phase ? String(product.phase) : undefined,
+      primary_image_url: imageSrc,
+    });
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
 
   return (
     <main className="min-h-screen bg-[#FAF8F5] text-[#111315] font-sans pt-28 sm:pt-32 pb-20 sm:pb-24 selection:bg-[#FF5500]/15 selection:text-[#FF5500]">
@@ -306,28 +329,52 @@ export function GeneratorDetailPageClient({
               <p className="text-sm text-[#524E48] mb-5">
                 Our experts are ready to help you choose the right product
               </p>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                 <Link
                   href={`/book?kVA=${encodeURIComponent(`${product.power_output_kva} kVA`)}`}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold text-sm transition-colors shadow-[0_12px_28px_rgba(255,85,0,0.26)]"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold text-xs sm:text-sm transition-colors shadow-[0_12px_28px_rgba(255,85,0,0.26)] active:scale-95"
                 >
                   <span>Book Now</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </Link>
+                <button
+                  type="button"
+                  onClick={handleAddToQuote}
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm border transition-all duration-200 cursor-pointer shadow-xs active:scale-95",
+                    isAdded
+                      ? "bg-[#111315] text-white border-[#111315]"
+                      : "bg-white hover:bg-[#111315] hover:text-white text-[#111315] border-[#E8E2D9]"
+                  )}
+                >
+                  {isAdded ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF5500]" />
+                      <span className="hidden sm:inline">Added to Quote</span>
+                      <span className="sm:hidden">Added</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF5500]" />
+                      <span className="hidden sm:inline">Add to Quote</span>
+                      <span className="sm:hidden">Add to Quote</span>
+                    </>
+                  )}
+                </button>
                 <a
                   href="tel:+916262629944"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-[#F3EFEA] text-[#111315] font-semibold text-sm border border-[#E8E2D9] transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-full bg-white hover:bg-[#F3EFEA] text-[#111315] font-semibold text-xs sm:text-sm border border-[#E8E2D9] transition-colors active:scale-95"
                 >
-                  <Phone className="w-4 h-4 text-[#FF5500]" />
+                  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF5500]" />
                   <span>Call Now</span>
                 </a>
                 <a
                   href="https://wa.me/916262629944"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-[#F3EFEA] text-[#111315] font-semibold text-sm border border-[#E8E2D9] transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-full bg-white hover:bg-[#F3EFEA] text-[#111315] font-semibold text-xs sm:text-sm border border-[#E8E2D9] transition-colors active:scale-95"
                 >
-                  <MessageSquare className="w-4 h-4 text-[#FF5500]" />
+                  <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF5500]" />
                   <span>WhatsApp</span>
                 </a>
               </div>

@@ -33,7 +33,7 @@ export function ForgeHero() {
   const accentWords = new Set(["conversation", "बातचीत", "संवादातून"]);
 
   return (
-    <section className="relative min-h-[85vh] sm:min-h-[92vh] flex flex-col justify-end bg-[#FAF8F5] text-[#111315] overflow-hidden select-none pb-16 sm:pb-24 px-4 sm:px-10 lg:px-20 pt-32 sm:pt-36 border-b border-[#E8E2D9]">
+    <section className="relative min-h-[45vh] sm:min-h-[92vh] flex flex-col justify-end bg-[#FAF8F5] text-[#111315] overflow-hidden select-none pb-7 sm:pb-24 px-4 sm:px-10 lg:px-20 pt-24 sm:pt-36 border-b border-[#E8E2D9]">
       {/* High-Resolution Engineering Background Image with Bright Architectural Wash */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-20"
@@ -51,10 +51,10 @@ export function ForgeHero() {
         {/* Display Title with Word-by-Word Masked Reveal Animation */}
         <h1
           data-no-translate="true"
-          className="font-serif text-3xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.08] mb-10 sm:mb-12 flex flex-wrap gap-x-3 sm:gap-x-5 gap-y-1 sm:gap-y-2"
+          className="font-serif text-2xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#111315] leading-[1.14] sm:leading-[1.08] mb-2.5 sm:mb-6 flex flex-wrap gap-x-2 sm:gap-x-5 gap-y-1 sm:gap-y-2"
         >
           {headlineWords.map((word, index) => (
-            <span key={`${language}-${index}`} className="inline-block overflow-hidden py-1">
+            <span key={`${language}-${index}`} className="inline-block overflow-hidden py-0.5 sm:py-1">
               <motion.span
                 initial={{ y: "115%", opacity: 0 }}
                 animate={{ y: "0%", opacity: 1 }}
@@ -75,6 +75,16 @@ export function ForgeHero() {
           ))}
         </h1>
 
+        {/* Editorial Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="font-sans text-xs sm:text-base text-[#625D55] max-w-xl leading-relaxed mb-5 sm:mb-10"
+        >
+          Connect with Nashik&apos;s senior power engineers for 60-minute site dispatch, wedding silent DG sets, and turnkey industrial operations.
+        </motion.p>
+
         {/* Minimalist Forge Action Button with Rolling Text & Hover Motion */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -85,7 +95,7 @@ export function ForgeHero() {
           <a
             href="#form"
             onClick={scrollToForm}
-            className="group inline-flex items-center justify-center gap-4 px-6 sm:px-9 py-4 rounded-full border border-[#111315]/20 bg-white hover:bg-[#111315] hover:border-[#111315] text-[#111315] hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl active:scale-95 w-full sm:w-auto text-center"
+            className="group inline-flex items-center justify-center gap-3 sm:gap-4 px-5 sm:px-9 py-2.5 sm:py-4 rounded-full border border-[#111315]/20 bg-white hover:bg-[#111315] hover:border-[#111315] text-[#111315] hover:text-white transition-all duration-300 shadow-sm hover:shadow-xl active:scale-95 w-full sm:w-auto text-center"
           >
             <RollingText
               text="Start the conversation"

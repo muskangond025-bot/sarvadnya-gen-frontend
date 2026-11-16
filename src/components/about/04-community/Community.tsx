@@ -1,52 +1,75 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ShieldCheck, Volume2, Users, Truck, ArrowRight } from "lucide-react";
+import { ShieldCheck, Volume2, Users, Truck, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * Community Component
  *
- * Ultra-Premium "The Sarvadnya Promise" Section with Framer Motion animation:
- * - Fluid staggered reveals and hover physics
- * - 4-Pillar client guarantees with active animated beacons
- * - Pure bright luxury theme (#FAF8F5, #FF5500, #E8E2D9)
+ * Ultra-Premium "The Sarvadnya Promise" Section:
+ * - Desktop: 4-Pillar client guarantees in symmetric grid
+ * - Mobile: Fluid horizontal touch-snap carousel with dot pagination
+ * - Clean editorial cards without pill badges or redundant text
  */
 export function Community() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const promises = [
     {
       num: "01",
       icon: ShieldCheck,
       title: "Guaranteed Zero Downtime",
       desc: "Synchronized multi-generator setups and automatic load-transfer units ensure zero-second interruptions for mission-critical operations.",
-      metric: "100% Seamless Power Handover",
     },
     {
       num: "02",
       icon: Volume2,
       title: "Acoustic Silence (<75 dBA)",
       desc: "Engineered soundproof acoustic canopies with heavy-duty silencers designed specifically for luxury weddings, banquets, and urban healthcare sites.",
-      metric: "CPCB-IV+ Certified Quiet",
     },
     {
       num: "03",
       icon: Users,
       title: "Stationed Field Engineers",
       desc: "Certified mechanical and electrical engineers remain on-site throughout your deployment to manage fuel, live monitoring, and real-time load balancing.",
-      metric: "24/7 On-Site Active Command",
     },
     {
       num: "04",
       icon: Truck,
       title: "Rapid Transit Fleet",
       desc: "In-house dedicated transportation trailers and mobile quick-response units ready for immediate deployment across 5 districts in Maharashtra.",
-      metric: "Average 60-Min Hub Mobilization",
     },
   ];
 
+  const handleScroll = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 16;
+    const index = Math.round(el.scrollLeft / cardWidth);
+    setActiveIndex(Math.min(Math.max(index, 0), promises.length - 1));
+  };
+
+  const scrollToIndex = (index: number) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 16;
+    el.scrollTo({
+      left: index * cardWidth,
+      behavior: "smooth",
+    });
+    setActiveIndex(index);
+  };
+
   return (
-    <section className="w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#E8E2D9] overflow-hidden">
+    <section className="w-full py-14 sm:py-28 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#E8E2D9] overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         
         {/* Animated Title Block */}
@@ -65,8 +88,87 @@ export function Community() {
           </p>
         </motion.div>
 
-        {/* 4-Pillar Animated Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-12 sm:mt-16">
+        {/* Mobile View: Horizontal Touch-Snap Carousel (< md) */}
+        <div className="block md:hidden w-full mt-10">
+          <div
+            ref={carouselRef}
+            onScroll={handleScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar touch-pan-x -mx-4 px-4 pb-4 pt-1 scroll-smooth"
+          >
+            {promises.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={`mobile-promise-${idx}`}
+                  className="w-[84vw] max-w-[330px] shrink-0 snap-center bg-[#FAF8F5] rounded-3xl p-6 border border-[#E8E2D9] shadow-xs flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="text-sm font-extrabold text-[#FF5500] font-mono tracking-wider">
+                        {item.num}
+                      </span>
+                      <div className="size-10 rounded-2xl bg-white border border-[#E8E2D9] flex items-center justify-center text-[#FF5500] shadow-2xs">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-[#111315] font-['Poppins',sans-serif] leading-snug">
+                      {item.title}
+                    </h3>
+                    
+                    <p className="text-xs text-[#403C36] font-['Outfit',sans-serif] leading-relaxed mt-3">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Mobile Dot Indicators & Arrow Navigation */}
+          <div className="flex items-center justify-between pt-3 px-1">
+            <div className="flex items-center gap-1.5">
+              {promises.map((_, i) => (
+                <button
+                  key={`dot-${i}`}
+                  type="button"
+                  onClick={() => scrollToIndex(i)}
+                  aria-label={`Go to promise ${i + 1}`}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
+                    activeIndex === i
+                      ? "w-6 bg-[#FF5500]"
+                      : "w-1.5 bg-[#DDD6CA] hover:bg-[#B8B0A2]"
+                  )}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
+                disabled={activeIndex === 0}
+                className="p-1.5 rounded-full border border-[#E8E2D9] bg-white text-[#111315] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                aria-label="Previous promise"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToIndex(Math.min(promises.length - 1, activeIndex + 1))}
+                disabled={activeIndex === promises.length - 1}
+                className="p-1.5 rounded-full border border-[#E8E2D9] bg-white text-[#111315] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+                aria-label="Next promise"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop 4-Pillar Animated Card Grid (md and above) - Text removed for all */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-12 sm:mt-16">
           {promises.map((item, idx) => {
             const Icon = item.icon;
             return (
@@ -96,16 +198,6 @@ export function Community() {
                   <p className="text-xs sm:text-sm text-[#403C36] font-['Outfit',sans-serif] leading-relaxed mt-3">
                     {item.desc}
                   </p>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-[#E8E2D9] flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF5500] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF5500]" />
-                  </span>
-                  <span className="text-[11px] uppercase tracking-wider font-bold text-[#71695F] font-['Outfit',sans-serif]">
-                    {item.metric}
-                  </span>
                 </div>
               </motion.div>
             );

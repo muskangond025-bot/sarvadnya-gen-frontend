@@ -57,7 +57,7 @@ export function BlogCategories() {
   return (
     <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6 border-b border-[#E8E2D9] pb-7">
       {/* Scrollable Category Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 no-scrollbar">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 no-scrollbar touch-pan-x scroll-smooth">
         {CATEGORIES.map((category) => {
           const isActive = activeTab === category;
           return (

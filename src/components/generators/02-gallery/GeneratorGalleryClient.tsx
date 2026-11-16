@@ -117,8 +117,8 @@ const transformProduct = (product: PublicProduct): ProcessedGenerator => {
     kvaNum <= 25
       ? ["Events & Weddings", "Retail & Homes"]
       : kvaNum <= 65
-      ? ["Events & Banquets", "Commercial Sites", "Hospitals"]
-      : ["Construction", "Factories", "Hospitals"];
+        ? ["Events & Banquets", "Commercial Sites", "Hospitals"]
+        : ["Construction", "Factories", "Hospitals"];
   const rawSuitable = (product as unknown as { suitable_for?: string[] }).suitable_for;
 
   return {
@@ -460,7 +460,7 @@ export default function GeneratorGallery() {
     <LayoutGroup>
       <section
         id="gallery"
-        className="w-full py-14 sm:py-20 px-4 sm:px-6 md:px-10 lg:px-[60px] scroll-mt-24"
+        className="w-full py-10 sm:py-20 px-3 sm:px-6 md:px-10 lg:px-[60px] scroll-mt-24"
       >
         <div className="max-w-[1440px] mx-auto">
           <SectionHeading
@@ -480,9 +480,9 @@ export default function GeneratorGallery() {
           </p>
 
           {/* Intelligent Multi-Tab Filters */}
-          <div className="flex flex-col gap-6 sm:gap-8 mb-10 sm:mb-12">
+          <div className="flex flex-col gap-4 sm:gap-8 mb-8 sm:mb-12">
             {/* Top Level Groups */}
-            <div className="flex flex-wrap gap-2 p-1.5 bg-[#EFECE6] rounded-2xl w-full sm:w-fit border border-[#E8E2D9]">
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 bg-[#EFECE6] rounded-2xl w-full sm:w-fit border border-[#E8E2D9] overflow-x-auto no-scrollbar touch-pan-x">
               {FILTER_GROUPS.map((group) => (
                 <button
                   key={group.id}
@@ -493,9 +493,9 @@ export default function GeneratorGallery() {
                     setActiveSubFilter("all");
                   }}
                   className={cn(
-                    "flex-1 sm:flex-initial px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-['Poppins',sans-serif] text-xs sm:text-sm font-bold transition-all text-center",
-                    activeGroup === group.id 
-                      ? "bg-[#FF5500] text-white shadow-[0_4px_14px_rgba(255,85,0,0.25)]" 
+                    "shrink-0 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-['Poppins',sans-serif] text-xs sm:text-sm font-bold transition-all text-center whitespace-nowrap",
+                    activeGroup === group.id
+                      ? "bg-[#FF5500] text-white shadow-[0_4px_14px_rgba(255,85,0,0.25)]"
                       : "text-[#625D55] hover:text-[#111315] hover:bg-white/60"
                   )}
                 >
@@ -505,9 +505,9 @@ export default function GeneratorGallery() {
             </div>
 
             {/* Sub-Filters */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 w-full overflow-hidden">
               <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF5500] shrink-0" />
-              <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar touch-pan-x py-1 w-full">
                 {(activeGroup === "power" ? POWER_FILTERS : 
                   activeGroup === "usage" ? USAGE_FILTERS : 
                   TYPE_FILTERS).map((filter) => (
@@ -519,7 +519,7 @@ export default function GeneratorGallery() {
                       setActiveSubFilter(filter.id);
                     }}
                     className={cn(
-                      "px-5 py-2.5 rounded-full font-['Outfit',sans-serif] text-sm font-medium transition-all border",
+                      "shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full font-['Outfit',sans-serif] text-xs sm:text-sm font-medium transition-all border whitespace-nowrap",
                       activeSubFilter === filter.id
                         ? "bg-[#FF5500]/10 border-[#FF5500] text-[#FF5500] font-semibold"
                         : "bg-white border-[#E8E2D9] text-[#625D55] hover:border-[#FF5500]/40 hover:text-[#111315]"
@@ -607,7 +607,7 @@ export default function GeneratorGallery() {
           {!isLoading && !error && (
             <motion.div
               layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"
             >
               <AnimatePresence mode="popLayout">
                 {filteredGenerators.map((gen) => (
@@ -665,56 +665,56 @@ export default function GeneratorGallery() {
           generator={
             selectedGenerator
               ? {
-                  id: selectedGenerator.id,
-                  badge: selectedGenerator.categoryLabel,
-                  series: selectedGenerator.brand,
-                  name: selectedGenerator.name,
-                  kva: selectedGenerator.kva,
-                  rating: selectedGenerator.rating,
-                  reviews: selectedGenerator.reviews,
-                  description:
-                    fullProductDetails?.description ||
-                    selectedGenerator.description,
-                  pricing: {
-                    daily: selectedGenerator.dailyRate,
-                    monthly: selectedGenerator.monthlyRate,
-                    yearly: selectedGenerator.yearlyRate,
-                  },
-                  specs: fullProductDetails ? [] : selectedGenerator.specs, // We will handle specs inside Modal if fullDetails exists
-                  features: fullProductDetails
-                    ? []
-                    : selectedGenerator.features, // Handle inside Modal
-                  highlights: fullProductDetails
-                    ? []
-                    : selectedGenerator.highlights,
-                  image: selectedGenerator.image,
-                }
+                id: selectedGenerator.id,
+                badge: selectedGenerator.categoryLabel,
+                series: selectedGenerator.brand,
+                name: selectedGenerator.name,
+                kva: selectedGenerator.kva,
+                rating: selectedGenerator.rating,
+                reviews: selectedGenerator.reviews,
+                description:
+                  fullProductDetails?.description ||
+                  selectedGenerator.description,
+                pricing: {
+                  daily: selectedGenerator.dailyRate,
+                  monthly: selectedGenerator.monthlyRate,
+                  yearly: selectedGenerator.yearlyRate,
+                },
+                specs: fullProductDetails ? [] : selectedGenerator.specs, // We will handle specs inside Modal if fullDetails exists
+                features: fullProductDetails
+                  ? []
+                  : selectedGenerator.features, // Handle inside Modal
+                highlights: fullProductDetails
+                  ? []
+                  : selectedGenerator.highlights,
+                image: selectedGenerator.image,
+              }
               : {
-                  id: "",
-                  name: "",
-                  kva: "",
-                  rating: 0,
-                  reviews: 0,
-                  pricing: { daily: "" },
-                  specs: [],
-                  features: [],
-                  highlights: [],
-                  image: "",
-                }
+                id: "",
+                name: "",
+                kva: "",
+                rating: 0,
+                reviews: 0,
+                pricing: { daily: "" },
+                specs: [],
+                features: [],
+                highlights: [],
+                image: "",
+              }
           }
           suggestedGenerators={
             selectedGenerator
               ? processedGenerators
-                  .filter((g) => g.id !== selectedGenerator.id)
-                  .slice(0, 3)
-                  .map((g) => ({
-                    id: g.id,
-                    name: g.name,
-                    kva: g.kva,
-                    dailyRate: g.dailyRate,
-                    image: g.image,
-                    category: g.categoryLabel,
-                  }))
+                .filter((g) => g.id !== selectedGenerator.id)
+                .slice(0, 3)
+                .map((g) => ({
+                  id: g.id,
+                  name: g.name,
+                  kva: g.kva,
+                  dailyRate: g.dailyRate,
+                  image: g.image,
+                  category: g.categoryLabel,
+                }))
               : []
           }
           onSelectGenerator={(id) => {

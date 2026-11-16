@@ -239,3 +239,19 @@ video {
   animation: shimmer 5s linear infinite;
   background-size: 200% 100%;
 }
+
+/* Photorealistic 360-Degree Continuous Rotating Truck Wheels */
+@keyframes truckWheelSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-truck-wheel {
+  animation: truckWheelSpin 0.85s linear infinite;
+  transform-origin: center center;
+}
+
